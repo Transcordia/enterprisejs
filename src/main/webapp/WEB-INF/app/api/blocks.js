@@ -65,7 +65,6 @@ app.configure('route');
  *          CODE: 200 on success.
  */
 app.get('/', function (req) {
-	log.debug('GET /profiles');
 	return json({
         blocks: true
     });
