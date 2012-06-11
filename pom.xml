@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.pykl</groupId>
+    <artifactId>enterprisejs</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <packaging>war</packaging>
+
+    <name>EnterpriseJS :: Web</name>
+    <inceptionYear>2012</inceptionYear>
+    <url>http://enterprisejs.org</url>
+
+    <licenses>
+        <license>
+            <name>Proprietary License</name>
+            <url>LICENSE.txt</url>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>Pykl Studios</name>
+        <url>http://pykl.com/</url>
+    </organization>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring-version>3.1.1.RELEASE</spring-version>
+        <springsec-version>3.1.0.RELEASE</springsec-version>
+        <slf4j-version>1.6.4</slf4j-version>
+        <log4j-version>1.2.16</log4j-version>
+        <jetty-version>8.0.4.v20111024</jetty-version>
+        <ringo-version>0.9.0-alpha-6</ringo-version>
+        <stick-version>0.1.0-alpha-7</stick-version>
+        <trimpath-version>1.0.7</trimpath-version>
+        <springext-version>1.0.8</springext-version>
+        <store-version>1.0.6-SNAPSHOT</store-version>
+    </properties>
+
+    <dependencies>
+
+        <!-- RingoJS & Stick -->
+
+        <dependency>
+            <groupId>org.ringojs</groupId>
+            <artifactId>ringojs</artifactId>
+            <version>${ringo-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ringojs</groupId>
+            <artifactId>stick</artifactId>
+            <version>${stick-version}</version>
+        </dependency>
+
+        <!-- RingoJS extensions to support Spring/Email -->
+
+        <dependency>
+            <groupId>org.pykl.ringojs</groupId>
+            <artifactId>spring-ext</artifactId>
+            <version>${springext-version}</version>
+        </dependency>
+
+
+        <!-- SSJS Persistence -->
+
+        <dependency>
+            <groupId>com.zocia.platform</groupId>
+            <artifactId>store-js</artifactId>
+            <version>${store-version}</version>
+        </dependency>
+
+
+        <!-- TrimPath Templates -->
+
+        <dependency>
+            <groupId>org.pykl.ringojs</groupId>
+            <artifactId>trimpath</artifactId>
+            <version>${trimpath-version}</version>
+        </dependency>
+
+
+        <!-- Java Servlet Libraries -->
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <!-- Spring 3 Dependencies -->
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring-version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${springsec-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>${springsec-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring-version}</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <!-- Logging -->
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j-version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j-version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j-version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+
+        <!-- Mail -->
+
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.5</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>${jetty-version}</version>
+                <configuration>
+                    <!-- Causes Jetty to re-initialize when config files like web.xml or Java
+                         classes are edited. Not sure how useful this is at the moment. - jc
+                    -->
+                    <!--<scanIntervalSeconds>10</scanIntervalSeconds>-->
+                    <webAppConfig>
+                        <!-- Every project should be developed so the application can be deployed to
+                             a path other than '/'. Setting the context path to any value ensures
+                             the context path is considered during development.
+                         -->
+                        <contextPath>/ejs</contextPath>
+                        <descriptor>${project.build.directory}/web.xml</descriptor>
+                    </webAppConfig>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>spring.profiles.active</name>
+                            <value>testing</value>
+                        </systemProperty>
+                    </systemProperties>
+                    <connectors>
+                        <connector
+                                implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                            <port>8080</port>
+                            <maxIdleTime>60000</maxIdleTime>
+                        </connector>
+                    </connectors>
+                    <stopPort>9301</stopPort>
+                    <stopKey>bar</stopKey>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>start-jetty</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <!--suppress MavenModelInspection -->
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <scanIntervalSeconds>0</scanIntervalSeconds>
+                            <daemon>true</daemon>
+                            <!--<useTestClasspath>true</useTestClasspath>-->
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>stop-jetty</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <!--suppress MavenModelInspection -->
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1.1</version>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <filtering>true</filtering>
+                            <directory>src/main/webapp</directory>
+                        </resource>
+                    </webResources>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>1.10.b1</version>
+                <configuration>
+                    <includes>
+                        <include>**/*.java</include>
+                        <include>**/*.js</include>
+                        <include>LICENSE.txt</include>
+                    </includes>
+                    <excludes>
+                        <exclude>src/test/jsdoc-toolkit/**</exclude>
+                        <exclude>src/test/jsdoc3/**</exclude>
+                        <exclude>src/main/webapp/WEB-INF/app/fixtures/**</exclude>
+                    </excludes>
+                    <strictCheck>true</strictCheck>
+                    <header>http://repo.pykl.com/license.txt</header>
+                    <properties>
+                        <year>${project.inceptionYear}</year>
+                    </properties>
+                </configuration>
+            </plugin>
+
+        </plugins>
+
+        <resources>
+            <resource>
+                <filtering>true</filtering>
+                <directory>${basedir}/src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${basedir}/src/main/webapp/WEB-INF</directory>
+                <includes>
+                    <include>web.xml</include>
+                </includes>
+                <filtering>true</filtering>
+                <targetPath>${project.build.directory}</targetPath>
+            </resource>
+        </resources>
+    </build>
+
+</project>

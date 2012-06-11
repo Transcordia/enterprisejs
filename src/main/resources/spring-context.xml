@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/util
+                            http://www.springframework.org/schema/util/spring-util-2.0.xsd
+                            http://www.springframework.org/schema/task
+                            http://www.springframework.org/schema/task/spring-task-3.0.xsd
+                            http://www.springframework.org/schema/context
+		                    http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+
+    <bean id="configParams"
+          class="org.pykl.zocia.spring.ExposablePropertyPlaceholderConfigurer">
+        <property name="fileEncoding" value="UTF-8" />
+        <property name="nullValue" value="null" />
+        <property name="systemPropertiesMode" value="2" />
+        <property name="searchSystemEnvironment" value="true" />
+<!--
+        <property name="locations">
+            <list>
+                <value>classpath:core.properties</value>
+            </list>
+        </property>
+-->
+    </bean>
+
+    
+
+    <bean id="messageSource"
+          class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="cacheSeconds" value="5" />
+        <property name="defaultEncoding" value="UTF-8" />
+<!--
+        <property name="basenames">
+            <list>
+                <value>/WEB-INF/resources/messages</value>
+            </list>
+        </property>
+-->
+    </bean>
+
+    <!-- *************************************************************************************** -->
+    <!-- Elastic Search Configuration                                                            -->
+    <!-- *************************************************************************************** -->
+
+<!--
+    <bean id="elasticSearchConfiguration"
+          class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="location" value="classpath:elasticsearch-server.properties"/>
+        <property name="localOverride" value="true"/>
+        <property name="properties">
+            <props>
+                <prop key="path.conf">${webapp.root}/WEB-INF/config</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="esServer" class="com.zocia.platform.elasticsearch.ElasticSearchServer"
+          init-method="start" destroy-method="stop">
+        <constructor-arg ref="elasticSearchConfiguration"/>
+        <property name="recoveryWait" value="5m" />
+    </bean>
+-->
+
+    <!-- *************************************************************************************** -->
+    <!-- Hazelcast Configuration                                                                 -->
+    <!-- *************************************************************************************** -->
+
+<!--
+    <bean id="hzServer" class="com.zocia.platform.hazelcast.HazelcastBootstrap"
+          init-method="init" destroy-method="destroy">
+        <constructor-arg value="#{esServer.client}"/>
+        <property name="mapStoreFactory" ref="mapStoreFactory" />
+    </bean>
+
+    <bean id="mapStoreFactory" class="com.zocia.platform.hazelcast.persistence.DelegatingMapStoreFactory" />
+
+    <bean id="esMapStore" scope="prototype"
+          class="com.zocia.platform.hazelcast.persistence.elasticsearch.ElasticSearchMapPersistence">
+        <property name="esClient" value="#{esServer.client}" />
+    </bean>
+-->
+
+    <!-- Cron jobs are triggered by the scheduler service -->
+<!--
+    <task:scheduler id="zocia-tasks" pool-size="10" />
+
+    <bean id="aggregateStats" class="com.zocia.roundtable.scheduling.DistributedWebCronJob">
+        <property name="index" value="nep" />
+        <property name="localUrl" value="/api/ventures/aggregatedailystats" />
+        <property name="seconds" value="86400" />
+    </bean>
+
+    <task:scheduled-tasks scheduler="zocia-tasks">
+        <task:scheduled ref="aggregateStats" method="run"  cron="0 0 0 * * *" />
+    </task:scheduled-tasks>
+-->
+
+    <beans profile="default">
+<!--
+        <bean id="syncCMS" class="com.zocia.roundtable.scheduling.DistributedWebCronJob">
+            <property name="index" value="nep" />
+            <property name="localUrl" value="/api/cron/cmssync/" />
+            <property name="seconds" value="300" />
+        </bean>
+
+        <task:scheduled-tasks scheduler="zocia-tasks">
+            <task:scheduled ref="syncCMS" method="run" cron="0 0/5 * * * *" />
+        </task:scheduled-tasks>
+-->
+    </beans>
+</beans>
+

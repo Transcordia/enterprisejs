@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+		  http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0">
+
+
+    <distributable/>
+
+    <!--
+        Configures Log4J with a 5 second refresh interval
+    -->
+    <context-param>
+        <param-name>log4jConfigLocation</param-name>
+        <param-value>/WEB-INF/app/config/log4j.properties</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>log4jRefreshInterval</param-name>
+        <param-value>5000</param-value>
+    </context-param>
+
+    <listener>
+        <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+    </listener>
+
+
+    <!--
+    This will inject a system property that will reference the file path to the root of the
+    web application
+    -->
+    <listener>
+        <listener-class>org.springframework.web.util.WebAppRootListener</listener-class>
+    </listener>
+
+    <!-- Spring Bootstrap -->
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            classpath:spring-context.xml
+            classpath:spring-security.xml
+        </param-value>
+    </context-param>
+
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+
+    <!-- Order is important. Must come before DelegatingFilterProxy -->
+
+<!--
+    <filter>
+        <filter-name>indexFilter</filter-name>
+        <filter-class>com.zocia.spring.security.IndexFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>indexFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+-->
+
+
+    <!-- Spring Security Initialization -->
+
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+
+    <!-- Ringo Servlet -->
+
+    <servlet>
+        <servlet-name>ringo</servlet-name>
+        <servlet-class>org.ringojs.jsgi.ExtJsgiServlet</servlet-class>
+
+        <init-param>
+            <param-name>verbose</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>optlevel</param-name>
+            <param-value>0</param-value>
+        </init-param>
+        <init-param>
+            <param-name>production</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>debug</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>module-path</param-name>
+            <param-value>
+                WEB-INF/app
+            </param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ringo</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+
+</web-app>

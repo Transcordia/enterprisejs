@@ -1,0 +1,4 @@
+====
+    Copyright (c) 2010, Pykl Studios <admin@pykl.com>, All rights reserved.
+====
+
