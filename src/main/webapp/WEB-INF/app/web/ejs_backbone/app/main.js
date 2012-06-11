@@ -4,10 +4,12 @@ require([
 
   // Libs
   "jquery",
-  "backbone"
+  "backbone",
+
+    'modules/ejs'
 ],
 
-function(app, $, Backbone, Example) {
+function(app, $, Backbone, Ejs) {
 
   // Defining the application router, you can attach sub routers here.
   var Router = Backbone.Router.extend({
@@ -15,8 +17,16 @@ function(app, $, Backbone, Example) {
       "": "index"
     },
 
-    index: function() {
+      manager: new Backbone.LayoutManager({
+        template: 'main'
+      }),
 
+    index: function() {
+        this.manager.setView('#home', new Ejs.Views.Home());
+
+        this.manager.$el.appendTo('#main');
+
+        this.manager.render();
     }
   });
 
@@ -29,7 +39,7 @@ function(app, $, Backbone, Example) {
     app.router = new Router();
 
     // Trigger the initial route and enable HTML5 History API support
-    Backbone.history.start({ root: "ejs/" }, { pushState: true });
+    Backbone.history.start({ root: "ejs_backbone/" }, { pushState: true });
   });
 
   // All navigation that is relative should be passed through the navigate
