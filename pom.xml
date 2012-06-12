@@ -199,6 +199,34 @@
             </plugin>
 
             <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>integration-tests</id>
+                        <phase>integration-test</phase>
+                        <configuration>
+                            <target unless="maven.test.skip">
+                                <java classname="org.ringojs.tools.launcher.Main" fork="true"
+                                      failonerror="yes">
+                                    <jvmarg value="-Dringo.home=src/main/webapp/WEB-INF"/>
+                                    <jvmarg value="-Dringo.classpath="/>
+                                    <jvmarg value="-Dringo.verbose=true"/>
+                                    <arg value="-V"/>
+                                    <arg value="src/test/js/integration.js"/>
+                                    <classpath refid="maven.test.classpath"/>
+                                </java>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <!--suppress MavenModelInspection -->
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>${jetty-version}</version>

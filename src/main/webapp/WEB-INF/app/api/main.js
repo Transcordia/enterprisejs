@@ -7,5 +7,5 @@ var {Application} = require("stick");
 var app = exports.app = Application();
 app.configure("mount");
 
-app.mount("/blocks", require("./blocks"));
+app.mount("/topics", require("./topics"));
 
