@@ -14,7 +14,10 @@ function(app, $, Backbone, Ejs) {
   // Defining the application router, you can attach sub routers here.
   var Router = Backbone.Router.extend({
     routes: {
-      "": "index"
+        ""        : "index",
+        "home"    : "home",
+        "about"   : "about",
+        "contact" : "contact"
     },
 
       manager: new Backbone.LayoutManager({
@@ -27,7 +30,31 @@ function(app, $, Backbone, Ejs) {
         this.manager.$el.appendTo('#main');
 
         this.manager.render();
-    }
+    },
+
+      home: function(){
+          this.manager.setView('#home', new Ejs.Views.Home());
+
+          this.manager.$el.appendTo('#main');
+
+          this.manager.render();
+      },
+
+      about: function(){
+          this.manager.setView( '#about', new Ejs.Views.About());
+
+          this.manager.$el.appendTo('#main');
+
+          this.manager.render();
+      },
+
+      contact: function(){
+          this.manager.setView( '#contact', new Ejs.Views.Contact());
+
+          this.manager.$el.appendTo('#main');
+
+          this.manager.render();
+      }
   });
 
   // Treat the jQuery ready function as the entry point to the application.
@@ -39,7 +66,7 @@ function(app, $, Backbone, Ejs) {
     app.router = new Router();
 
     // Trigger the initial route and enable HTML5 History API support
-    Backbone.history.start({ root: "ejs_backbone/" }, { pushState: true });
+    Backbone.history.start( { root: "ejs_backbone/" }, { pushState: true });
   });
 
   // All navigation that is relative should be passed through the navigate

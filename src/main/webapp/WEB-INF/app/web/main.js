@@ -10,9 +10,7 @@ var app = exports.app = Application();
 app.configure('notfound', 'params', 'route');
 
 app.get('/', function (req) {
-    //return json({web:true});
-
-    return trimpathResponse(module.resolve('views/index.html'));
+    return json({web:true});
 });
 
 

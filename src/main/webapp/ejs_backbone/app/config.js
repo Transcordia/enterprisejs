@@ -5,13 +5,13 @@ require.config({
 
   paths: {
     // JavaScript folders
-    libs: "../assets/js/app.web.ejs_backbone.assets.js",
+    libs: "../assets/js/libs",
     plugins: "../assets/js/plugins",
 
     // Libraries
-    jquery: "../assets/js/app.web.ejs_backbone.assets.js/jquery",
-    lodash: "../assets/js/app.web.ejs_backbone.assets.js/lodash",
-    backbone: "../assets/js/app.web.ejs_backbone.assets.js/ejs_backbone"
+    jquery: "../assets/js/libs/jquery",
+    lodash: "../assets/js/libs/lodash",
+    backbone: "../assets/js/libs/backbone"
   },
 
   shim: {
@@ -21,7 +21,7 @@ require.config({
     },
 
       'plugins/backbone.layoutmanager': {
-          deps: ['ejs_backbone']
+          deps: ['backbone']
       }
   }
 });

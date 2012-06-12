@@ -9,7 +9,7 @@ define([
     "app",
 
     // Libs
-    "ejs_backbone"
+    "backbone"
 ],
 
     function(app, Backbone) {
