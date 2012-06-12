@@ -1,1 +1,15 @@
-@import "h5bp.css";
+/*@import "h5bp.css";*/
+ul, ol {
+    list-style-type: none;
+    margin: 0;
+}
+
+div.poster-info div.left{
+    width: 20%;
+    float: left;
+    margin: 0 10px 0 0;
+}
+
+div.poster-info {
+    margin: 0 0 10px 0;
+}
