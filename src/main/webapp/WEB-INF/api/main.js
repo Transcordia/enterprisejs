@@ -4,7 +4,7 @@
 var log = require('ringo/logging').getLogger(module.id);
 var {json} = require('ringo/jsgi/response');
 
-var {Application} = require('stick');
+var {Application} = require("stick");
 var app = exports.app = Application();
 app.configure('notfound', 'params', 'mount', 'route');
 
@@ -16,3 +16,7 @@ app.get('/', function (req) {
 		path: req.pathInfo
 	});
 });
+
+app.post('/user/', function(req) {
+    return json({success: true});
+})
