@@ -3,6 +3,7 @@ define([
   "jquery",
   "lodash",
   "backbone",
+    "collapse",
 
     'plugins/backbone.layoutmanager'
 ],

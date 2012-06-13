@@ -11,7 +11,8 @@ require.config({
     // Libraries
     jquery: "../assets/js/libs/jquery",
     lodash: "../assets/js/libs/lodash",
-    backbone: "../assets/js/libs/backbone"
+    backbone: "../assets/js/libs/backbone",
+      collapse: "../assets/js/libs/bootstrap/bootstrap-collapse"
   },
 
   shim: {

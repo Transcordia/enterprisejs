@@ -10,6 +10,11 @@ div.poster-info div.left{
     margin: 0 10px 0 0;
 }
 
+div.poster-info div.right{
+    width: 73%;
+    float: left;
+}
+
 div.poster-info {
     margin: 0 0 10px 0;
 }
