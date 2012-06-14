@@ -1,5 +1,5 @@
 /**
- * @module api/users
+ * @module api/profiles
  *
  * @fileOverview This file handles all /profiles rest calls by routing to the appropriate
  * function.
@@ -70,9 +70,10 @@ var fakeUser = {
  *          CODE: 200 on success.
  */
 app.get('/', function (req) {
-    return fakeUser;
+    return json(fakeUser);
 });
 
 app.get('/:id', function(req) {
-    return fakeUser;
+    log.info("HELLO THERE");
+    return json(fakeUser);
 });
