@@ -8,6 +8,23 @@ retrieval and ratings.
 
 ### API
 
+#### Retrieve Topics
+
+Returns a list of topics that describe a particular web resource
+
+    GET  /api/topics
+
+##### Parameters
+
+> **sample**
+> > This is a sample
+
+##### Example Request
+
+	https://compo.si/api/topics
+
+
+
 
 ## Adding a new entity
 
