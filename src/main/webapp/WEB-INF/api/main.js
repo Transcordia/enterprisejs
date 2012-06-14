@@ -4,12 +4,15 @@
 var log = require('ringo/logging').getLogger(module.id);
 var {json} = require('ringo/jsgi/response');
 
-var {Application} = require("stick");
+var {Application} = require('stick');
 var app = exports.app = Application();
-app.configure('notfound', 'params', 'route');
+app.configure('notfound', 'params', 'mount', 'route');
+
+app.mount('/topics', require('./topics'));
 
 app.get('/', function (req) {
-    return json({web:true});
+	return json({
+		api: true,
+		path: req.pathInfo
+	});
 });
-
-

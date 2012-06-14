@@ -13,7 +13,7 @@
     -->
     <context-param>
         <param-name>log4jConfigLocation</param-name>
-        <param-value>/WEB-INF/app/config/log4j.properties</param-value>
+        <param-value>/WEB-INF/api/config/log4j.properties</param-value>
     </context-param>
 
     <context-param>
@@ -77,10 +77,10 @@
     </filter-mapping>
 
 
-    <!-- Ringo Servlet -->
+    <!-- Ringo Servlet for API (Web Services)-->
 
     <servlet>
-        <servlet-name>ringo</servlet-name>
+        <servlet-name>ringo-api</servlet-name>
         <servlet-class>org.ringojs.jsgi.ExtJsgiServlet</servlet-class>
 
         <init-param>
@@ -102,16 +102,51 @@
         <init-param>
             <param-name>module-path</param-name>
             <param-value>
-                WEB-INF/app
+                WEB-INF/api
             </param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>ringo</servlet-name>
-        <url-pattern>/*</url-pattern>
+        <servlet-name>ringo-api</servlet-name>
+        <url-pattern>/api/*</url-pattern>
     </servlet-mapping>
 
+    <!-- Ringo Servlet for EnterpriseJS UI -->
+
+    <servlet>
+        <servlet-name>ringo-web</servlet-name>
+        <servlet-class>org.ringojs.jsgi.ExtJsgiServlet</servlet-class>
+
+        <init-param>
+            <param-name>verbose</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>optlevel</param-name>
+            <param-value>0</param-value>
+        </init-param>
+        <init-param>
+            <param-name>production</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>debug</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>module-path</param-name>
+            <param-value>
+                WEB-INF/web
+            </param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ringo-web</servlet-name>
+        <url-pattern>/web/*</url-pattern>
+    </servlet-mapping>
 
 </web-app>
