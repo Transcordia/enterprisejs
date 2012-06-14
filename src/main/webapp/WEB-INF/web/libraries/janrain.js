@@ -3,11 +3,11 @@
  */
 var log = require('ringo/logging').getLogger(module.id);
 
-var {//forceLogin,
-	//forceLoginWithUsername,
-	//roundTableAjaxRequest,
-	ajaxRequest//,
-	/*getProfileFromId*/} = require('libraries/common-io');
+var {forceLogin,
+	forceLoginWithUsername,
+	roundTableAjaxRequest,
+	ajaxRequest,
+	getProfileFromId} = require('libraries/common-io');
 
 export('JanRain', 'processAuthToken', 'unlink');
 
@@ -32,9 +32,9 @@ function JanRain(token) {
 			"method": 'POST'
 		});
 
-		//log.info('Call to RPX: ' + url + ', method: POST, status: ' + exchange.status);
+		log.info('Call to RPX: ' + url + ', method: POST, status: ' + exchange.status);
 		if (exchange.success) {
-			//log.info("Success! " + exchange.content);
+			log.info("Success! " + exchange.content);
 			return JSON.parse(exchange.content);
 		} else {
 			log.info("Failure! " + exchange.content);
@@ -58,7 +58,7 @@ function JanRain(token) {
 function processAuthToken(thirdPartyResults, request)  {
 
 	// User authenticated successfully
-	/*if (thirdPartyResults.stat === 'ok') {
+	if (thirdPartyResults.stat === 'ok') {
 		
 		// If user has already logged in, that means they're trying to link an additional account
 		if (request.authenticatedId) {
@@ -66,14 +66,14 @@ function processAuthToken(thirdPartyResults, request)  {
 			// Get the user's NEP profile
 			var profile = getProfileFromId(request.authenticatedId);
 
-			// log.info("Found profile " + profile + " from _id " + request.authenticatedId);
+			 log.info("Found profile " + profile + " from _id " + request.authenticatedId);
 
 			// Attempt to map the user on Janrain's servers using the _id property
 			var exchange = ajaxRequest({
 				"url": 'https://rpxnow.com/api/v2/map?apiKey=' + JANRAIN_API + '&primaryKey=' + profile._id + '&identifier=' + thirdPartyResults.profile.identifier
 			});
 
-			// log.info("Trying to map additional account. Result: " + exchange.content);
+			 log.info("Trying to map additional account. Result: " + exchange.content);
 
 			// Push additional nonsense on the stack
 			var data = {};
@@ -106,7 +106,7 @@ function processAuthToken(thirdPartyResults, request)  {
 	 				'url': '/utilities/refresh'
 	 			});
 
-				// log.info("Update result: " + JSON.stringify(exchange));	
+				 log.info("Update result: " + JSON.stringify(exchange));
 			}
 
 			return true;
@@ -123,7 +123,7 @@ function processAuthToken(thirdPartyResults, request)  {
 				return false;
 			}
 
-			// log.info("Successfully found mapping for user " + profile.username);
+			 log.info("Successfully found mapping for user " + profile.username);
 
 			return true;
 		} else {
@@ -156,14 +156,14 @@ function processAuthToken(thirdPartyResults, request)  {
 				// REST API returns an array
 				var profile = users[0];
 
-				// log.info('Found user with associated account! Trying to log in ' +  profile.username);
+				 log.info('Found user with associated account! Trying to log in ' +  profile.username);
 				
 				// Attempt to map the user on Janrain's servers using the _id property
 				exchange = ajaxRequest({
 					"url": 'https://rpxnow.com/api/v2/map?apiKey=' + JANRAIN_API + '&primaryKey=' + profile._id + '&identifier=' + thirdPartyResults.profile.identifier
 				});
 
-				// log.info("Mapping result: " + exchange.content);
+				 log.info("Mapping result: " + exchange.content);
 
 				// Log in using the profile object that we found
 				forceLoginWithUsername(profile.username);
@@ -172,9 +172,9 @@ function processAuthToken(thirdPartyResults, request)  {
 			}
 		}
 
-		// log.info("Can't find the user with thirdPartyLogins.providerName: " + thirdPartyResults.profile.providerName + " and thirdPartyLogins.displayName " + thirdPartyResults.profile.displayName);
+		 log.info("Can't find the user with thirdPartyLogins.providerName: " + thirdPartyResults.profile.providerName + " and thirdPartyLogins.displayName " + thirdPartyResults.profile.displayName);
 	}
-	               */
+
 	return false;
 }
 

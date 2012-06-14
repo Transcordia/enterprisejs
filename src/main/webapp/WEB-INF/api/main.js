@@ -11,6 +11,7 @@ var app = exports.app = Application();
 app.configure('notfound', 'params', 'mount', 'route');
 
 app.mount('/topics', require('./topics'));
+app.mount("/profiles", require("./profiles"));
 
 app.get('/', function (req) {
 	return json({
@@ -30,7 +31,13 @@ app.post('/user/', function(request) {
     // Deal w/ 3rd party login here
     if (params.token) {
         var thirdParty = new JanRain(params.token);
-        thirdPartyAccountInfo = thirdParty.authInfo;
+        //thirdPartyAccountInfo = thirdParty.authInfo;
+        thirdPartyAccountInfo = {"stat": "ok", "profile":
+        {"url": "https:\/\/www.google.com\/profiles\/101539563248779683803", "preferredUsername": "tbarchok", "email": "tbarchok@pykl.com",
+            "name": {"formatted": "Todd Barchok", "givenName": "Todd", "familyName": "Barchok"},
+            "displayName": "tbarchok", "identifier": "https:\/\/www.google.com\/profiles\/101539563248779683803", "verifiedEmail": "tbarchok@pykl.com",
+            "primaryKey": "3547706e99f94f32a08232754a348e23", "providerName": "Google", "googleUserId": "101539563248779683803"}
+        };
 
         // If we're able to log the user in w/ supplied 3rd party info, clear out the passed param
         if (processAuthToken(thirdPartyAccountInfo, request)) {
