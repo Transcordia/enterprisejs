@@ -3,8 +3,12 @@
  */
 var log = require('ringo/logging').getLogger(module.id);
 var {json} = require('ringo/jsgi/response');
+var {ctx} = require('libraries/util');
+var {JanRain, processAuthToken} = require('libraries/janrain');
 
+var Response = require('ringo/jsgi/response');
 var {Application} = require('stick');
+
 var app = exports.app = Application();
 app.configure('notfound', 'params', 'mount', 'route');
 
@@ -35,14 +39,17 @@ app.post('/user/', function(req) {
         };
 
         // If we're able to log the user in w/ supplied 3rd party info, clear out the passed param
-        if (processAuthToken(thirdPartyAccountInfo, request)) {
+        if (processAuthToken(thirdPartyAccountInfo, req)) {
             // Try to redirect to the same page, so that the request object has an "authenticated" user attached to it
-            if(session.getAttribute('SPRING_SECURITY_SAVED_REQUEST_KEY')){
-                log.info("redirecting to: " + session.getAttribute('SPRING_SECURITY_SAVED_REQUEST_KEY').requestURL);
-                return Response.redirect(session.getAttribute('SPRING_SECURITY_SAVED_REQUEST_KEY').requestURL);
-            }else{
-                return Response.redirect(String(request.scriptName + params.redirect));
-            }
+            //if(session.getAttribute('SPRING_SECURITY_SAVED_REQUEST_KEY')){
+            //    log.info("redirecting to: " + session.getAttribute('SPRING_SECURITY_SAVED_REQUEST_KEY').requestURL);
+            //    return Response.redirect(session.getAttribute('SPRING_SECURITY_SAVED_REQUEST_KEY').requestURL);
+            //}else{
+                //var redirect = params.redirect || '/';
+                //return Response.redirect(String(req.scriptName + redirect));
+            log.info('REDIRECTING TO...' + ctx('/'));
+            return Response.redirect(String(ctx('/')));
+            //}
         }
         log.info("THIRD PARTY INFO: "+JSON.stringify(thirdPartyAccountInfo));
     }

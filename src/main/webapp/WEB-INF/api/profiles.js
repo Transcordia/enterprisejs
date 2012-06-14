@@ -74,6 +74,5 @@ app.get('/', function (req) {
 });
 
 app.get('/:id', function(req) {
-    log.info("HELLO THERE");
     return json(fakeUser);
 });

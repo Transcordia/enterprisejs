@@ -39,6 +39,7 @@ function roundTableAjaxRequest(options, numRedirects) {
 
 
     var request = getApp().request;
+    // todo: these values need to be removed and added to a config file somewhere or something
     request.roundtableBase = "http://localhost:8080/ejs/api";
     request.roundtableUrl = "http://localhost:8080/ejs/api";
 
@@ -165,7 +166,8 @@ function getProfileFromId(id) {
     if (exchange.success) {
         try {
             results = JSON.parse(exchange.content);
-            return new ProfileMixin(results);
+            //return new ProfileMixin(results);
+            return results;
         } catch (e) {
             log.warn("Error parsing getProfileFromId results from RoundTable: " + e.message);
         }
@@ -173,7 +175,7 @@ function getProfileFromId(id) {
         log.warn("Received bad response from RoundTable while attempting getProfileFromId: " + exchange.content);
     }
 
-    log.warn("getProfileFromId not able to find user with _id: " + id)
+    log.warn("getProfileFromId not able to find user with _id: " + id);
     return null;
 }
 
@@ -182,8 +184,11 @@ function getProfileFromId(id) {
  *
  * @param profile
  */
+//todo: this is faked
 function forceLogin(username, password) {
     log.debug(format('forceLogin::Credentials, username: %s, password: %s', username, password));
+    return;
+
     var authToken = new UsernamePasswordAuthenticationToken(username, password);
 
     // Is this how I get a new Authentication object inserted into SecurityContextHolder with
@@ -200,8 +205,11 @@ function forceLogin(username, password) {
  *
  * @param profile
  */
+//todo: this is also faked
 function forceLoginWithUsername(username) {
     if (!username) throw 'Cannot force login with a profile that does not contain a username.';
+    log.debug('forceLoginWithUsername: '+username);
+    return;
 
     var request = getApp().request;
     var authManager = request.env.servlet.getBean('preauthAuthProvider');
