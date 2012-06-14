@@ -1,6 +1,14 @@
 # EnterpriseJS
 ### [http://enterprisejs.org/](http://enterprisejs.org/)
 
+## [Composi](http://compo.si/)
+
+A set of news aggregation web services that allow consumers to post links to web content for
+retrieval and ratings.
+
+### API
+
+
 ## Adding a new entity
 
 In our framework an entity is an object which will be persisted. Our datastore is ElasticSearch

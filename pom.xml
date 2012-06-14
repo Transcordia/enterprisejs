@@ -231,10 +231,6 @@
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>${jetty-version}</version>
                 <configuration>
-                    <!-- Causes Jetty to re-initialize when config files like web.xml or Java
-                         classes are edited. Not sure how useful this is at the moment. - jc
-                    -->
-                    <!--<scanIntervalSeconds>10</scanIntervalSeconds>-->
                     <webAppConfig>
                         <!-- Every project should be developed so the application can be deployed to
                              a path other than '/'. Setting the context path to any value ensures
