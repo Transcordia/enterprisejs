@@ -86,13 +86,15 @@ app.configure('route');
  */
 app.get('/', function (req) {
 	return json({
-        topics: true
+        topics: true,
+		path: req.pathInfo
     });
 });
 
 app.get('/id/:id', function (req, id) {
 	return json({
-        topics: true
+        topics: true,
+		path: req.pathInfo
     });
 });
 
