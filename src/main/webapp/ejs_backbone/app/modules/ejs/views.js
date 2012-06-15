@@ -12,21 +12,25 @@ define([
     "backbone"
 ],
 
-    function(app, Backbone) {
+function(app, Backbone) {
 
-        var Views = {};
+    var Views = {};
 
-        Views.Home = Backbone.View.extend({
-            template: 'ejs/home'
-        });
-
-        Views.About = Backbone.View.extend({
-            template: 'ejs/about'
-        });
-
-        Views.Contact = Backbone.View.extend({
-            template: 'ejs/contact'
-        });
-
-        return Views;
+    Views.Home = Backbone.View.extend({
+        template: 'ejs/home'
     });
+
+    Views.About = Backbone.View.extend({
+        template: 'ejs/about'
+    });
+
+    Views.Contact = Backbone.View.extend({
+        template: 'ejs/contact'
+    });
+
+    Views.Login = Backbone.View.extend({
+        template: 'ejs/login'
+    });
+
+    return Views;
+});

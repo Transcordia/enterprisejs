@@ -1,10 +1,9 @@
 /**
- * Created with IntelliJ IDEA.
  * User: toddbarchok
  * Date: 6/12/12
  * Time: 1:02 PM
  */
-(function() {
+(function () {
     if (typeof window.janrain !== 'object') window.janrain = {};
     if (typeof window.janrain.settings !== 'object') window.janrain.settings = {};
 
@@ -30,14 +29,10 @@
     janrain.settings.linkClass = 'janrainEngage';
 
     /* _______________ can edit above this line _______________ */
+}());
 
-    function isReady() { janrain.ready = true; };
-    if (document.addEventListener) {
-        document.addEventListener("DOMContentLoaded", isReady, false);
-    } else {
-        window.attachEvent('onload', isReady);
-    }
 
+function loadJanrainLogin() {
     var e = document.createElement('script');
     e.type = 'text/javascript';
     e.id = 'janrainAuthWidget';
@@ -50,4 +45,5 @@
 
     var s = document.getElementsByTagName('script')[0];
     s.parentNode.insertBefore(e, s);
-})();
+    janrain.ready = true;
+};
