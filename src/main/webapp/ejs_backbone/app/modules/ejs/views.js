@@ -20,6 +20,10 @@ function(app, Backbone) {
         template: 'ejs/home'
     });
 
+    Views.Topic = Backbone.View.extend({
+        template: 'ejs/topic'
+    });
+
     Views.About = Backbone.View.extend({
         template: 'ejs/about'
     });

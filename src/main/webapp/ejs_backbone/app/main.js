@@ -16,6 +16,7 @@ function(app, $, Backbone, Ejs) {
     routes: {
         ""        : "index",
         "home"    : "home",
+        "topic"   : "topic",
         "about"   : "about",
         "contact" : "contact",
         "login"   : "login"
@@ -39,6 +40,15 @@ function(app, $, Backbone, Ejs) {
       this.manager.$el.appendTo('#main');
 
       this.manager.render();
+        this.changeActiveMenuItem('home');
+    },
+
+    topic: function(){
+        this.manager.setView('#topic', new Ejs.Views.Topic());
+
+        this.manager.$el.appendTo('#main');
+
+        this.manager.render();
         this.changeActiveMenuItem('home');
     },
 
