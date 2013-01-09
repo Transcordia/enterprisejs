@@ -1,25 +1,27 @@
-<div class="article">
-    <div class="article-holder"></div>
-    <p class="description">Bicycle rights keffiyeh church-key farm-to-table, wolf freegan meggings food truck +1 helvetica craft beer hella.</p>
-    <p class="stats clearfix">
-        <span class="likes-count">29 likes</span>
-        <span class="comment-count">20 comments</span>
-        <span class="reblog-count">5 reblogs</span>
-    </p>
-    <div class="convo clearfix">
-        <a href="">
-            <div class="image-placeholder"></div>
-        </a>
-        <p>
-            Skateboard polaroid iphone butcher flexitarian aesthetic sriracha.
+<div id="container" isotope articles="articles">
+    <!--<div class="article" ng-repeat="article in articles">
+        <div class="article-holder"></div>
+        <p class="description">{{article.description}}</p>
+        <p class="stats clearfix">
+            <span class="likes-count">{{article.stats.likes}} likes</span>
+            <span class="comment-count">{{article.stats.comments}} comments</span>
+            <span class="reblog-count">{{article.stats.reblogs}} reblogs</span>
         </p>
-    </div>
-    <div class="comments">
-        <div class="comment convo">
+        <div class="convo clearfix">
             <a href="">
                 <div class="image-placeholder"></div>
             </a>
-            <p>This is a comment</p>
+            <p>
+                {{article.convoStarter.content}}
+            </p>
         </div>
-    </div>
+        <div class="comments">
+            <div class="comment convo">
+                <a href="">
+                    <div class="image-placeholder"></div>
+                </a>
+                <p>{{article.comments[0].content}}</p>
+            </div>
+        </div>
+    </div>-->
 </div>
