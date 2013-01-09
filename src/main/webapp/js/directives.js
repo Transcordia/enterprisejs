@@ -49,7 +49,7 @@ angular.module('ejs.directives', []).
                 };
 
                 scope.$watch('articles', function (newValue, oldValue) {
-                    if (newValue.length == 0) init();
+                    //if (newValue.length == 0) init();
                     if (newValue.length > 0) setup();
                 });
 
