@@ -1,5 +1,5 @@
 /**
- * @module api/blocks
+ * @module api/profiles
  *
  * @fileOverview This file handles all /profiles rest calls by routing to the appropriate
  * function.
@@ -48,6 +48,12 @@ var app = exports.app = Application();
 app.configure('route');
 
 
+var fakeUser = {
+    _id: "1234567890",
+    username: "fakeUser",
+    authToken: "5456188b4f4926e6bf216e2f01358ba6c6bb74cd"
+}
+
 /**
  * @function
  * @description HTTP Method: GET. Retrieve all profiles residing in the index specified by the
@@ -56,17 +62,17 @@ app.configure('route');
  *
  *              At most only 100 profiles are returned.
  *
- * @name /profiles/
+ * @name /users/
  * @example GET /
- * @example GET /?ids[]=213&ids[]=783
  *
  * @param {Object} req the current request object
  * @returns a JSGI response object of type application/json: an array of resource objects.
  *          CODE: 200 on success.
  */
 app.get('/', function (req) {
-	return json({
-        blocks: true
-    });
+    return json(fakeUser);
 });
 
+app.get('/:id', function(req) {
+    return json(fakeUser);
+});

@@ -1,0 +1,238 @@
+{
+    "topics" : {
+        "properties" : {
+              "dataType":{"type": "string", "index": "not_analyzed"},
+              "about":{"type": "string", "index": "analyzed", "analyzer":"porter_standard"},
+              "username":{"type": "string", "index": "analyzed", "analyzer":"lowercase_keyword"},
+              "instantMessenger":{"type":"object",
+                  "properties" : {
+                        "provider":{"type": "string", "index": "not_analyzed"},
+                        "screenName":{"type": "string", "index": "not_analyzed"}
+                  }
+              },
+              "accountEmail":{"type":"object",
+                  "properties" : {
+                        "status":{"type": "string", "index": "not_analyzed"},
+                        "address":{"type": "string", "index": "analyzed", "analyzer":"email"}
+                  }
+              },
+              "displayEmails":{"type":"object",
+                  "properties" : {
+                        "type":{"type": "string", "index": "not_analyzed"},
+                        "address":{"type": "string", "index": "analyzed", "analyzer":"email"}
+                  }
+              },
+              "civilId":{"type": "string", "index": "not_analyzed"},
+              "websites":{"type":"object",
+                  "properties" : {
+                        "title":{"type": "string", "index": "not_analyzed"},
+                        "url":{"type": "string", "index": "not_analyzed"}
+                  }
+              },
+              "password":{"type": "string", "index": "not_analyzed"},
+              "thirdPartyLogins":{"type":"object",
+                  "properties" : {
+                        "identifier":{"type": "string", "index": "not_analyzed"},
+                        "values":{"type": "object", "index": "not_analyzed"}
+                  }
+              },
+              "socialNetworks":{"type":"object",
+                  "properties" : {
+                        "title":{"type": "string", "index": "not_analyzed"},
+                        "url":{"type": "string", "index": "not_analyzed"},
+                        "username":{"type": "string", "index": "analyzed", "analyzer":"lowercase_keyword"}
+                  }
+              },
+              "name": {"type":"object",
+                  "properties":{
+                      "given": {"type": "string", "index": "analyzed", "analyzer":"porter_standard"},
+                      "surname": {"type": "string", "index": "analyzed", "analyzer":"porter_standard"},
+                      "middle": {"type": "string", "index": "analyzed", "analyzer":"porter_standard"},
+                      "pre": {"type": "string", "index": "analyzed", "analyzer":"porter_standard"},
+                      "suf": {"type": "string", "index": "analyzed", "analyzer":"porter_standard"},
+                      "grandfather": {"type": "string", "index": "analyzed", "analyzer":"porter_standard"},
+                      "fullName": {"type": "string", "index": "analyzed", "analyzer":"porter_standard"}
+                  }
+              },
+              "gender":{"type": "string", "index": "not_analyzed"},
+              "birthDate": {"type":"object",
+                    "properties":{
+                        "hijri": {"type": "string", "index": "not_analyzed"},
+                        "gregorian": {"type": "string", "index": "not_analyzed"},
+                        "preference": {"type": "string", "index": "not_analyzed"}
+                    }
+              },
+              "placeOfBirth": {"type":"object",
+                    "properties":{
+                        "city": {"type": "string", "index": "not_analyzed"},
+                        "state": {"type": "string", "index": "not_analyzed"},
+                        "country": {"type": "string", "index": "not_analyzed"}
+                    }
+              },
+              "nationality":{"type": "string", "index": "not_analyzed"},
+              "fullDescription":{"type": "string", "index": "analyzed", "analyzer":"porter_standard"},
+              "thumbnail":{"type": "string", "index": "not_analyzed"},
+              "phones": {"type":"object",
+                    "properties":{
+                        "title": {"type": "string", "index": "not_analyzed"},
+                        "number": {"type": "string", "index": "not_analyzed"},
+                        "extension": {"type": "string", "index": "not_analyzed"}
+                    }
+              },
+              "dateCreated":{"type": "date", "index": "not_analyzed"},
+              "lastModifiedDate":{"type": "date", "index": "not_analyzed"},
+              "loginHistory": {"type":"object",
+                    "properties":{
+                        "ip": {"type": "string", "index": "not_analyzed"},
+                        "city": {"type": "string", "index": "not_analyzed"},
+                        "region": {"type": "string", "index": "not_analyzed"},
+                        "country": {"type": "string", "index": "not_analyzed"},
+                        "date": {"type": "date", "index": "not_analyzed"}
+                    }
+              },
+              "educationHistory": {"type":"object",
+                    "properties":{
+                        "country": {"type": "string", "index": "not_analyzed"},
+                        "yearFrom": {"type":"object",
+                                    "properties":{
+                                        "hijri": {"type": "string", "index": "not_analyzed"},
+                                        "gregorian": {"type": "string", "index": "not_analyzed"},
+                                        "preference": {"type": "string", "index": "not_analyzed"}
+                                    }},
+                        "yearTo": {"type":"object",
+                                    "properties":{
+                                        "hijri": {"type": "string", "index": "not_analyzed"},
+                                        "gregorian": {"type": "string", "index": "not_analyzed"},
+                                        "preference": {"type": "string", "index": "not_analyzed"}
+                                    }},
+                        "degree": {"type": "string", "index": "analyzed", "analyzer":"porter_standard"},
+                        "fieldOfStudy": {"type": "string", "index": "analyzed", "analyzer":"porter_standard"},
+                        "schoolName": {"type": "string", "index": "not_analyzed"},
+                        "edNotes": {"type": "string", "index": "analyzed", "analyzer":"porter_standard"}
+                    }
+              },
+              "workHistory": {"type":"object",
+                    "properties":{
+                        "title": {"type": "string", "index": "analyzed", "analyzer":"porter_standard"},
+                        "businessName": {"type": "string", "index": "analyzed", "analyzer":"porter_standard"},
+                        "yearStarted": {"type":"object",
+                                    "properties":{
+                                        "hijri": {"type": "string", "index": "not_analyzed"},
+                                        "gregorian": {"type": "string", "index": "not_analyzed"},
+                                        "preference": {"type": "string", "index": "not_analyzed"}
+                                    }},
+                        "yearFinished": {"type":"object",
+                                    "properties":{
+                                        "hijri": {"type": "string", "index": "not_analyzed"},
+                                        "gregorian": {"type": "string", "index": "not_analyzed"},
+                                        "preference": {"type": "string", "index": "not_analyzed"}
+                                    }},
+                        "workNotes": {"type": "string", "index": "analyzed", "analyzer":"porter_standard"},
+                        "location": {"type": "string", "index": "not_analyzed"}
+                    }
+              },
+              "status":{"type": "string", "index": "not_analyzed"},
+              "roles":{"type": "string", "index": "analyzed", "analyzer":"lowercase_keyword"},
+              "businesses":{"type": "object", "index": "not_analyzed"},
+              "addresses": {"type":"object",
+                    "properties":{
+                        "title": {"type": "string", "index": "not_analyzed"},
+                        "poBox": {"type": "string", "index": "not_analyzed"},
+                        "extendedAddress": {"type": "string", "index": "not_analyzed"},
+                        "streetAddress": {"type": "string", "index": "not_analyzed"},
+                        "locality": {"type": "string", "index": "not_analyzed"},
+                        "city": {"type": "string", "index": "not_analyzed"},
+                        "state": {"type": "string", "index": "not_analyzed"},
+                        "town": {"type": "string", "index": "not_analyzed"},
+                        "block": {"type": "string", "index": "not_analyzed"},
+                        "region": {"type": "string", "index": "not_analyzed"},
+                        "postalCode": {"type": "string", "index": "not_analyzed"},
+                        "countryName": {"type": "string", "index": "not_analyzed"}
+                    }
+              },
+              "accomplishmentsAndLearning":{"type":"object",
+                  "properties" : {
+                        "topicTitle":{"type": "string", "index": "not_analyzed"},
+                        "description":{"type": "string", "index": "analyzed", "analyzer":"porter_standard"}
+                  }
+              },
+              "generalText":{"type":"object",
+                  "properties" : {
+                        "textTitle":{"type": "string", "index": "not_analyzed"},
+                        "description":{"type": "string", "index": "not_analyzed"}
+                  }
+              },
+              "myExpertise":{"type":"object",
+                  "properties" : {
+                        "topicTitle":{"type": "string", "index": "not_analyzed"},
+                        "description":{"type": "string", "index": "not_analyzed"}
+                  }
+              },
+              "othersExpertise":{"type":"object",
+                  "properties" : {
+                        "topicTitle":{"type": "string", "index": "not_analyzed"},
+                        "description":{"type": "string", "index": "not_analyzed"}
+                  }
+              },
+              "languagePref":{"type": "string", "index": "not_analyzed"},
+              "race":{"type": "string", "index": "not_analyzed"},
+              "ethnicity":{"type": "string", "index": "not_analyzed"},
+              "maritalStatus":{"type": "string", "index": "not_analyzed"},
+              "religion":{"type": "string", "index": "not_analyzed"},
+              "requests":{"type": "string", "index": "not_analyzed", "null_value":"na"},
+              "tags":{"type": "string", "index": "not_analyzed", "null_value":"na"},
+              "likes": {"type": "integer", "index": "not_analyzed"},
+              "follows":{"type": "string", "index": "not_analyzed", "null_value":"na"},
+              "followedBy":{"type": "string", "index": "not_analyzed", "null_value":"na"},
+              "notificationPref":{"type": "string", "index": "not_analyzed"},
+              "views":{"type": "integer", "index": "not_analyzed"},
+              "privacySettings": {"type":"object",
+                    "properties":{
+                        "fieldName": {"type": "string", "index": "not_analyzed"},
+                        "value": {"type": "string", "index": "not_analyzed"}
+                    }
+              },
+              "notificationSettings":{"type":"object",
+				"properties":{
+					"fieldName": {"type": "string", "index": "not_analyzed"},
+                    "value": {"type":"object",
+                        "properties":{
+                            "stream": {"type": "boolean", "index": "not_analyzed"},
+                            "alert": {"type": "boolean", "index": "not_analyzed"}
+                        }}
+				}
+              },
+              "privacyVisibility":{"type":"object",
+                    "properties":{
+                        "privateInformation": {"type": "string", "index": "not_analyzed"},
+                        "searchResults": {"type": "string", "index": "not_analyzed"}
+                    }
+              },
+              "percentComplete":{"type": "integer", "index": "not_analyzed"},
+
+               "accountType": {"type": "string", "index": "not_analyzed"},
+               "profileType": {"type": "string", "index": "not_analyzed"},
+               "parent":{"type":"object", "index": "not_analyzed"},
+               "children": {"type":"object", "index": "not_analyzed"},
+               "accountStatii": {"type":"object", "index": "not_analyzed"},
+               "avatar": {"type":"object", "index": "not_analyzed"},
+               "country":{"type": "string", "index": "not_analyzed"},
+               "tempParentEmailAddress":{"type": "string", "index": "not_analyzed"},
+               "moodStatus":{"type": "string", "index": "not_analyzed"},
+               "interests":{"type":"object",
+                    "properties":{
+                        "schoolsubject-intc": {"type": "string", "index": "analyzed", "analyzer":"lowercase_keyword"},
+                        "food-intc": {"type": "string", "index": "analyzed", "analyzer":"lowercase_keyword"},
+                        "animal-intc": {"type": "string", "index": "analyzed", "analyzer":"lowercase_keyword"},
+                        "hobby-intc": {"type": "string", "index": "analyzed", "analyzer":"lowercase_keyword"},
+                        "music-intc": {"type": "string", "index": "analyzed", "analyzer":"lowercase_keyword"}
+                    }
+               },
+			   "stages":{"type": "string", "index": "not_analyzed"},
+               "achievements": {"type": "string", "index": "not_analyzed"},
+               "notificationSettings": {"type": "object", "index": "not_analyzed"},
+               "pendingAccountChange": {"type": "object", "index": "not_analyzed"},
+               "promoCodes": {"type":"string", "index": "not_analyzed"}
+        }
+    }
+}

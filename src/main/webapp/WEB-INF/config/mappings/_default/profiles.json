@@ -1,0 +1,82 @@
+{
+    "profiles" : {
+        "properties" : {
+            "dataType":{"type": "string", "index": "not_analyzed"},
+            "about":{"type": "string", "index": "analyzed", "analyzer":"porter_standard"},
+            "username":{"type": "string", "index": "analyzed", "analyzer":"lowercase_keyword"},
+            "accountEmail":{"type":"object",
+                "properties" : {
+                    "status":{"type": "string", "index": "not_analyzed"},
+                    "address":{"type": "string", "index": "analyzed", "analyzer":"email"}
+                }
+            },
+            "displayEmails":{"type":"object",
+                "properties" : {
+                    "type":{"type": "string", "index": "not_analyzed"},
+                    "address":{"type": "string", "index": "analyzed", "analyzer":"email"}
+                }
+            },
+            "websites":{"type":"object",
+                "properties" : {
+                    "title":{"type": "string", "index": "not_analyzed"},
+                    "url":{"type": "string", "index": "not_analyzed"}
+                }
+            },
+            "password":{"type": "string", "index": "not_analyzed"},
+            "thirdPartyLogins":{"type":"object",
+                "properties" : {
+                    "identifier":{"type": "string", "index": "not_analyzed"},
+                    "values":{"type": "object", "index": "not_analyzed"}
+                }
+            },
+            "fullDescription":{"type": "string", "index": "analyzed", "analyzer":"porter_standard"},
+            "thumbnail":{"type": "string", "index": "not_analyzed"},
+
+            "dateCreated":{"type": "date", "index": "not_analyzed"},
+            "lastModifiedDate":{"type": "date", "index": "not_analyzed"},
+            "loginHistory": {"type":"object",
+                "properties":{
+                    "ip": {"type": "string", "index": "not_analyzed"},
+                    "city": {"type": "string", "index": "not_analyzed"},
+                    "region": {"type": "string", "index": "not_analyzed"},
+                    "country": {"type": "string", "index": "not_analyzed"},
+                    "date": {"type": "date", "index": "not_analyzed"}
+                }
+            },
+            "status":{"type": "string", "index": "not_analyzed"},
+            "languagePref":{"type": "string", "index": "not_analyzed"},
+            "requests":{"type": "string", "index": "not_analyzed", "null_value":"na"},
+            "tags":{"type": "string", "index": "not_analyzed", "null_value":"na"},
+            "likes": {"type": "integer", "index": "not_analyzed"},
+            "follows":{"type": "string", "index": "not_analyzed", "null_value":"na"},
+            "followedBy":{"type": "string", "index": "not_analyzed", "null_value":"na"},
+            "notificationPref":{"type": "string", "index": "not_analyzed"},
+            "views":{"type": "integer", "index": "not_analyzed"},
+            "privacySettings": {"type":"object",
+                "properties":{
+                    "fieldName": {"type": "string", "index": "not_analyzed"},
+                    "value": {"type": "string", "index": "not_analyzed"}
+                }
+            },
+            "notificationSettings":{"type":"object",
+                "properties":{
+                    "fieldName": {"type": "string", "index": "not_analyzed"},
+                    "value": {"type":"object",
+                        "properties":{
+                            "stream": {"type": "boolean", "index": "not_analyzed"},
+                            "alert": {"type": "boolean", "index": "not_analyzed"}
+                        }}
+                }
+            },
+            "privacyVisibility":{"type":"object",
+                "properties":{
+                    "privateInformation": {"type": "string", "index": "not_analyzed"},
+                    "searchResults": {"type": "string", "index": "not_analyzed"}
+                }
+            },
+
+            "accountType": {"type": "string", "index": "not_analyzed"}
+        }
+    }
+}
+

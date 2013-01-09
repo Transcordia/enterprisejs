@@ -16,13 +16,15 @@ function(app, $, Backbone, Ejs) {
     routes: {
         ""        : "index",
         "home"    : "home",
+        "topic"   : "topic",
         "about"   : "about",
-        "contact" : "contact"
+        "contact" : "contact",
+        "login"   : "login"
     },
 
-      manager: new Backbone.LayoutManager({
-        template: 'main'
-      }),
+    manager: new Backbone.LayoutManager({
+    template: 'main'
+    }),
 
     index: function() {
         this.manager.setView('#home', new Ejs.Views.Home());
@@ -32,29 +34,58 @@ function(app, $, Backbone, Ejs) {
         this.manager.render();
     },
 
-      home: function(){
-          this.manager.setView('#home', new Ejs.Views.Home());
+    home: function(){
+      this.manager.setView('#home', new Ejs.Views.Home());
 
-          this.manager.$el.appendTo('#main');
+      this.manager.$el.appendTo('#main');
 
-          this.manager.render();
-      },
+      this.manager.render();
+        this.changeActiveMenuItem('home');
+    },
 
-      about: function(){
-          this.manager.setView( '#about', new Ejs.Views.About());
+    topic: function(){
+        this.manager.setView('#topic', new Ejs.Views.Topic());
 
-          this.manager.$el.appendTo('#main');
+        this.manager.$el.appendTo('#main');
 
-          this.manager.render();
-      },
+        this.manager.render();
+        this.changeActiveMenuItem('home');
+    },
 
-      contact: function(){
-          this.manager.setView( '#contact', new Ejs.Views.Contact());
+    about: function(){
+      this.manager.setView( '#about', new Ejs.Views.About());
 
-          this.manager.$el.appendTo('#main');
+      this.manager.$el.appendTo('#main');
 
-          this.manager.render();
-      }
+      this.manager.render();
+        this.changeActiveMenuItem('about');
+    },
+
+    contact: function(){
+      this.manager.setView( '#contact', new Ejs.Views.Contact());
+
+      this.manager.$el.appendTo('#main');
+
+      this.manager.render();
+        this.changeActiveMenuItem('contact');
+    },
+
+    login: function() {
+        this.manager.setView( '#login', new Ejs.Views.Login());
+
+        this.manager.$el.appendTo('#main');
+
+        this.manager.render();
+
+        loadJanrainLogin();
+        this.changeActiveMenuItem('login');
+    },
+
+      changeActiveMenuItem: function(item)
+    {
+        $('.nav .active').removeClass('active');
+        $('.nav .'+item).addClass('active');
+    }
   });
 
   // Treat the jQuery ready function as the entry point to the application.
