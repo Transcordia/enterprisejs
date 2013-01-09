@@ -7,8 +7,8 @@
 
 .navbar-inner h3{
     position: relative;
-    left: 50%;
-    margin-left: -76px;
+    left: -72px;
+    margin-left: 50%;
 }
 
 #wrapper{
