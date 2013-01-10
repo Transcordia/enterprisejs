@@ -6,7 +6,7 @@
 }
 
 .navbar-inner h3{
-    position: relative;
+    position: absolute;
     left: -72px;
     margin-left: 50%;
 }
@@ -77,4 +77,22 @@
 
 .comments .comment:last-child {
     border-bottom-width: 0;
+}
+
+#navigation{
+    position: relative;
+    float: right;
+    z-index: 105;
+}
+
+#navigation li{
+    position: relative;
+    display: inline;
+}
+
+#navigation li p{
+    cursor: pointer;
+    font-weight: bold;
+    height: 29px;
+    padding: 15px 27px 0 14px;
 }
