@@ -133,8 +133,12 @@ function HomeCtrl($rootScope, $scope, $http, $log) {
     $scope.addArticle = function(url){
         $rootScope.showModal = false;
 
-        $http.post('api/processurl', url)
-            .success(function(data){
+        var data = {
+            url: url
+        };
+
+        $http.post('api/processurl', data)
+            .success(function(data, status, headers){
                 $log.info(data);
             });
     }
