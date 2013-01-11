@@ -42,9 +42,9 @@ app.post('/processurl', function(req){
 });
 
 function parseRSSFeed(feedUrl){
-    // We'd like to get a description and a title for each feed made available by rss
+    // We'd like to get a description, title, content, and images for each feed made available by rss
     var feeds = [];
-    var feed;
+
     httpclient.request({
         url: feedUrl,
         method: 'GET',
@@ -54,13 +54,9 @@ function parseRSSFeed(feedUrl){
             var response = new XML(content.trim());
             var contentns = new Namespace("http://purl.org/rss/1.0/modules/content/");
             for(var item in response.channel.item){
-                feed = {
-                    title: response.channel.item[item].title,
-                    description: response.channel.item[item].description,
-                    content: response.channel.item[item].contentns::encoded
-                };
+
                 // try and get as many images as possible from the feed content attribute
-                var document = Jsoup.parse(response.channel.item[0].contentns::encoded);
+                var document = Jsoup.parse(response.channel.item[item].contentns::encoded);
                 var images = document.select('img');
 
                 // iterate through the images
@@ -73,18 +69,21 @@ function parseRSSFeed(feedUrl){
                     var src = img.attr('src');
                     feedImages.push(src);
                 }
-                feed.feedImages = feedImages;
-                feeds.push(feed);
-            }
 
-            return feeds;
+                feeds.push({
+                    "title": response.channel.item[item].title.toString(),
+                    "description": response.channel.item[item].description.toString(),
+                    "content": response.channel.item[item].contentns::encoded.toString(),
+                    "images": feedImages
+                });
+
+                feedImages = [];
+            }
         },
         error: function(message, status, exchange){
 
         }
-    })
-}
+    });
 
-function readXMLFile(){
-
+    return feeds;
 }

@@ -96,3 +96,16 @@
     height: 29px;
     padding: 15px 27px 0 14px;
 }
+
+.modal-body .left{
+    width: 30%;
+    height: 100px;
+    background-color: #cccccc;
+    float: left;
+}
+
+.modal-body .right{
+    width: 68%;
+    margin-left: 10px;
+    float: right;
+}
