@@ -3,7 +3,9 @@
 /* Controllers */
 
 
-function HomeCtrl($scope) {
+function HomeCtrl($rootScope, $scope, $http, $log) {
+    $rootScope.showModal = false;
+
     $scope.articles = [
         {
             description: 'Bicycle rights keffiyeh church-key farm-to-table, wolf freegan meggings food truck +1 helvetica craft beer hella. Bicycle rights keffiyeh church-key farm-to-table, wolf freegan meggings food truck +1 helvetica craft beer hella.',
@@ -124,6 +126,21 @@ function HomeCtrl($scope) {
             ]
 
         }
-    ]
+    ];
+
+    $scope.urlToCheck = '';
+
+    $scope.addArticle = function(url){
+        $rootScope.showModal = false;
+
+        var data = {
+            url: url
+        };
+
+        $http.post('api/processurl', data)
+            .success(function(data, status, headers){
+                $log.info(data);
+            });
+    }
 }
-HomeCtrl.$inject = ["$scope"];
+HomeCtrl.$inject = ["$rootScope","$scope", "$http", "$log"];
