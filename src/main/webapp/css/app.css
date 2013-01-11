@@ -97,15 +97,27 @@
     padding: 15px 27px 0 14px;
 }
 
-.modal-body .left{
+.modal-body .leftside{
     width: 30%;
-    height: 100px;
-    background-color: #cccccc;
     float: left;
 }
 
-.modal-body .right{
+.modal-body .rightside{
     width: 68%;
     margin-left: 10px;
     float: right;
+}
+
+#article-slider .navigation{
+    margin: 15px 0 0 0;
+    float: right;
+}
+
+#article-slider .btn-warning{
+    margin: 15px 0 0 0;
+    float: left;
+}
+
+.feed-image-slider .btn-group{
+    margin: 15px 0 0 0;
 }

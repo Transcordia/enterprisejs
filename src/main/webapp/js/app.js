@@ -2,7 +2,7 @@
 
 
 // Declare app level module which depends on filters, and services
-angular.module('ejs', ['ejs.filters', 'ejs.services', 'ejs.directives', 'ui', 'ui.bootstrap.carousel', 'ui.bootstrap.transition']).
+angular.module('ejs', ['ejs.filters', 'ejs.services', 'ejs.directives', 'ui']).
   config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/home',
         {
