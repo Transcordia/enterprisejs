@@ -27,6 +27,13 @@ app.get('/', function (req) {
 
 app.post('/processurl', function(req){
     jsoupDocument = Jsoup.connect(req.postParams.url).get();
+
+    // find the title tag
+    var title = jsoupDocument.select("title").first();
+    var titleText = title.text();
+
+    log.info('Page title is: {}', titleText);
+
     // look for any link elements with a type attribute that has a value of "application/rss+xml"
     // <link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://www.webdesigndev.com/feed" />
     jsoupElements = jsoupDocument.select("link[type=application/rss+xml]");
@@ -34,16 +41,16 @@ app.post('/processurl', function(req){
     //var element = jsoupElements.first();
     var feedUrl = jsoupElements.attr('href');
 
-    var response = parseRSSFeed(feedUrl);
+    var response = parseRSSFeed(feedUrl, titleText);
 
     return json({
         response: response
     });
 });
 
-function parseRSSFeed(feedUrl){
+function parseRSSFeed(feedUrl, title){
     // We'd like to get a description, title, content, and images for each feed made available by rss
-    var feeds = [];
+    var feed = {};
 
     httpclient.request({
         url: feedUrl,
@@ -54,36 +61,40 @@ function parseRSSFeed(feedUrl){
             var response = new XML(content.trim());
             var contentns = new Namespace("http://purl.org/rss/1.0/modules/content/");
             for(var item in response.channel.item){
+                // in order to find the article we need, we're going to match the page title
+                // with the title of the article
+                if(response.channel.item[item].title.toString().match(/title/g) !== 'null'){
+                    // get as many images as possible
+                    var document = Jsoup.parse(response.channel.item[item].contentns::encoded);
+                    var images = document.select('img');
 
-                // try and get as many images as possible from the feed content attribute
-                var document = Jsoup.parse(response.channel.item[item].contentns::encoded);
-                var images = document.select('img');
+                    // iterate through the images
+                    var iterator = images.listIterator();
+                    while(iterator.hasNext()){
+                        var image = iterator.next();
+                        // grab the source attribute of each image
+                        document = Jsoup.parse(image);
+                        var img = document.select('img').first();
+                        var src = img.attr('src');
+                        feedImages.push(src);
+                    }
 
-                // iterate through the images
-                var iterator = images.listIterator();
-                while(iterator.hasNext()){
-                    var image = iterator.next();
-                    // grab the source attribute of each image
-                    document = Jsoup.parse(image);
-                    var img = document.select('img').first();
-                    var src = img.attr('src');
-                    feedImages.push(src);
+                    feed = {
+                        "title": response.channel.item[item].title.toString(),
+                        "description": response.channel.item[item].description.toString(),
+                        "content": response.channel.item[item].contentns::encoded.toString(),
+                        "images": feedImages
+                    }
+
+                    break;
                 }
-
-                feeds.push({
-                    "title": response.channel.item[item].title.toString(),
-                    "description": response.channel.item[item].description.toString(),
-                    "content": response.channel.item[item].contentns::encoded.toString(),
-                    "images": feedImages
-                });
-
-                feedImages = [];
             }
         },
         error: function(message, status, exchange){
 
         }
+        //https://www.facebook.com/jamesohines
     });
 
-    return feeds;
+    return feed;
 }
