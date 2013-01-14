@@ -32,8 +32,6 @@ app.post('/processurl', function(req){
     var title = jsoupDocument.select("title").first();
     var titleText = title.text();
 
-    log.info('Page title is: {}', titleText);
-
     // look for any link elements with a type attribute that has a value of "application/rss+xml"
     // <link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://www.webdesigndev.com/feed" />
     jsoupElements = jsoupDocument.select("link[type=application/rss+xml]");
@@ -41,7 +39,7 @@ app.post('/processurl', function(req){
     //var element = jsoupElements.first();
     var feedUrl = jsoupElements.attr('href');
 
-    var response = parseRSSFeed(feedUrl, titleText);
+    var response = parseRSSFeed(feedUrl, titleText.trim());
 
     return json({
         response: response
@@ -51,7 +49,6 @@ app.post('/processurl', function(req){
 function parseRSSFeed(feedUrl, title){
     // We'd like to get a description, title, content, and images for each feed made available by rss
     var feed = {};
-
     httpclient.request({
         url: feedUrl,
         method: 'GET',
@@ -61,9 +58,7 @@ function parseRSSFeed(feedUrl, title){
             var response = new XML(content.trim());
             var contentns = new Namespace("http://purl.org/rss/1.0/modules/content/");
             for(var item in response.channel.item){
-                // in order to find the article we need, we're going to match the page title
-                // with the title of the article
-                if(response.channel.item[item].title.toString().match(/title/g) !== 'null'){
+                if(title.search(response.channel.item[item].title.toString()) !== -1){
                     // get as many images as possible
                     var document = Jsoup.parse(response.channel.item[item].contentns::encoded);
                     var images = document.select('img');

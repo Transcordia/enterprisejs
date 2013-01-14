@@ -108,16 +108,20 @@
     float: right;
 }
 
-#article-slider .navigation{
+#add-article-modal .navigation{
     margin: 15px 0 0 0;
     float: right;
 }
 
-#article-slider .btn-warning{
+#add-article-modal .btn-warning{
     margin: 15px 0 0 0;
     float: left;
 }
 
 .feed-image-slider .btn-group{
     margin: 15px 0 0 0;
+}
+
+.feed-image-slider img{
+    max-width: 100%;
 }
