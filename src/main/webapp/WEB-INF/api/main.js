@@ -27,23 +27,34 @@ app.get('/', function (req) {
 });
 
 app.post('/processurl', function(req){
+    var response = {};
+    var feedLink;
+    var url;
+
     jsoupDocument = Jsoup.connect(req.postParams.url).get();
 
     // find the title tag
-    var title = jsoupDocument.select("title").first();
-    var titleText = title.text();
+    var title = jsoupDocument.select("title").text().toLowerCase();
 
-    // look for any link elements with a type attribute that has a value of "application/rss+xml"
+    // look for an rss feed
     // <link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://www.webdesigndev.com/feed" />
-    jsoupElements = jsoupDocument.select("link[type=application/rss+xml]");
-    var url = jsoupElements.attr('href');
+    feedLink = jsoupDocument.select("link[type=application/rss+xml]");
+    url = feedLink.attr('href');
 
-    if(jsoupElements.size() === 0){
-        log.info('This url does not have any syndicated feeds');
-        var response = parseStructuredData(url);
+    // could be an atom feed
+    if(feedLink.size() === 0){
+        // look for an atom feed
+        feedLink = jsoupDocument.select("link[type=application/atom+xml]");
+        url = feedLink.attr('href');
+        response = parseFeed(url, title);
+
+        // hate nested ifs BUT... if we STILL can't find a feed link
+        if(feedLink.size() === 0){
+            log.info('This url does not have any syndicated feeds');
+            response = parseStructuredData(url);
+        }
     }else{
-        var response = parseFeed(url, titleText.trim());
-        log.info('Feed url: {}', url);
+        response = parseFeed(url, title);
     }
 
     return json({
@@ -54,7 +65,7 @@ app.post('/processurl', function(req){
 function parseStructuredData(url){
     // look for meta tags
     var structuredData = {
-        "title": "Title of Article",
+        "title": "This URL Doesn't have RSS or atom feeds",
         "description": "Trust fund truffaut shoreditch, flexitarian you probably haven't heard of them consequat thundercats typewriter etsy selfies officia next level delectus vegan. Hoodie authentic accusamus, keytar lomo PBR art party. Reprehenderit fanny pack you probably haven't heard of them, letterpress stumptown brunch pork belly elit typewriter irure cray.",
         "content": "Trust fund truffaut shoreditch, flexitarian you probably haven't heard of them consequat thundercats typewriter etsy selfies officia next level delectus vegan. Hoodie authentic accusamus, keytar lomo PBR art party. Reprehenderit fanny pack you probably haven't heard of them, letterpress stumptown brunch pork belly elit typewriter irure cray. Commodo letterpress eu, farm-to-table flannel kale chips craft beer nostrud wayfarers chillwave retro est. Photo booth vero tofu tousled tempor chillwave, ex cillum pitchfork et labore mumblecore aliqua narwhal. Consequat pitchfork non, VHS umami meggings forage skateboard. Keytar in deserunt, sed vinyl nihil swag id master cleanse actually.",
         "images": []
@@ -69,37 +80,79 @@ function parseFeed(feedUrl, title){
         url: feedUrl,
         method: 'GET',
         success: function(content, status, contentType, exchange){
-            content = content.replace(/^<\?xml\s+version\s*=\s*(["'])[^\1]+\1[^?]*\?>/, "");
+            // parsing the xml with Jsoup
+            var xmlDoc = Jsoup.parse(content, "", Parser.xmlParser());
 
-            var response = new XML(content.trim());
-            log.info('Value of response.channel: {}', response.channel);
+            log.info('Jsoup xmlDoc.select(\'entry\').size() = {}', xmlDoc.select('entry').size());
 
-            // is this an atom feed?
-            if(response.channel === ''){
+            if(xmlDoc.select('entry').size() > 0){
                 log.info('Parsing Atom Feed');
-                feed = parseAtomFeed(response, title);
+                feed = parseAtomFeed(xmlDoc, title);
             }else{
                 log.info('Parsing RSS Feed');
-                feed = parseRSSFeed(response, title);
+                feed = parseRSSFeed(xmlDoc, title);
             }
         },
         error: function(message, status, exchange){
 
         }
-        //https://www.facebook.com/jamesohines
     });
 
     return feed;
 }
 
-function parseAtomFeed(response, title){
+function parseRSSFeed(xmlDoc, title){
     var feed = {};
     var feedImages = [];
     // could be an atom feed
     // ex4 won't parse atom feeds; using Jsoup's xml parser
-    log.info('Page title: {}', title);
-    //log.info('Feed author: {}', response.author.name);
-    var xmlDoc = Jsoup.parse(response, "", Parser.xmlParser());
+    //var xmlDoc = Jsoup.parse(response, "", Parser.xmlParser());
+    var items = xmlDoc.select('item');
+
+    // iterate through the entries
+    var iterator = items.listIterator();
+    while(iterator.hasNext()){
+        var item = iterator.next();
+
+        var titles = processTitles(item.select('title').text(), title);
+
+        if(titles.fullString.indexOf(titles.substring) !== -1){
+            // unescape the html fragment
+            // TODO: be sure to sanitize html
+            var itemXml = Jsoup.parse(Parser.unescapeEntities(item, false));
+            log.info('Unescaped feed item markup: {}', itemXml);
+
+            var images = itemXml.select('img');
+            var imagesIterator = images.listIterator();
+            while(imagesIterator.hasNext()){
+                var image = imagesIterator.next();
+                var document = Jsoup.parse(image);
+                var img = document.select('img').first();
+                log.info('Image src: {}', image.attr('src'));
+                feedImages.push(image.attr('src'));
+            }
+
+            feed = {
+                "title": item.select('title').text(),
+                "description": item.select('description').text(),
+                "content": item.select('content|encoded').text(),
+                "images": feedImages
+            }
+
+            break;
+        }
+
+    }
+
+    return feed;
+}
+
+function parseAtomFeed(xmlDoc, title){
+    var feed = {};
+    var feedImages = [];
+    // could be an atom feed
+    // ex4 won't parse atom feeds; using Jsoup's xml parser
+    //var xmlDoc = Jsoup.parse(response, "", Parser.xmlParser());
     var entries = xmlDoc.select('entry');
 
     // iterate through the entries
@@ -107,26 +160,31 @@ function parseAtomFeed(response, title){
     while(iterator.hasNext()){
         var entry = iterator.next();
 
-        if(title.search(entry.select('title').get(0).text()) !== -1){
+        var titles = processTitles(entry.select('title').text(), title)
+
+        if(titles.fullString.indexOf(titles.substring) !== -1){
             // unescape the html fragment
+            // TODO: be sure to sanitize html
             var entryHtml = Jsoup.parse(Parser.unescapeEntities(entry, false));
-            log.info('Unescaped Feed entry markup: {}', entryHtml);
+            log.info('Unescaped feed entry markup: {}', entryHtml);
+
             var images = entryHtml.select('img');
             var imagesIterator = images.listIterator();
             while(imagesIterator.hasNext()){
                 var image = imagesIterator.next();
-                document = Jsoup.parse(image);
+                var document = Jsoup.parse(image);
                 var img = document.select('img').first();
                 log.info('Image src: {}', image.attr('src'));
                 feedImages.push(image.attr('src'));
             }
 
             feed = {
-                "title": entry.select('title').get(0).text(),
-                "description": entry.select('content').get(0).text(),
-                "content": entry.select('content').get(0).text(),
+                "title": entry.select('title').text(),
+                "description": entry.select('content').text(),
+                "content": entry.select('content').text(),
                 "images": feedImages
             }
+
             break;
         }
 
@@ -135,38 +193,29 @@ function parseAtomFeed(response, title){
     return feed;
 }
 
-function parseRSSFeed(response, title){
-    var feed = {};
-    var feedImages = [];
+/*
+This function takes in a feed article title and a web page title, converts the feed article to lowercase, decodes any html
+entities, and assigns the title with a smaller length to a substring variable
+ */
+function processTitles(feedArticleTitle, pageTitle){
+    var fullString = '', substring = '';
+    feedArticleTitle = feedArticleTitle.toLowerCase();
+    // html unescape feed article title
+    feedArticleTitle = Parser.unescapeEntities(feedArticleTitle, false);
 
-    var contentns = new Namespace("http://purl.org/rss/1.0/modules/content/");
-    for(var item in response.channel.item){
-        if(title.search(response.channel.item[item].title.toString()) !== -1){
-            // get as many images as possible
-            var document = Jsoup.parse(response.channel.item[item].contentns::encoded);
-            var images = document.select('img');
+    // remove everything after pipe characters and hyphens from the page title
+    pageTitle = pageTitle.replace(/\s\|.*/, '');
 
-            // iterate through the images
-            var iterator = images.listIterator();
-            while(iterator.hasNext()){
-                var image = iterator.next();
-                // grab the source attribute of each image
-                document = Jsoup.parse(image);
-                var img = document.select('img').first();
-                var src = img.attr('src');
-                feedImages.push(src);
-            }
-
-            feed = {
-                "title": response.channel.item[item].title.toString(),
-                "description": response.channel.item[item].description.toString(),
-                "content": response.channel.item[item].contentns::encoded.toString(),
-                "images": feedImages
-            }
-
-            break;
-        }
+    if(feedArticleTitle.length >= pageTitle.length){
+        fullString = feedArticleTitle;
+        substring = pageTitle;
+    }else{
+        fullString = pageTitle;
+        substring = feedArticleTitle
     }
 
-    return feed;
+    return {
+        "fullString" : fullString,
+        "substring" : substring
+    }
 }
