@@ -1,4 +1,4 @@
-<!--<div ng-include src='"partials/add-article.html"'></div>-->
+<!--<div ng-include src='"partials/add-new-article.html"'></div>-->
 <div ui-modal class="modal fade" ng-model="$parent.showAddUrlModal">
     <div class="modal-header">
         <button type="button" ng-click="$parent.showAddUrlModal=false" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -23,26 +23,16 @@
         <div id="add-article-modal">
             <div class="clearfix">
                 <div class="leftside">
-                    <div id="feed-images" class="feed-image-slider">
-                        <div class="slides_container">
-                            <div ng-repeat="image in article.images">
-                                <img ng-src="{{image}}" alt="">
-                            </div>
-                        </div>
-                        <div class="btn-group">
-                            <button class="btn btn-mini prev-image"><i class="icon-step-backward icon-white"></i> Prev</button>
-                            <button class="btn btn-mini next-image">Next <i class="icon-step-forward icon-white"></i></button>
-                        </div>
-                    </div>
+                    <div feed-image-slider></div>
                 </div>
                 <div class="rightside">
                     <h4>Article Title</h4>
                     <p>{{article.title}}</p>
                     <h4>Article Description</h4>
-                    <p>{{article.description}}</p>
+                    <p ng-bind-html-unsafe="article.description"></p>
                 </div>
             </div>
-            <button class="btn btn-warning">Save Article</button>
+            <button ng-click="saveArticle(article)" class="btn btn-warning">Save Article</button>
         </div>
     </div>
 </div>

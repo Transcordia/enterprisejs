@@ -40,7 +40,7 @@ angular.module('ejs.directives').directive('isotope', function () {
                                             <p>' + article.comments[0].content + '</p>\
                                         </div>\
                                     </div>\
-                                </div>'
+                                </div>';
                 });
 
                 element.isotope('remove', element.find('article'));
@@ -56,3 +56,40 @@ angular.module('ejs.directives').directive('isotope', function () {
         }
     };
 });
+
+angular.module('ejs.directives').directive('feedImageSlider', ['$compile', function($compile){
+    return {
+        compile: function(element, attrs, transclude){
+            return function(scope, element, attrs) {
+                scope.$watch('article', function(article){
+                    if(article){
+                        var html = '<div id="feed-images" class="feed-image-slider">\
+                                    <div class="slides_container">';
+
+
+                        article.images.forEach(function(image){
+                            html += '<img src="'+ image +'" alt=""><br><br>';
+                        });
+
+                        html += '</div>\
+                                <div class="btn-group">\
+                                    <button class="btn btn-mini prev-image"><i class="icon-step-backward"></i> Prev</button>\
+                                    <button class="btn btn-mini next-image">Next <i class="icon-step-forward"></i></button>\
+                                </div>\
+                            </div>';
+
+                        //element.html($compile(html)(scope));
+                        element.html(html);
+
+                        /*$('#feed-images').slides({
+                            next: 'next-image',
+                            prev: 'prev-image',
+                            generatePagination: false
+                        });*/
+                    }
+                });
+               // $compile(element)(scope);
+            }
+        }
+    }
+}]);

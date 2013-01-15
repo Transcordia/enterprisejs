@@ -3,7 +3,7 @@
 /* Controllers */
 
 
-function HomeCtrl($rootScope, $scope, $http, $log) {
+function HomeCtrl($rootScope, $scope, $http, $log, $location, MockArticle) {
     $rootScope.showAddUrlModal = false;
     $scope.showAddArticleModal = false;
 
@@ -144,6 +144,11 @@ function HomeCtrl($rootScope, $scope, $http, $log) {
                 $scope.showAddArticleModal = true;
                 $scope.article = data.response;
             });
-    }
+    };
+
+    $scope.saveArticle = function(article){
+        $scope.showAddArticleModal = false;
+        $location.path('/new-article');
+    };
 }
-HomeCtrl.$inject = ["$rootScope","$scope", "$http", "$log"];
+HomeCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location"];

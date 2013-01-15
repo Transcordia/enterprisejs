@@ -184,20 +184,6 @@
             <version>1.7.1</version>
         </dependency>
 
-        <dependency>
-            <!-- Java API for XML Processing -->
-            <groupId>javax.xml</groupId>
-            <artifactId>jaxp-api</artifactId>
-            <version>1.4.2</version>
-        </dependency>
-
-        <dependency>
-            <!-- Java API for XML Processing -->
-            <groupId>dom4j</groupId>
-            <artifactId>dom4j</artifactId>
-            <version>1.6.1</version>
-        </dependency>
-
     </dependencies>
 
     <build>

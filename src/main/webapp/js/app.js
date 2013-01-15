@@ -10,5 +10,11 @@ angular.module('ejs', ['ejs.filters', 'ejs.services', 'ejs.directives', 'ui']).
             controller: HomeCtrl
         });
 
+    $routeProvider.when('/new-article',
+        {
+            templateUrl: 'partials/new-article.html',
+            controller: HomeCtrl
+        });
+
     $routeProvider.otherwise({redirectTo: '/home'});
   }]);
