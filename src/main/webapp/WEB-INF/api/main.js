@@ -37,9 +37,17 @@ app.post('/processurl', function(req){
     var title = jsoupDocument.select("title").text().toLowerCase();
 
     // look for an rss feed
-    // <link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://www.webdesigndev.com/feed" />
     feedLink = jsoupDocument.select("link[type=application/rss+xml]");
-    url = feedLink.attr('href');
+
+    // does the title attribute contain the word 'comment'?
+    if('comment'.indexOf(feedLink.attr('title').toLowerCase())){
+        // look for any anchor tags on the page with an href that starts with feeds2.feedburner
+        feedLink = jsoupDocument.select("a[href^=http://feeds2.feedburner]");
+        url = feedLink.attr('href');
+    }else{
+        // use the url from the first selector
+        url = feedLink.attr('href');
+    }
 
     // could be an atom feed
     if(feedLink.size() === 0){

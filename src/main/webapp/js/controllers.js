@@ -3,7 +3,7 @@
 /* Controllers */
 
 
-function HomeCtrl($rootScope, $scope, $http, $log, $location, MockArticle) {
+function HomeCtrl($rootScope, $scope, $http, $log, $location) {
     $rootScope.showAddUrlModal = false;
     $scope.showAddArticleModal = false;
 
