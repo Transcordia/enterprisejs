@@ -31,7 +31,7 @@ app.post('/processurl', function(req){
     var url;
 
     jsoupDocument = Jsoup.connect(req.postParams.url).get();
-
+    log.info('Page domain name = {}', req.postParams.url);
     // find the title tag
     var title = jsoupDocument.select("title").text().toLowerCase();
 
@@ -42,6 +42,14 @@ app.post('/processurl', function(req){
     if(feedLink.size() > 0 && (feedLink.attr('title').toLowerCase().indexOf('comment') === -1)){ // if not, parse the feed
         log.info('Rss/Atom feed found');
         url = feedLink.attr('href');
+
+        // if this isn't an absolute url we have to add a protocol and domain
+        if(url.indexOf('http') === -1){
+            var parts = req.postParams.url.split(/^.*\/\/|\/.*/);
+            url = 'http://' + parts[1] + url;
+            // some relative urls contain two . characters; e.g. "..", get rid of those as well
+            url = url.replace(/\.\./, '');
+        }
 
         response = parseFeed(url, title);
 
@@ -65,7 +73,7 @@ app.post('/processurl', function(req){
     // look for a feed url in document body; in this case "feedburner" feeds
     feedLink = jsoupDocument.select("a[href^=http://feeds2.feedburner]");
     if(feedLink.size() > 0){
-        log.info('feedburner feed found');
+        log.info('Feedburner feed found');
         url = feedLink.attr('href');
         response = parseFeed(url, title);
 
@@ -89,14 +97,20 @@ function parseStructuredData(url){
     // look for Open Graph meta tags
     jsoupDocument = Jsoup.connect(url).get();
 
-    var structuredData = {
-        "title": jsoupDocument.select('meta[property=og:title]').attr('content'),
-        "description": jsoupDocument.select('meta[property=og:description]').attr('content'),
-        "images": [jsoupDocument.select('meta[property=og:image]').attr('content')]
-    };
+    var ogMeta = jsoupDocument.select('meta[property^=og:]');
+    if(ogMeta.size() > 0){
+        var structuredData = {
+            "title": jsoupDocument.select('meta[property=og:title]').attr('content'),
+            "description": jsoupDocument.select('meta[property=og:description]').attr('content'),
+            "images": [jsoupDocument.select('meta[property=og:image]').attr('content')]
+        };
 
-    log.info('Structured data parsed by Jsoup: {}', JSON.stringify(structuredData, null, 4));
-    return structuredData;
+        log.info('Structured data parsed by Jsoup: {}', JSON.stringify(structuredData, null, 4));
+        return structuredData;
+    }
+
+    log.info('No structured data found. Returning an empty object');
+    return {}
 }
 
 function parseFeed(feedUrl, title){
@@ -108,8 +122,6 @@ function parseFeed(feedUrl, title){
         success: function(content, status, contentType, exchange){
             // parsing the xml with Jsoup
             var xmlDoc = Jsoup.parse(content, "", Parser.xmlParser());
-
-            log.info('Jsoup xmlDoc.select(\'entry\').size() = {}', xmlDoc.select('entry').size());
 
             if(xmlDoc.select('entry').size() > 0){
                 log.info('Parsing Atom Feed');
@@ -146,7 +158,6 @@ function parseRSSFeed(xmlDoc, title){
             // unescape the html fragment
             // TODO: be sure to sanitize html
             var itemXml = Jsoup.parse(Parser.unescapeEntities(item, false));
-            log.info('Unescaped feed item markup: {}', itemXml);
 
             var images = itemXml.select('img');
             var imagesIterator = images.listIterator();
@@ -154,7 +165,6 @@ function parseRSSFeed(xmlDoc, title){
                 var image = imagesIterator.next();
                 var document = Jsoup.parse(image);
                 var img = document.select('img').first();
-                log.info('Image src: {}', image.attr('src'));
                 feedImages.push(image.attr('src'));
             }
 
@@ -165,12 +175,11 @@ function parseRSSFeed(xmlDoc, title){
                 "images": feedImages
             }
 
-            break;
+            log.info('RSS feed data parsed by Jsoup: {}', JSON.stringify(feed, null, 4));
+            return feed;
         }
 
     }
-
-    return feed;
 }
 
 function parseAtomFeed(xmlDoc, title){
@@ -192,7 +201,6 @@ function parseAtomFeed(xmlDoc, title){
             // unescape the html fragment
             // TODO: be sure to sanitize html
             var entryHtml = Jsoup.parse(Parser.unescapeEntities(entry, false));
-            log.info('Unescaped feed entry markup: {}', entryHtml);
 
             var images = entryHtml.select('img');
             var imagesIterator = images.listIterator();
@@ -200,7 +208,6 @@ function parseAtomFeed(xmlDoc, title){
                 var image = imagesIterator.next();
                 var document = Jsoup.parse(image);
                 var img = document.select('img').first();
-                log.info('Image src: {}', image.attr('src'));
                 feedImages.push(image.attr('src'));
             }
 
@@ -211,12 +218,11 @@ function parseAtomFeed(xmlDoc, title){
                 "images": feedImages
             }
 
-            break;
+            log.info('Atom feed data parsed by Jsoup: {}', JSON.stringify(feed, null, 4));
+            return feed;
         }
 
     }
-
-    return feed;
 }
 
 /*
