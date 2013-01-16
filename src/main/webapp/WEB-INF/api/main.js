@@ -9,12 +9,7 @@ var {Application} = require("stick");
 
 var Jsoup = Packages.org.jsoup.Jsoup;
 var jsoupDocument = Packages.org.jsoup.nodes.Document;
-var jsoupElements = Packages.org.jsoup.select.Elements;
 var Parser = Packages.org.jsoup.parser.Parser;
-
-var DocumentBuilderFactory = Packages.javax.xml.parsers.DocumentBuilderFactory;
-//var DocumentBuilder = Packages.javax.xml.parsers.DocumentBuilder;
-var URL = Packages.java.net.URL;
 
 var app = exports.app = Application();
 app.configure('notfound', 'params', 'mount', 'route');
@@ -27,6 +22,10 @@ app.get('/', function (req) {
 });
 
 app.post('/processurl', function(req){
+    // 1. look for an rss feed url
+    // 2. look for an atom feed url
+    // 3. look for a feed url in document body
+    // 4. parse structured data
     var response = {};
     var feedLink;
     var url;
@@ -38,32 +37,46 @@ app.post('/processurl', function(req){
 
     // look for an rss feed
     feedLink = jsoupDocument.select("link[type=application/rss+xml]");
+    // does the title attribute of this link tag contain the word 'comment'?
+    // we don't want a comment feed
+    if(feedLink.size() > 0 && (feedLink.attr('title').toLowerCase().indexOf('comment') === -1)){ // if not, parse the feed
+        log.info('Rss/Atom feed found');
+        url = feedLink.attr('href');
 
-    // does the title attribute contain the word 'comment'?
-    if('comment'.indexOf(feedLink.attr('title').toLowerCase())){
-        // look for any anchor tags on the page with an href that starts with feeds2.feedburner
-        feedLink = jsoupDocument.select("a[href^=http://feeds2.feedburner]");
-        url = feedLink.attr('href');
-    }else{
-        // use the url from the first selector
-        url = feedLink.attr('href');
+        response = parseFeed(url, title);
+
+        return json({
+            response: response
+        });
     }
 
-    // could be an atom feed
-    if(feedLink.size() === 0){
-        // look for an atom feed
-        feedLink = jsoupDocument.select("link[type=application/atom+xml]");
+    // look for an atom feed
+    feedLink = jsoupDocument.select("link[type=application/atom+xml]");
+    if(feedLink.size() > 0){
+        log.info('Atom feed found');
         url = feedLink.attr('href');
         response = parseFeed(url, title);
 
-        // hate nested ifs BUT... if we STILL can't find a feed link
-        if(feedLink.size() === 0){
-            log.info('This url does not have any syndicated feeds');
-            response = parseStructuredData(url);
-        }
-    }else{
-        response = parseFeed(url, title);
+        return json({
+            response: response
+        });
     }
+
+    // look for a feed url in document body; in this case "feedburner" feeds
+    feedLink = jsoupDocument.select("a[href^=http://feeds2.feedburner]");
+    if(feedLink.size() > 0){
+        log.info('feedburner feed found');
+        url = feedLink.attr('href');
+        response = parseFeed(url, title);
+
+        return json({
+            response: response
+        });
+    }
+
+    // couldn't find any feeds? look for structured data
+    log.info('This url does not have any syndicated feeds.');
+    response = parseStructuredData(req.postParams.url);
 
     return json({
         response: response
@@ -71,18 +84,23 @@ app.post('/processurl', function(req){
 });
 
 function parseStructuredData(url){
-    // look for meta tags
+    log.info('Parsing structured data');
+
+    // look for Open Graph meta tags
+    jsoupDocument = Jsoup.connect(url).get();
+
     var structuredData = {
-        "title": "This URL Doesn't have RSS or atom feeds",
-        "description": "Trust fund truffaut shoreditch, flexitarian you probably haven't heard of them consequat thundercats typewriter etsy selfies officia next level delectus vegan. Hoodie authentic accusamus, keytar lomo PBR art party. Reprehenderit fanny pack you probably haven't heard of them, letterpress stumptown brunch pork belly elit typewriter irure cray.",
-        "content": "Trust fund truffaut shoreditch, flexitarian you probably haven't heard of them consequat thundercats typewriter etsy selfies officia next level delectus vegan. Hoodie authentic accusamus, keytar lomo PBR art party. Reprehenderit fanny pack you probably haven't heard of them, letterpress stumptown brunch pork belly elit typewriter irure cray. Commodo letterpress eu, farm-to-table flannel kale chips craft beer nostrud wayfarers chillwave retro est. Photo booth vero tofu tousled tempor chillwave, ex cillum pitchfork et labore mumblecore aliqua narwhal. Consequat pitchfork non, VHS umami meggings forage skateboard. Keytar in deserunt, sed vinyl nihil swag id master cleanse actually.",
-        "images": []
+        "title": jsoupDocument.select('meta[property=og:title]').attr('content'),
+        "description": jsoupDocument.select('meta[property=og:description]').attr('content'),
+        "images": [jsoupDocument.select('meta[property=og:image]').attr('content')]
     };
+
+    log.info('Structured data parsed by Jsoup: {}', JSON.stringify(structuredData, null, 4));
     return structuredData;
 }
 
 function parseFeed(feedUrl, title){
-    // We'd like to get a description, title, content, and images for each feed made available by rss
+    // We'd like to get a description, title, content, and images for each feed
     var feed = {};
     httpclient.request({
         url: feedUrl,
