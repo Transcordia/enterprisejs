@@ -132,8 +132,6 @@ function HomeCtrl($rootScope, $scope, $http, $log, $location) {
     $scope.urlToCheck = '';
 
     $scope.addArticle = function(url){
-        $rootScope.showAddUrlModal = false;
-
         var data = {
             url: url
         };
@@ -141,6 +139,7 @@ function HomeCtrl($rootScope, $scope, $http, $log, $location) {
         $http.post('api/processurl', data)
             .success(function(data, status, headers){
                 $log.info(data);
+                $rootScope.showAddUrlModal = false;
                 $scope.showAddArticleModal = true;
                 $scope.article = data.response;
             });

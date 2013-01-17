@@ -110,7 +110,9 @@ function parseStructuredData(url){
     }
 
     log.info('No structured data found. Returning an empty object');
-    return {}
+    return {
+        "images": []
+    }
 }
 
 function parseFeed(feedUrl, title){
