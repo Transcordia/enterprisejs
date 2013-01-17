@@ -31,7 +31,6 @@ app.post('/processurl', function(req){
     var url;
 
     jsoupDocument = Jsoup.connect(req.postParams.url).get();
-    log.info('Page domain name = {}', req.postParams.url);
     // find the title tag
     var title = jsoupDocument.select("title").text().toLowerCase();
 
@@ -49,6 +48,7 @@ app.post('/processurl', function(req){
             url = 'http://' + parts[1] + url;
             // some relative urls contain two . characters; e.g. "..", get rid of those as well
             url = url.replace(/\.\./, '');
+            log.info('Page domain name = {}', url);
         }
 
         response = parseFeed(url, title);
@@ -92,7 +92,7 @@ app.post('/processurl', function(req){
 });
 
 function parseStructuredData(url){
-    log.info('Parsing structured data');
+    log.info('Parsing structured data...');
 
     // look for Open Graph meta tags
     jsoupDocument = Jsoup.connect(url).get();
@@ -124,10 +124,10 @@ function parseFeed(feedUrl, title){
             var xmlDoc = Jsoup.parse(content, "", Parser.xmlParser());
 
             if(xmlDoc.select('entry').size() > 0){
-                log.info('Parsing Atom Feed');
+                log.info('Parsing Atom Feed...');
                 feed = parseAtomFeed(xmlDoc, title);
             }else{
-                log.info('Parsing RSS Feed');
+                log.info('Parsing RSS Feed...');
                 feed = parseRSSFeed(xmlDoc, title);
             }
         },
