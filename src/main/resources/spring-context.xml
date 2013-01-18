@@ -71,20 +71,22 @@
     <!-- Hazelcast Configuration                                                                 -->
     <!-- *************************************************************************************** -->
 
-<!--
+
     <bean id="hzServer" class="com.zocia.platform.hazelcast.HazelcastBootstrap"
           init-method="init" destroy-method="destroy">
-        <constructor-arg value="#{esServer.client}"/>
-        <property name="mapStoreFactory" ref="mapStoreFactory" />
+        <!--<property name="mapStoreFactory" ref="mapStoreFactory" />-->
     </bean>
 
     <bean id="mapStoreFactory" class="com.zocia.platform.hazelcast.persistence.DelegatingMapStoreFactory" />
 
-    <bean id="esMapStore" scope="prototype"
-          class="com.zocia.platform.hazelcast.persistence.elasticsearch.ElasticSearchMapPersistence">
-        <property name="esClient" value="#{esServer.client}" />
+    <bean id="zociaMapStore" scope="prototype" class="com.pykl.hazelcast.ZociaMapPersistence">
+        <property name="getAddress" value="${zociaUrl}/resources/bykey/%s" />
+        <property name="postAddress" value="${zociaUrl}/resources/" />
+        <property name="putAddress" value="${zociaUrl}/resources/%s" />
+        <property name="deleteAddress" value="${zociaUrl}/resources/%s" />
+        <property name="username" value="backdoor" />
+        <property name="password" value="Backd00r" />
     </bean>
--->
 
     <!-- Cron jobs are triggered by the scheduler service -->
 <!--

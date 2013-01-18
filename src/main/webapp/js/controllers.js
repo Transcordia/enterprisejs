@@ -147,7 +147,33 @@ function HomeCtrl($rootScope, $scope, $http, $log, $location) {
 
     $scope.saveArticle = function(article){
         $scope.showAddArticleModal = false;
-        $location.path('/new-article');
+        var data = {
+            article: article
+        };
+
+        $http.post('api/article', data)
+            .success(function(data, status, headers){
+                //id = data._id;
+                $log.info(data);
+
+                $location.path('/article/' + data._id);
+            });
     };
 }
 HomeCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location"];
+
+function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout){
+    $timeout(function(){
+        $http.get('api/article/' + $routeParams.id)
+            .success(function(data, status, headers){
+                var content = '';
+
+                if(!data.content){
+                    data.content = data.description;
+                }
+
+                $scope.article = data;
+            });
+    }, 1000);
+}
+ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout"];

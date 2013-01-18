@@ -11,6 +11,8 @@ var Jsoup = Packages.org.jsoup.Jsoup;
 var jsoupDocument = Packages.org.jsoup.nodes.Document;
 var Parser = Packages.org.jsoup.parser.Parser;
 
+var store = require('store-js');
+
 var app = exports.app = Application();
 app.configure('notfound', 'params', 'mount', 'route');
 
@@ -19,6 +21,23 @@ app.get('/', function (req) {
 		api: true,
 		path: req.pathInfo
 	});
+});
+
+app.post('/article', function(req){
+    var article = req.postParams.article;
+
+    var map = store.getMap('ejs', 'articles');
+
+    map.put(article);
+    return json(article, 201);
+});
+
+app.get('/article/:id', function(req, id){
+    var map = store.getMap('ejs', 'articles');
+
+    var article = map.get(id);
+
+    return json(article);
 });
 
 app.post('/processurl', function(req){

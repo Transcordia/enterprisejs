@@ -342,4 +342,92 @@
         </resources>
     </build>
 
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <environment>dev</environment>
+
+                <!-- The URL to access web services from the gc platform. -->
+                <zociaUrl>http://localhost:9300/myapp/api</zociaUrl>
+                <localUrl>http://localhost:8080/ejs/api</localUrl>
+
+                <!-- Hazelcast configuration
+                     hz.name - Specifies a unique name for the hazelcast cluster.
+                     hz.multicast.enabled - true if used to locate cluster members in an environment
+                         supporting multicast. (used only for development)
+                     hz.aws.enabled - true if deployed to amazon ec2 environment where multicast is
+                         not supported.
+                -->
+                <hz.name>hz-${project.groupId}.${project.artifactId}-${environment}</hz.name>
+                <hz.multicast.enabled>false</hz.multicast.enabled>
+                <hz.aws.enabled>false</hz.aws.enabled>
+
+                <aws.s3.access_key>AKIAIO5RYV6PBMMEM5IA</aws.s3.access_key>
+                <aws.s3.secret_key>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</aws.s3.secret_key>
+                <aws.s3.bucket>qa.zocia.upload.files</aws.s3.bucket>
+            </properties>
+        </profile>
+        <profile>
+            <id>qa</id>
+            <properties>
+                <environment>qa</environment>
+                <!-- The URL to access web services from the gcplatform. -->
+                <zociaUrl>http://qa-zocia.elasticbeanstalk.com/api</zociaUrl>
+                <localUrl>http://qa-babson-gcee.elasticbeanstalk.com/api</localUrl>
+
+                <!-- Hazelcast configuration
+                     hz.name - Specifies a unique name for the hazelcast cluster.
+                     hz.multicast.enabled - true if used to locate cluster members in an environment
+                         supporting multicast. (used only for development)
+                     hz.aws.enabled - true if deployed to amazon ec2 environment where multicast is
+                         not supported.
+                -->
+                <hz.name>hz-babsongc-${environment}</hz.name>
+                <hz.multicast.enabled>false</hz.multicast.enabled>
+                <hz.aws.enabled>true</hz.aws.enabled>
+
+                <!-- Amazon Web Services configuration
+                -->
+                <aws.access_key>${babsongc.qa.aws.access_key}</aws.access_key>
+                <aws.secret_key>${babsongc.qa.aws.secret_key}</aws.secret_key>
+
+                <aws.s3.access_key>AKIAIO5RYV6PBMMEM5IA</aws.s3.access_key>
+                <aws.s3.secret_key>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</aws.s3.secret_key>
+                <aws.s3.bucket>qa.zocia.upload.files</aws.s3.bucket>
+
+                <beanstalk.environment.name>${environment}-babson-gcee</beanstalk.environment.name>
+                <beanstalk.s3.name>${environment}.${project.groupId}.${project.artifactId}.images</beanstalk.s3.name>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <environment>prod</environment>
+                <!-- The URL to access web services from the gcplatform. -->
+                <zociaUrl>http://prod-zocia.elasticbeanstalk.com/api</zociaUrl>
+
+                <!-- Hazelcast configuration
+                     hz.name - Specifies a unique name for the hazelcast cluster.
+                     hz.multicast.enabled - true if used to locate cluster members in an environment
+                         supporting multicast. (used only for development)
+                     hz.aws.enabled - true if deployed to amazon ec2 environment where multicast is
+                         not supported.
+                -->
+                <hz.name>hz-babsongc-${environment}</hz.name>
+                <hz.multicast.enabled>false</hz.multicast.enabled>
+                <hz.aws.enabled>true</hz.aws.enabled>
+
+                <!-- Amazon Web Services configuration
+                -->
+                <aws.access_key>${babsongc.qa.aws.access_key}</aws.access_key>
+                <aws.secret_key>${babsongc.qa.aws.secret_key}</aws.secret_key>
+            </properties>
+        </profile>
+    </profiles>
+
+
 </project>

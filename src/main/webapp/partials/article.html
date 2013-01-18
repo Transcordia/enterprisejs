@@ -2,8 +2,8 @@
     <div class="row">
         <div class="span4">
             <div class="article">
-                <div class="article-holder new-article"><img ng-src="" alt=""></div>
-                <p class="description">{{article.description}}</p>
+                <div class="article-holder new-article"><img ng-src="{{article.images[0]}}" alt=""></div>
+                <p class="description" ng-bind-html-unsafe="article.description"></p>
                 <p class="stats clearfix">
                     <span class="likes-count">0 likes</span>
                     <span class="comment-count">0 comments</span>
@@ -18,7 +18,6 @@
         <div class="span8">
             <div class="article large">
                 <h2>{{article.title}}</h2>
-                <div class="article-holder new-article"><img ng-src="" alt=""></div>
                 <p class="description" ng-bind-html-unsafe="article.content"></p>
 
                 <div class="convo clearfix">
