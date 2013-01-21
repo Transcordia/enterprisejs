@@ -82,16 +82,16 @@
 
         <!-- Entities in the cache will live for a period of two minutes. After that time, they
              will be fetched from the persistence tier.
-        -->
-        <time-to-live-seconds>120</time-to-live-seconds>
 
-        <!--
-            Maximum size of the map. When max size is reached,
+        <time-to-live-seconds>120</time-to-live-seconds>
+        -->
+
+            <!--Maximum size of the map. When max size is reached,
             map is evicted based on the policy defined.
             Any integer between 0 and Integer.MAX_VALUE. 0 means
-            Integer.MAX_VALUE. Default is 0.
-        <max-size policy="used_heap_size">4096</max-size>
-
+            Integer.MAX_VALUE. Default is 0.-->
+        <max-size policy="used_heap_size">1096</max-size>
+        <!--
         Doesn't seem to play well with time-to-live...
         -->
 

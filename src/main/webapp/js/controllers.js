@@ -7,7 +7,7 @@ function HomeCtrl($rootScope, $scope, $http, $log, $location) {
     $rootScope.showAddUrlModal = false;
     $scope.showAddArticleModal = false;
 
-    $scope.articles = [
+    /*$scope.articles = [
         {
             description: 'Bicycle rights keffiyeh church-key farm-to-table, wolf freegan meggings food truck +1 helvetica craft beer hella. Bicycle rights keffiyeh church-key farm-to-table, wolf freegan meggings food truck +1 helvetica craft beer hella.',
             stats: {
@@ -127,9 +127,15 @@ function HomeCtrl($rootScope, $scope, $http, $log, $location) {
             ]
 
         }
-    ];
+    ];*/
 
     $scope.urlToCheck = '';
+
+    $http.get('api/articles').
+        success(function(data, status, headers){
+            $scope.articles = data;
+
+        });
 
     $scope.addArticle = function(url){
         var data = {
@@ -151,7 +157,7 @@ function HomeCtrl($rootScope, $scope, $http, $log, $location) {
             article: article
         };
 
-        $http.post('api/article', data)
+        $http.post('api/articles', data)
             .success(function(data, status, headers){
                 //id = data._id;
                 $log.info(data);
@@ -162,9 +168,9 @@ function HomeCtrl($rootScope, $scope, $http, $log, $location) {
 }
 HomeCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location"];
 
-function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout){
+function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout, truncate){
     $timeout(function(){
-        $http.get('api/article/' + $routeParams.id)
+        $http.get('api/articles/' + $routeParams.id)
             .success(function(data, status, headers){
                 var content = '';
 
@@ -172,8 +178,13 @@ function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $
                     data.content = data.description;
                 }
 
+                if(data.content === data.description){
+                    // truncate the description
+                    data.description = truncate(data.content, 200);
+                }
+
                 $scope.article = data;
             });
     }, 1000);
 }
-ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout"];
+ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout", "truncate"];

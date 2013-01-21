@@ -3,7 +3,7 @@
 /* Directives */
 angular.module('ejs.directives', []);
 
-angular.module('ejs.directives').directive('isotope', function () {
+angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', function (truncate, $timeout) {
     return {
         scope: {
             articles: '='
@@ -22,22 +22,27 @@ angular.module('ejs.directives').directive('isotope', function () {
             var setup = function () {
                 var articles = '';
                 scope.articles.forEach(function (article) {
+                    if(article.description === article.content){
+                        article.description = truncate(article.description, 150);
+                    }
+
                     articles += '<div class="article">\
-                                    <div class="article-holder"></div>\
+                                    <h4>'+ article.title +'</h4>\
+                                    <div class="article-holder"><img src="'+ article.images[0] +'"></div>\
                                     <p class="description">' + article.description + '</p>\
                                     <p class="stats clearfix">\
-                                        <span class="likes-count">' + article.stats.likes + ' likes</span>\
-                                        <span class="comment-count">' + article.stats.comments + ' comments</span>\
-                                        <span class="reblog-count">' + article.stats.reblogs + ' reblogs</span>\
+                                        <span class="likes-count">' + 0 + ' likes</span>\
+                                        <span class="comment-count">' + 0 + ' comments</span>\
+                                        <span class="reblog-count">' + 0 + ' reblogs</span>\
                                     </p>\
                                     <div class="convo clearfix">\
                                         <a href=""><div class="image-placeholder"></div></a>\
-                                        <p>' + article.convoStarter.content + '</p>\
+                                        <p>First comment here</p>\
                                     </div>\
                                     <div class="comments">\
                                         <div class="comment convo">\
                                             <a href=""><div class="image-placeholder"></div></a>\
-                                            <p>' + article.comments[0].content + '</p>\
+                                            <p>Second comment here</p>\
                                         </div>\
                                     </div>\
                                 </div>';
@@ -49,13 +54,15 @@ angular.module('ejs.directives').directive('isotope', function () {
 
             scope.$watch('articles', function (newValue, oldValue) {
                 //if (newValue.length == 0) init();
-                if (newValue.length > 0) setup();
+                if (newValue && newValue.length > 0) setup();
+
+                //element.isotope('reLayout');
             });
 
             init();
         }
     };
-});
+}]);
 
 angular.module('ejs.directives').directive('feedImageSlider', ['$compile', function($compile){
     return {

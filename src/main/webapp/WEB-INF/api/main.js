@@ -23,7 +23,7 @@ app.get('/', function (req) {
 	});
 });
 
-app.post('/article', function(req){
+app.post('/articles', function(req){
     var article = req.postParams.article;
 
     var map = store.getMap('ejs', 'articles');
@@ -32,12 +32,29 @@ app.post('/article', function(req){
     return json(article, 201);
 });
 
-app.get('/article/:id', function(req, id){
+app.get('/articles/:id', function(req, id){
     var map = store.getMap('ejs', 'articles');
 
     var article = map.get(id);
 
     return json(article);
+});
+
+app.get('/articles', function(req, id){
+    var map = store.getMap('ejs', 'articles');
+    var articles = [];
+
+    var keySet = map.keySet();
+
+    //var iterator = items.listIterator();
+    //while(iterator.hasNext()){
+    var iterator = keySet.iterator();
+    while(iterator.hasNext()){
+        var article = iterator.next();
+        articles.push(map.get(article));
+    }
+
+    return json(articles);
 });
 
 app.post('/processurl', function(req){
@@ -47,8 +64,9 @@ app.post('/processurl', function(req){
     // 4. parse structured data
     var response = {};
     var feedLink;
-    var url;
+    var feedUrl, pageUrl;
 
+    pageUrl = req.postParams.url;
     jsoupDocument = Jsoup.connect(req.postParams.url).get();
     // find the title tag
     var title = jsoupDocument.select("title").text().toLowerCase();
@@ -59,18 +77,18 @@ app.post('/processurl', function(req){
     // we don't want a comment feed
     if(feedLink.size() > 0 && (feedLink.attr('title').toLowerCase().indexOf('comment') === -1)){ // if not, parse the feed
         log.info('Rss/Atom feed found');
-        url = feedLink.attr('href');
+        feedUrl = feedLink.attr('href');
 
         // if this isn't an absolute url we have to add a protocol and domain
-        if(url.indexOf('http') === -1){
+        if(feedUrl.indexOf('http') === -1){
             var parts = req.postParams.url.split(/^.*\/\/|\/.*/);
-            url = 'http://' + parts[1] + url;
+            feedUrl = 'http://' + parts[1] + feedUrl;
             // some relative urls contain two . characters; e.g. "..", get rid of those as well
-            url = url.replace(/\.\./, '');
-            log.info('Page domain name = {}', url);
+            pageUrl = pageUrl.replace(/\.\./, '');
+            log.info('Page domain name = {}', pageUrl);
         }
 
-        response = parseFeed(url, title);
+        response = parseFeed(feedUrl, title, pageUrl);
 
         return json({
             response: response
@@ -81,8 +99,8 @@ app.post('/processurl', function(req){
     feedLink = jsoupDocument.select("link[type=application/atom+xml]");
     if(feedLink.size() > 0){
         log.info('Atom feed found');
-        url = feedLink.attr('href');
-        response = parseFeed(url, title);
+        feedUrl = feedLink.attr('href');
+        response = parseFeed(feedUrl, title);
 
         return json({
             response: response
@@ -134,7 +152,7 @@ function parseStructuredData(url){
     }
 }
 
-function parseFeed(feedUrl, title){
+function parseFeed(feedUrl, title, pageUrl){
     // We'd like to get a description, title, content, and images for each feed
     var feed = {};
     httpclient.request({
@@ -146,10 +164,10 @@ function parseFeed(feedUrl, title){
 
             if(xmlDoc.select('entry').size() > 0){
                 log.info('Parsing Atom Feed...');
-                feed = parseAtomFeed(xmlDoc, title);
+                feed = parseAtomFeed(xmlDoc, title, pageUrl);
             }else{
                 log.info('Parsing RSS Feed...');
-                feed = parseRSSFeed(xmlDoc, title);
+                feed = parseRSSFeed(xmlDoc, title, pageUrl);
             }
         },
         error: function(message, status, exchange){
@@ -160,7 +178,7 @@ function parseFeed(feedUrl, title){
     return feed;
 }
 
-function parseRSSFeed(xmlDoc, title){
+function parseRSSFeed(xmlDoc, title, url){
     var feed = {};
     var feedImages = [];
     // could be an atom feed
@@ -199,11 +217,13 @@ function parseRSSFeed(xmlDoc, title){
             log.info('RSS feed data parsed by Jsoup: {}', JSON.stringify(feed, null, 4));
             return feed;
         }
-
     }
+
+    // the article may have been too old, look for structured data
+    return parseStructuredData(url);
 }
 
-function parseAtomFeed(xmlDoc, title){
+function parseAtomFeed(xmlDoc, title, url){
     var feed = {};
     var feedImages = [];
     // could be an atom feed
@@ -244,6 +264,10 @@ function parseAtomFeed(xmlDoc, title){
         }
 
     }
+
+    // the article may have been too old, look for structured data
+    log.info('Article was not in any available feeds.');
+    return parseStructuredData(url);
 }
 
 /*

@@ -39,8 +39,8 @@
 }
 
 .article-holder{
-    height: 272px;
-    background-color: #cccccc;
+    /*height: 272px;
+    background-color: #cccccc;*/
 }
 
 .article-holder.new-article{
