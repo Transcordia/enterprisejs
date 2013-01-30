@@ -143,6 +143,7 @@ function parseStructuredData(url){
         };
 
         log.info('Structured data parsed by Jsoup: {}', JSON.stringify(structuredData, null, 4));
+
         return structuredData;
     }
 
@@ -198,13 +199,26 @@ function parseRSSFeed(xmlDoc, title, url){
             // TODO: be sure to sanitize html
             var itemXml = Jsoup.parse(Parser.unescapeEntities(item, false));
 
-            var images = itemXml.select('img');
-            var imagesIterator = images.listIterator();
-            while(imagesIterator.hasNext()){
-                var image = imagesIterator.next();
-                var document = Jsoup.parse(image);
-                var img = document.select('img').first();
-                feedImages.push(image.attr('src'));
+            // does this feed have any media attributes?
+            // parse the images in the media attributes of the feed
+            var media = item.select('media|content[type^=image]');
+
+            if(media.size() > 0){
+                var mediaIterator = media.listIterator();
+                while(mediaIterator.hasNext()){
+                    var media = mediaIterator.next();
+                    log.info('Url attribute of the media object in the iterator: {}', media.attr('url'));
+                    feedImages.push( media.attr('url'));
+                }
+            }else{
+                var images = itemXml.select('img');
+                var imagesIterator = images.listIterator();
+                while(imagesIterator.hasNext()){
+                    var image = imagesIterator.next();
+                    var document = Jsoup.parse(image);
+                    var img = document.select('img').first();
+                    feedImages.push(image.attr('src'));
+                }
             }
 
             feed = {

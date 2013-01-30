@@ -3,7 +3,7 @@
 /* Directives */
 angular.module('ejs.directives', []);
 
-angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', function (truncate, $timeout) {
+angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '$log', function (truncate, $timeout, $log) {
     return {
         scope: {
             articles: '='
@@ -23,7 +23,7 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', f
                 var articles = '';
                 scope.articles.forEach(function (article) {
                     if(article.description === article.content){
-                        article.description = truncate(article.description, 150);
+                        article.description = truncate(article.description, 200);
                     }
 
                     articles += '<div class="article">\
