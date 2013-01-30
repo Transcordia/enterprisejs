@@ -205,10 +205,20 @@ function parseRSSFeed(xmlDoc, title, url){
 
             if(media.size() > 0){
                 var mediaIterator = media.listIterator();
+                var prevImageSize = 0, currImageSize;
+
                 while(mediaIterator.hasNext()){
                     var media = mediaIterator.next();
-                    log.info('Url attribute of the media object in the iterator: {}', media.attr('url'));
-                    feedImages.push( media.attr('url'));
+
+                    // calculate the area of the images and only use the largest image
+                    currImageSize = parseInt(media.attr('width')) * parseInt(media.attr('height'));
+
+                    if(currImageSize > prevImageSize){
+                        feedImages.shift();
+                        feedImages.push(media.attr('url'));
+                    }
+
+                    prevImageSize = currImageSize;
                 }
             }else{
                 var images = itemXml.select('img');
@@ -234,6 +244,7 @@ function parseRSSFeed(xmlDoc, title, url){
     }
 
     // the article may have been too old, look for structured data
+    log.info('Could\'t find this article in the rss feeds. Parsing structured data...');
     return parseStructuredData(url);
 }
 
