@@ -12,7 +12,7 @@ function HomeCtrl($rootScope, $scope, $http, $log, $location) {
     $http.get('api/articles').
         success(function(data, status, headers){
             $scope.articles = data;
-
+            $scope.articles = $scope.articles.splice(0,4);
         });
 
     $scope.addArticle = function(url){

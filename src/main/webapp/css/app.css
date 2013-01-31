@@ -139,3 +139,26 @@
 .feed-image-slider img{
     max-width: 100%;
 }
+
+.one-col{
+    width: 30%;
+}
+
+.two-col{
+    width: 60%;
+}
+
+.three-col{
+    width: 90%;
+}
+
+.one-row{
+    height: 200px;
+    overflow: hidden;
+}
+
+.two-row{
+    height: 410px;
+    overflow: hidden;
+}
+

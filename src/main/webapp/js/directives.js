@@ -9,6 +9,34 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
             articles: '='
         },
         link: function (scope, element, attrs) {
+            var grid = [
+                [1, 1, 1],
+                [2, 3, 4]
+            ];
+
+            var gridCombinations = {
+                "1": {
+                    "w": 'one-col',
+                    "h": 'one-row'
+                },
+                "2": {
+                    "w": 'one-col',
+                    "h": 'two-row'
+                },
+                "3": {
+                    "w": 'two-col',
+                    "h": 'one-row'
+                },
+                "4": {
+                    "w": 'three-col',
+                    "h": 'one-row'
+                },
+                "5": {
+                    "w": 'two-col',
+                    "h": 'two-row'
+                }
+            };
+
             var options = {
                 animationEngine : 'best-available',
                 itemSelector: '.article',
@@ -19,14 +47,28 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                 element.isotope(options);
             };
 
+            var generateGrid = function(){
+                // grab a random grid combination
+                var combo = gridCombinations[(Math.floor(Math.random() * 5) + 1).toString()];
+
+                // this is article 1, assign values to the grid array
+                /*grid[0][0] = 1;
+                grid[0][1] = 1;
+                grid[1][0] = 1;
+                grid[1][1] = 1;*/
+            };
+
             var setup = function () {
                 var articles = '';
+                var j = 0;
+                var combos = ['4', '1', '1', '1'];
+                var area = {};
                 scope.articles.forEach(function (article) {
                     if(article.description === article.content){
                         article.description = truncate(article.description, 200);
                     }
 
-                    articles += '<div class="article">\
+                    articles += '<div class="article '+ gridCombinations[combos[j]].w +' '+ gridCombinations[combos[j]].h +'">\
                                     <h4>'+ article.title +'</h4>\
                                     <div class="article-holder"><img src="'+ article.images[0] +'"></div>\
                                     <p class="description">' + article.description + '</p>\
@@ -46,6 +88,7 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                                         </div>\
                                     </div>\
                                 </div>';
+                    j++;
                 });
 
                 element.isotope('remove', element.find('article'));
@@ -54,7 +97,10 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
 
             scope.$watch('articles', function (newValue, oldValue) {
                 //if (newValue.length == 0) init();
-                if (newValue && newValue.length > 0) setup();
+                if (newValue && newValue.length > 0){
+                    generateGrid();
+                    setup();
+                }
 
                 //element.isotope('reLayout');
             });
