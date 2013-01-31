@@ -10,8 +10,10 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
         },
         link: function (scope, element, attrs) {
             var grid = [
-                [1, 1, 1],
-                [2, 3, 4]
+                [1, 2, 3],
+                [4, 5, 6],
+
+                []
             ];
 
             var gridCombinations = {
@@ -61,7 +63,7 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
             var setup = function () {
                 var articles = '';
                 var j = 0;
-                var combos = ['4', '1', '1', '1'];
+                var combos = ['2', '2', '1', '1'];
                 var area = {};
                 scope.articles.forEach(function (article) {
                     if(article.description === article.content){
@@ -91,8 +93,9 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                     j++;
                 });
 
-                element.isotope('remove', element.find('article'));
-                element.isotope('insert', $(articles));
+                //element.isotope('remove', element.find('article'));
+                //element.isotope('insert', $(articles));
+                element.append(articles);
             };
 
             scope.$watch('articles', function (newValue, oldValue) {
@@ -105,7 +108,7 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                 //element.isotope('reLayout');
             });
 
-            init();
+            //init();
         }
     };
 }]);

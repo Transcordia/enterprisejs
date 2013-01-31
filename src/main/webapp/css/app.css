@@ -24,6 +24,7 @@
 
 .article{
     /*position: absolute;*/
+    float: left;
     width: 192px;
     padding: 15px 15px 0;
     font-size: 11px;
@@ -141,15 +142,15 @@
 }
 
 .one-col{
-    width: 30%;
+    width: 29%;
 }
 
 .two-col{
-    width: 60%;
+    width: 62%;
 }
 
 .three-col{
-    width: 90%;
+    width: 95%;
 }
 
 .one-row{
@@ -158,7 +159,7 @@
 }
 
 .two-row{
-    height: 410px;
+    height: 435px;
     overflow: hidden;
 }
 
