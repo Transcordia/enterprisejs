@@ -1,3 +1,7 @@
+#container{
+    border: 1px solid #ff0000;
+}
+
 .navbar-inner{
     border-radius: 0;
     -webkit-border-radius: 0;
@@ -23,9 +27,9 @@
 }
 
 .article{
-    /*position: absolute;*/
+    /*position: absolute;
     float: left;
-    width: 192px;
+    width: 192px;*/
     padding: 15px 15px 0;
     font-size: 11px;
     background-color: white;
@@ -142,24 +146,29 @@
 }
 
 .one-col{
-    width: 29%;
+    width: 27%;
 }
 
 .two-col{
-    width: 62%;
+    width: 54%;
 }
 
 .three-col{
-    width: 95%;
+    width: 89%;
 }
 
 .one-row{
-    height: 200px;
+    height: 150px;
     overflow: hidden;
 }
 
 .two-row{
-    height: 435px;
+    height: 335px;
+    overflow: hidden;
+}
+
+.three-row{
+    height: 520px;
     overflow: hidden;
 }
 

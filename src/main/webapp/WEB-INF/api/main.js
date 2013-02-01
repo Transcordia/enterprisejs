@@ -139,7 +139,13 @@ function parseStructuredData(url){
         var structuredData = {
             "title": jsoupDocument.select('meta[property=og:title]').attr('content'),
             "description": jsoupDocument.select('meta[property=og:description]').attr('content'),
-            "images": [jsoupDocument.select('meta[property=og:image]').attr('content')]
+            "images": [
+                {
+                    "src": jsoupDocument.select('meta[property=og:image]').attr('content'),
+                    "w": "",
+                    "h": ""
+                }
+            ]
         };
 
         log.info('Structured data parsed by Jsoup: {}', JSON.stringify(structuredData, null, 4));
@@ -204,6 +210,7 @@ function parseRSSFeed(xmlDoc, title, url){
             var media = item.select('media|content[type^=image]');
 
             if(media.size() > 0){
+                log.info('Getting images from media attributes');
                 var mediaIterator = media.listIterator();
                 var prevImageSize = 0, currImageSize;
 
@@ -215,7 +222,12 @@ function parseRSSFeed(xmlDoc, title, url){
 
                     if(currImageSize > prevImageSize){
                         feedImages.shift();
-                        feedImages.push(media.attr('url'));
+                        //feedImages.push(media.attr('url'));
+                        feedImages.push({
+                            "src": media.attr('url'),
+                            "w": "",
+                            "h": ""
+                        });
                     }
 
                     prevImageSize = currImageSize;
@@ -227,7 +239,12 @@ function parseRSSFeed(xmlDoc, title, url){
                     var image = imagesIterator.next();
                     var document = Jsoup.parse(image);
                     var img = document.select('img').first();
-                    feedImages.push(image.attr('src'));
+                    log.info('Feed image src: {}', image.attr('src'));
+                    feedImages.push({
+                        "src": image.attr('src'),
+                        "w": "",
+                        "h": ""
+                    });
                 }
             }
 
@@ -274,7 +291,11 @@ function parseAtomFeed(xmlDoc, title, url){
                 var image = imagesIterator.next();
                 var document = Jsoup.parse(image);
                 var img = document.select('img').first();
-                feedImages.push(image.attr('src'));
+                feedImages.push({
+                    "src": img.attr('src'),
+                    "w": "",
+                    "h": ""
+                });
             }
 
             feed = {

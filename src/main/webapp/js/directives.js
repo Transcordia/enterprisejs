@@ -11,9 +11,8 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
         link: function (scope, element, attrs) {
             var grid = [
                 [1, 2, 3],
-                [4, 5, 6],
-
-                []
+                [1, 2, 4],
+                [1, 5, 6]
             ];
 
             var gridCombinations = {
@@ -26,8 +25,8 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                     "h": 'two-row'
                 },
                 "3": {
-                    "w": 'two-col',
-                    "h": 'one-row'
+                    "w": 'one-col',
+                    "h": 'three-row'
                 },
                 "4": {
                     "w": 'three-col',
@@ -36,6 +35,18 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                 "5": {
                     "w": 'two-col',
                     "h": 'two-row'
+                },
+                "6": {
+                    "w": 'two-col',
+                    "h": 'three-row'
+                },
+                "7": {
+                    "w": 'three-col',
+                    "h": 'two-row'
+                },
+                "8": {
+                    "w": 'two-col',
+                    "h": 'one-row'
                 }
             };
 
@@ -63,7 +74,7 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
             var setup = function () {
                 var articles = '';
                 var j = 0;
-                var combos = ['2', '2', '1', '1'];
+                var combos = ['6', '1', '2'];
                 var area = {};
                 scope.articles.forEach(function (article) {
                     if(article.description === article.content){
@@ -72,7 +83,7 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
 
                     articles += '<div class="article '+ gridCombinations[combos[j]].w +' '+ gridCombinations[combos[j]].h +'">\
                                     <h4>'+ article.title +'</h4>\
-                                    <div class="article-holder"><img src="'+ article.images[0] +'"></div>\
+                                    <div class="article-holder"><img width="200px" height="100px" src="'+ article.images[0].src +'"></div>\
                                     <p class="description">' + article.description + '</p>\
                                     <p class="stats clearfix">\
                                         <span class="likes-count">' + 0 + ' likes</span>\
@@ -93,9 +104,9 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                     j++;
                 });
 
-                //element.isotope('remove', element.find('article'));
-                //element.isotope('insert', $(articles));
-                element.append(articles);
+                element.isotope('remove', element.find('article'));
+                element.isotope('insert', $(articles));
+                //element.append(articles);
             };
 
             scope.$watch('articles', function (newValue, oldValue) {
@@ -108,43 +119,42 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                 //element.isotope('reLayout');
             });
 
-            //init();
+            init();
         }
     };
 }]);
 
-angular.module('ejs.directives').directive('feedImageSlider', ['$compile', function($compile){
+angular.module('ejs.directives').directive('feedImageSlider', ['$compile', '$log', function($compile, $log){
     return {
         compile: function(element, attrs, transclude){
             return function(scope, element, attrs) {
                 scope.$watch('article', function(article){
                     if(article){
-                        var html = '<div id="feed-images" class="feed-image-slider">\
-                                    <div class="slides_container">';
+                        var html = angular.element('<div id="feed-images" class="feed-image-slider">\
+                                    <div class="slides_container">');
 
+                        var addImage = function(image) {
+                            var imgEle = angular.element('<img/>')
+                                .load(function(e){
+                                    image.w = e.target.naturalWidth;
+                                    image.h = e.target.naturalHeight;
+                                })
+                                .attr('src', image.src)
+                                .appendTo(html);
+                        };
 
-                        article.images.forEach(function(image){
-                            html += '<img src="'+ image +'" alt=""><br><br>';
-                        });
+                        article.images.forEach(addImage);
 
-                        html += '</div>\
-                                <div class="btn-group">\
-                                    <button class="btn btn-mini prev-image"><i class="icon-step-backward"></i> Prev</button>\
-                                    <button class="btn btn-mini next-image">Next <i class="icon-step-forward"></i></button>\
-                                </div>\
-                            </div>';
+                        /*html += '</div>\
+                                    <div class="btn-group">\
+                                        <button class="btn btn-mini prev-image"><i class="icon-step-backward"></i> Prev</button>\
+                                        <button class="btn btn-mini next-image">Next <i class="icon-step-forward"></i></button>\
+                                    </div>\
+                                </div>';*/
 
-                        //element.html($compile(html)(scope));
                         element.html(html);
-
-                        /*$('#feed-images').slides({
-                            next: 'next-image',
-                            prev: 'prev-image',
-                            generatePagination: false
-                        });*/
                     }
                 });
-               // $compile(element)(scope);
             }
         }
     }

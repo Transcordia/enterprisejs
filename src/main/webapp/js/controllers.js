@@ -12,7 +12,7 @@ function HomeCtrl($rootScope, $scope, $http, $log, $location) {
     $http.get('api/articles').
         success(function(data, status, headers){
             $scope.articles = data;
-            $scope.articles = $scope.articles.splice(0,4);
+            //$scope.articles = $scope.articles.splice(2,6);
         });
 
     $scope.addArticle = function(url){
@@ -26,6 +26,8 @@ function HomeCtrl($rootScope, $scope, $http, $log, $location) {
                 $rootScope.showAddUrlModal = false;
                 $scope.showAddArticleModal = true;
                 $scope.article = data.response;
+
+                $log.info($('.slides_container img'));
             });
     };
 
