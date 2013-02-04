@@ -16,5 +16,11 @@ angular.module('ejs', ['ejs.filters', 'ejs.services', 'ejs.directives', 'ui']).
             controller: ArticleCtrl
         });
 
+    $routeProvider.when('/templates',
+        {
+            templateUrl: 'partials/templates.html',
+            controller: ArticleCtrl
+        });
+
     $routeProvider.otherwise({redirectTo: '/home'});
   }]);
