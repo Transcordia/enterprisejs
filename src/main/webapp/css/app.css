@@ -53,6 +53,14 @@
     background: none;
 }
 
+.new-article img{
+    float: left;
+}
+
+.new-article .description{
+    overflow: visible;
+}
+
 .article .stats span{
     float: left;
     margin-right: 10px;
@@ -60,7 +68,7 @@
 
 .description{
     margin: 10px 0 5px;
-    overflow: hidden;
+    overflow: visible;
     word-wrap: break-word;
 }
 
@@ -150,11 +158,11 @@
 }
 
 .two-col{
-    width: 58%;
+    width: 62.2%;
 }
 
 .three-col{
-    width: 87%%;
+    width: 95.5%;
 }
 
 .one-row{

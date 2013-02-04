@@ -9,11 +9,11 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
             articles: '='
         },
         link: function (scope, element, attrs) {
-            var grid = [
+            /*var grid = [
                 [1, 2, 3],
                 [4, 5, 3],
                 [6, 7, 3]
-            ];
+            ];*/
 
             var gridCombinations = {
                 "1": {
@@ -140,11 +140,8 @@ angular.module('ejs.directives').directive('feedImageSlider', ['$compile', '$log
                                     image.w = e.target.naturalWidth;
                                     image.h = e.target.naturalHeight;
                                 })
-                                .attr('src', image.src);
-
-                            if(image.h > 50){
-                                imgEle.appendTo(html);
-                            }
+                                .attr('src', image.src)
+                                .appendTo(html);
                         };
 
                         article.images.forEach(addImage);

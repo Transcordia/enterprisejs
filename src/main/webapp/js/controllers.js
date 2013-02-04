@@ -12,7 +12,7 @@ function HomeCtrl($rootScope, $scope, $http, $log, $location, truncate) {
     $http.get('api/articles')
         .success(function(data, status, headers){
             $scope.articles = data;
-            //$scope.articles = $scope.articles.splice(2,7);
+            //$scope.articles = $scope.articles.splice(1);
         });
 
     $scope.addArticle = function(url){
@@ -45,9 +45,9 @@ function HomeCtrl($rootScope, $scope, $http, $log, $location, truncate) {
         }*/
 
         // truncate long descriptions
-        /*if(stripped.length > 200){
-            article.description = truncate(stripped, 50);
-        }*/
+        if(stripped.split(" ").length > 100){
+            article.description = truncate(stripped, 100);
+        }
 
         // loop through the images and remove any images that are too small
         // in this case, any images with a height less than 50px
@@ -61,7 +61,8 @@ function HomeCtrl($rootScope, $scope, $http, $log, $location, truncate) {
         article.description = stripped;
 
         // assign this article a layout based on its content
-        article.layout = '1';
+        article.layout = assignLayout(article);
+        $log.info('This article was assigned a layout of ' + article.layout);
 
         var data = {
             article: article
@@ -83,13 +84,35 @@ function HomeCtrl($rootScope, $scope, $http, $log, $location, truncate) {
     }
 
     function assignLayout(article){
+        var layout = 1;
         // an article can have a title, image, and description
-        // if an article has no image assign a value of 1
+
+        // if an article has no images assign a value of 1
+        if(article.images.length === 0 && article.description !== ""){
+            // if an article has no images and a long description
+            if(article.description.split(" ").length > 70){
+                return 4;
+            }
+            return 1;
+        }
+
+        // article has an image and a description
+        if(article.images.length > 0 && article.description !== ""){
+            // article has long description
+            if(article.description.split(" ").length > 40){
+                return 8;
+            }
+
+            if(article.description.split(" ").length < 20){
+                return 1;
+            }
+        }else{
+            return 1;
+        }
         // if an article has an image but no description assign a value of 1
-        // if an article has an image and a description assign a value of 2,3
         // if an article has an image with an area of at least 80,000 px
         //  and a description assign a value of 4,5
-        return article;
+        return layout;
     }
 }
 HomeCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "truncate"];
