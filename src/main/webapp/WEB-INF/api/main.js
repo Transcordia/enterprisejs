@@ -7,6 +7,8 @@ var {json} = require('ringo/jsgi/response');
 
 var {Application} = require("stick");
 
+var {standardizedNow} = require('utility/util');
+
 var Jsoup = Packages.org.jsoup.Jsoup;
 var jsoupDocument = Packages.org.jsoup.nodes.Document;
 var Parser = Packages.org.jsoup.parser.Parser;
@@ -146,7 +148,10 @@ function parseStructuredData(url){
                     "w": "",
                     "h": ""
                 }
-            ]
+            ],
+            "url": url,
+            "date": standardizedNow(),
+            "likes": 0
         };
 
         log.info('Structured data parsed by Jsoup: {}', JSON.stringify(structuredData, null, 4));
@@ -253,7 +258,10 @@ function parseRSSFeed(xmlDoc, title, url){
                 "title": item.select('title').text(),
                 "description": item.select('description').text(),
                 "content": item.select('content|encoded').text(),
-                "images": feedImages
+                "images": feedImages,
+                "url": url,
+                "date": standardizedNow(),
+                "likes": 0
             }
 
             log.info('RSS feed data parsed by Jsoup: {}', JSON.stringify(feed, null, 4));
@@ -303,7 +311,10 @@ function parseAtomFeed(xmlDoc, title, url){
                 "title": entry.select('title').text(),
                 "description": entry.select('content').text(),
                 "content": entry.select('content').text(),
-                "images": feedImages
+                "images": feedImages,
+                "url": url,
+                "date": standardizedNow(),
+                "likes": 0
             }
 
             log.info('Atom feed data parsed by Jsoup: {}', JSON.stringify(feed, null, 4));
