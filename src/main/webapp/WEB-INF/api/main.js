@@ -7,8 +7,6 @@ var {json} = require('ringo/jsgi/response');
 
 var {Application} = require("stick");
 
-var {standardizedNow} = require('utility/util');
-
 var Jsoup = Packages.org.jsoup.Jsoup;
 var jsoupDocument = Packages.org.jsoup.nodes.Document;
 var Parser = Packages.org.jsoup.parser.Parser;
@@ -48,8 +46,6 @@ app.get('/articles', function(req, id){
 
     var keySet = map.keySet();
 
-    //var iterator = items.listIterator();
-    //while(iterator.hasNext()){
     var iterator = keySet.iterator();
     while(iterator.hasNext()){
         var article = iterator.next();
@@ -353,4 +349,58 @@ function processTitles(feedArticleTitle, pageTitle){
         "fullString" : fullString,
         "substring" : substring
     }
+}
+
+/**
+ *  Returns time stamp as a string YYYY-mm-ddTHH:mm:ssZ
+ */
+function standardizedNow(d) {
+    if (!d) d = new Date();
+    return dateToISO8601(d, '-', ':');
+}
+
+/**
+ * Convert an ISO 8601 string to a JS Date object. The string passed in can have any types of
+ * separators between months or time.
+ *
+ * @param s
+ * @return {Date}
+ */
+function iso8601ToDate(s) {
+    var d = new Date();
+    var [date,time] = s.replace(/[^0-9T]/g, '').split('T');
+//	log.info('string: ' + s + ', date: {}, time: {}', date, time);
+    d.setUTCFullYear(parseInt(date.substring(0, 4)));
+    d.setUTCMonth(parseInt(date.substring(4, 6).replace(/^0/, '')) - 1);
+    d.setUTCDate(parseInt(date.substring(6, 8).replace(/^0/, '')));
+    d.setUTCHours(parseInt(time.substring(0, 2).replace(/^0/, '')));
+    d.setUTCMinutes(parseInt(time.substring(2, 4).replace(/^0/, '')));
+    d.setUTCSeconds(parseInt(time.substring(4, 6).replace(/^0/, '')));
+    d.setUTCMilliseconds(0);
+    return d;
+}
+
+/**
+ * Convert a JS date object to an ISO8601 string representation. Optional separator characters
+ * for date and time can be supplied. Default values for separators are provided.
+ *
+ * @param {Date} d A JS date object to format
+ * @param {String} dateSep Separator for date terms. Default is '-'.
+ * @param {String} timeSep Separator for time terms. Default is ':'.
+ * @return {String} The ISO8601 formatted date and time value.
+ */
+function dateToISO8601(d, dateSep, timeSep) {
+    function pad(n) {
+        return n < 10 ? '0' + n : n
+    }
+
+    if (typeof dateSep !== 'string') dateSep = '-';
+    if (typeof timeSep !== 'string') timeSep = ':';
+
+    return d.getUTCFullYear() + dateSep
+        + pad(d.getUTCMonth() + 1) + dateSep
+        + pad(d.getUTCDate()) + 'T'
+        + pad(d.getUTCHours()) + timeSep
+        + pad(d.getUTCMinutes()) + timeSep
+        + pad(d.getUTCSeconds());
 }
