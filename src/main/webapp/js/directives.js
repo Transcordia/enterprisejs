@@ -10,9 +10,9 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
         },
         link: function (scope, element, attrs) {
             var grid = [
-                [1, 1, 2],
-                [3, 3, 3],
-                [4, 5, 5]
+                [1, 2, 3],
+                [4, 5, 3],
+                [6, 7, 3]
             ];
 
             var gridCombinations = {
@@ -63,39 +63,52 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
             var setup = function () {
                 var articles = '';
                 var j = 0;
-                var combos = ['1', '8', '4', '8', '1'];
+                var combos = ['1', '1', '3', '1', '1', '1', '1'];
                 var area = {};
+                var imageWidth = "", imageHeight = "", imageSrc = "";
+                var articleHolder = "";
                 scope.articles.forEach(function (article) {
                     if(article.description === article.content){
                         article.description = truncate(article.description, 200);
                     }
 
-                    articles += '<div id="'+ article._id +'" class="article '+ gridCombinations[combos[j]].w +' '+ gridCombinations[combos[j]].h +'">\
-                                    <h4>'+ article.title +'</h4>\
-                                    <div class="article-holder"><img width="'+ article.images[0].w +'" src="'+ article.images[0].src +'"></div>\
+                    if(article.images[0]){
+                        imageWidth = article.images[0].w;
+                        imageHeight = article.images[0].h;
+                        imageSrc = article.images[0].src;
+                        articleHolder = '<div class="article-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ imageSrc +'"></div>';
+                    }
+
+                    articles += '<div id="'+ article._id +'" class="article '+ gridCombinations[article.layout].w +' '+ gridCombinations[article.layout].h +'">\
+                                    <h4>'+ article.title +'</h4>'+ articleHolder +'\
                                     <p class="description">' + article.description + '</p>\
-                                    <p class="stats clearfix">\
-                                        <span class="likes-count">' + 0 + ' likes</span>\
-                                        <span class="comment-count">' + 0 + ' comments</span>\
-                                        <span class="reblog-count">' + 0 + ' reblogs</span>\
-                                    </p>\
-                                    <div class="convo clearfix">\
-                                        <a href=""><div class="image-placeholder"></div></a>\
-                                        <p>First comment here</p>\
-                                    </div>\
-                                    <div class="comments">\
-                                        <div class="comment convo">\
-                                            <a href=""><div class="image-placeholder"></div></a>\
-                                            <p>Second comment here</p>\
-                                        </div>\
-                                    </div>\
                                 </div>';
                     j++;
+
+                    articleHolder = "";
                 });
 
-                //element.isotope('remove', element.find('article'));
-                //element.isotope('insert', $(articles));
-                element.append(articles);
+                /*
+                 <p class="stats clearfix">\
+                 <span class="likes-count">' + 0 + ' likes</span>\
+                 <span class="comment-count">' + 0 + ' comments</span>\
+                 <span class="reblog-count">' + 0 + ' reblogs</span>\
+                 </p>\
+                 <div class="convo clearfix">\
+                 <a href=""><div class="image-placeholder"></div></a>\
+                 <p>First comment here</p>\
+                 </div>\
+                 <div class="comments">\
+                 <div class="comment convo">\
+                 <a href=""><div class="image-placeholder"></div></a>\
+                 <p>Second comment here</p>\
+                 </div>\
+                 </div>\
+                 */
+
+                element.isotope('remove', element.find('article'));
+                element.isotope('insert', $(articles));
+                //element.append(articles);
             };
 
             scope.$watch('articles', function (newValue, oldValue) {
@@ -107,7 +120,7 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                 //element.isotope('reLayout');
             });
 
-            //init();
+            init();
         }
     };
 }]);
@@ -127,8 +140,11 @@ angular.module('ejs.directives').directive('feedImageSlider', ['$compile', '$log
                                     image.w = e.target.naturalWidth;
                                     image.h = e.target.naturalHeight;
                                 })
-                                .attr('src', image.src)
-                                .appendTo(html);
+                                .attr('src', image.src);
+
+                            if(image.h > 50){
+                                imgEle.appendTo(html);
+                            }
                         };
 
                         article.images.forEach(addImage);

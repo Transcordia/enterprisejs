@@ -9,10 +9,10 @@ function HomeCtrl($rootScope, $scope, $http, $log, $location, truncate) {
 
     $scope.urlToCheck = '';
 
-    $http.get('api/articles').
-        success(function(data, status, headers){
+    $http.get('api/articles')
+        .success(function(data, status, headers){
             $scope.articles = data;
-            $scope.articles = $scope.articles.splice(6,5);
+            //$scope.articles = $scope.articles.splice(2,7);
         });
 
     $scope.addArticle = function(url){
@@ -33,20 +33,35 @@ function HomeCtrl($rootScope, $scope, $http, $log, $location, truncate) {
 
     $scope.saveArticle = function(article){
         $scope.showAddArticleModal = false;
+        var largeImages = [];
 
         // strip the html tags out of the description
         var stripped = $.trim(strip(article.description));
 
         // if the article has an empty content attribute and the description
         // is long enough, let's use the description
-        if(article.content === '' && stripped.length > 200){
+        /*if(article.content === "" && stripped.length > 200){
             article.content = article.description;
-        }
+        }*/
 
         // truncate long descriptions
-        if(stripped.length > 200){
-            article.description = truncate(stripped, 30);
-        }
+        /*if(stripped.length > 200){
+            article.description = truncate(stripped, 50);
+        }*/
+
+        // loop through the images and remove any images that are too small
+        // in this case, any images with a height less than 50px
+        angular.forEach(article.images, function(image, key){
+            if(image.h > 49){
+                largeImages.push(image);
+            }
+        });
+
+        article.images = largeImages.slice(0);
+        article.description = stripped;
+
+        // assign this article a layout based on its content
+        article.layout = '1';
 
         var data = {
             article: article
@@ -67,7 +82,7 @@ function HomeCtrl($rootScope, $scope, $http, $log, $location, truncate) {
         return tmp.textContent||tmp.innerText;
     }
 
-    function assignAreaRating(article){
+    function assignLayout(article){
         // an article can have a title, image, and description
         // if an article has no image assign a value of 1
         // if an article has an image but no description assign a value of 1

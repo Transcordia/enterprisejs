@@ -117,6 +117,17 @@ app.post('/processurl', function(req){
         });
     }
 
+    feedLink = jsoupDocument.select("a[href^=http://feeds]");
+    if(feedLink.size() > 0){
+        log.info('Feedburner feed found');
+        url = feedLink.attr('href');
+        response = parseFeed(url, title);
+
+        return json({
+            response: response
+        });
+    }
+
     // couldn't find any feeds? look for structured data
     log.info('This url does not have any syndicated feeds.');
     response = parseStructuredData(req.postParams.url);
