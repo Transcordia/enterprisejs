@@ -187,6 +187,9 @@
     padding: 10px;
 }
 
+.article-template.two-rows{
+    height: 600px;
+}
 
 .article-template.square img,
 .article-template.portrait img{
