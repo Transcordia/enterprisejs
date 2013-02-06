@@ -12,7 +12,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
     $http.get('api/articles')
         .success(function(data, status, headers){
             $scope.articles = data;
-            $scope.articles = $scope.articles.splice(0,2);
+            $scope.articles = $scope.articles.splice(0,4);
         });
 
     $scope.addArticle = function(url){
@@ -120,6 +120,12 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
         // if an article has an image but no description assign a value of 1
         //  and a description assign a value of 4,5
         return layout;
+    }
+
+    function generateRandomArticles(total){
+        for(var i = 0; i){
+
+        }
     }
 }
 AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "truncate"];

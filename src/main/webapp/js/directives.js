@@ -11,7 +11,7 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
         link: function (scope, element, attrs) {
             /*var grid = [
                 [1, 2, 2],
-                [1, 2, 2]
+                [3, 3, 4]
             ];*/
 
             var gridCombinations = {
@@ -63,15 +63,11 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
 
             var setup = function () {
                 var j = 0;
-                var combos = ['2', '5'];
+                var combos = ['1', '8', '8', '1'];
                 var area = {};
                 var imageWidth = "", imageHeight = "", imageSrc = "";
                 var articleHolder = "";
                 scope.articles.forEach(function (article) {
-                    if(article.description === article.content){
-                        article.description = truncate(article.description, 200);
-                    }
-
                     if(article.images[0]){
                         imageWidth = article.images[0].w;
                         imageHeight = article.images[0].h;
