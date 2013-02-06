@@ -9,11 +9,16 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
 
     $scope.urlToCheck = '';
 
-    $http.get('api/articles')
+    $scope.articles = generateRandomArticles(20);
+
+    // give the first article a layout of one... for now
+    $scope.articles[0].layout = 1;
+
+    /*$http.get('api/articles')
         .success(function(data, status, headers){
             $scope.articles = data;
             $scope.articles = $scope.articles.splice(0,4);
-        });
+        });*/
 
     $scope.addArticle = function(url){
         var data = {
@@ -123,9 +128,127 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
     }
 
     function generateRandomArticles(total){
-        for(var i = 0; i){
+        var articles = [];
+        var article = {};
+        var content = "";
 
+        for(var i = 1; i <= total; i++){
+            content = generateContent();
+            article = {
+                "id": 1,
+                "title": generateTitle(),
+                "content": content,
+                "date": generateDate(),
+                "description": generateDescription(content),
+                "likes": Math.floor(Math.random() * 100),
+                "images": generateImages(),
+                "layout": generateLayout(),
+                "url": "somerandomwebsite.com"
+            }
+
+            articles.push(article);
         }
+
+        return articles;
+    }
+
+    function generateTitle(){
+        var title = "";
+        var min = 5, max = 20;
+        var numWords = Math.floor(Math.random() * (max - min + 1)) + min;
+        title = toTitleCase(loremIpsumSentence(numWords));
+
+        return title;
+    }
+
+    function toTitleCase(str){
+        return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+    }
+
+    function generateContent(){
+        var content = "";
+        var min = 100, max = 300;
+        var numWords = Math.floor(Math.random() * (max - min + 1)) + min;
+        content = loremIpsumSentence(numWords);
+
+        return content;
+    }
+
+    function generateDate(){
+        return standardizedNow();
+    }
+
+    function generateDescription(content){
+        var description = "";
+        var min = 10, max = content.split(" ").length;
+        description = content.split(" ").splice(0, Math.floor(Math.random() * (max - min + 1)) + min).join(" ");
+
+        return description;
+    }
+
+    function generateImages(){
+        var numImages = Math.floor(Math.random() * 5);
+        var images = [];
+        var image = {};
+        var width = 0, height = 0;
+
+        if(numImages == 0){
+            return images;
+        }else{
+            for(var i = 1; i <= numImages; i++){
+                var min = 50, max = 600;
+                width = Math.floor(Math.random() * (max - min + 1)) + min;
+                height = Math.floor(Math.random() * (max - min + 1)) + min;
+
+                image = {
+                    "src": "http://placehold.it/" + width + "x" + height,
+                    "w": width,
+                    "h": height
+                }
+                images.push(image);
+            }
+
+            return images;
+        }
+    }
+
+    function generateLayout(){
+        var layouts = ["1", "2", "3", "4", "5", "8"];
+
+        return layouts[Math.floor(Math.random() * 6)];
+    }
+
+    /**
+     *  Returns time stamp as a string YYYY-mm-ddTHH:mm:ssZ
+     */
+    function standardizedNow(d) {
+        if (!d) d = new Date();
+        return dateToISO8601(d, '-', ':');
+    }
+
+    /**
+     * Convert a JS date object to an ISO8601 string representation. Optional separator characters
+     * for date and time can be supplied. Default values for separators are provided.
+     *
+     * @param {Date} d A JS date object to format
+     * @param {String} dateSep Separator for date terms. Default is '-'.
+     * @param {String} timeSep Separator for time terms. Default is ':'.
+     * @return {String} The ISO8601 formatted date and time value.
+     */
+    function dateToISO8601(d, dateSep, timeSep) {
+        function pad(n) {
+            return n < 10 ? '0' + n : n
+        }
+
+        if (typeof dateSep !== 'string') dateSep = '-';
+        if (typeof timeSep !== 'string') timeSep = ':';
+
+        return d.getUTCFullYear() + dateSep
+            + pad(d.getUTCMonth() + 1) + dateSep
+            + pad(d.getUTCDate()) + 'T'
+            + pad(d.getUTCHours()) + timeSep
+            + pad(d.getUTCMinutes()) + timeSep
+            + pad(d.getUTCSeconds());
     }
 }
 AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "truncate"];

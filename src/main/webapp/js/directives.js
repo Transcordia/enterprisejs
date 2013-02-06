@@ -65,17 +65,17 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                 var j = 0;
                 var combos = ['1', '8', '8', '1'];
                 var area = {};
-                var imageWidth = "", imageHeight = "", imageSrc = "";
+                var imageWidth = "", imageHeight = "", src = "";
                 var articleHolder = "";
                 scope.articles.forEach(function (article) {
                     if(article.images[0]){
                         imageWidth = article.images[0].w;
                         imageHeight = article.images[0].h;
-                        imageSrc = article.images[0].src;
-                        articleHolder = '<div class="article-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ imageSrc +'"></div>';
+                        src = article.images[0].src;
+                        articleHolder = '<div class="article-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
                     }
 
-                    articles += '<div id="'+ article._id +'" class="article '+ gridCombinations[combos[j]].w +' '+ gridCombinations[combos[j]].h +'">\
+                    articles += '<div id="'+ article._id +'" class="article '+ gridCombinations[article.layout].w +' '+ gridCombinations[article.layout].h +'">\
                                     <h4>'+ article.title +'</h4>'+ articleHolder +'\
                                     <p class="description">' + article.description + '</p>\
                                 </div>';
