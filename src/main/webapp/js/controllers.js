@@ -11,12 +11,54 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
 
     $http.get('api/articles')
         .success(function(data, status, headers){
-            $scope.articles = data;
+            var totalArea = 0;
+            var i = 0;
+            // we need a preferred area total of 6 for a page
+            $scope.articles = [];
 
-            if($scope.articles.length == 0){
-                generateRandomArticles(20);
+            if(data.length == 0){
+                generateRandomArticles(50);
+            }else{
+                while(totalArea < 36){
+                    // what is the preferred area of this article?
+                    // add it to the total area
+                    totalArea += data[i].preferredArea;
+                    i++;
+
+                    $scope.articles.push(data[i]);
+                }
+
+                // now that we have our articles we need to fit them into a layout
+                var remainingArea = 36;
+                for(var j = 0; j < $scope.articles.length; j++){
+                    if($scope.articles[j].preferredArea > remainingArea){
+                        $scope.articles[j].preferredArea = remainingArea;
+                    }
+
+                    if($scope.articles[j].preferredArea == 4){
+                        $scope.articles[j].layout = "5";
+                    }
+
+                    if($scope.articles[j].preferredArea == 3){
+                        $scope.articles[j].layout = "4"
+                    }
+
+                    if($scope.articles[j].preferredArea == 2){
+                        $scope.articles[j].layout = "2"; // one cols two rows
+                        // how do i determine the orientation of an article with a preferredArea of 2
+                        // $scope.articles[j].layout = "8"; // two cols one row
+                    }
+
+                    if($scope.articles[j].preferredArea == 1){
+                        $scope.articles[j].layout = "1"
+                    }
+
+                    remainingArea -= $scope.articles[j].preferredArea;
+                }
+
+                $scope.articles[0].layout = "1";
+                //$scope.articles = $scope.articles.splice(0,4);
             }
-            //$scope.articles = $scope.articles.splice(0,4);
         });
 
     $scope.addArticle = function(url){
@@ -134,20 +176,19 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
         for(var i = 1; i <= total; i++){
             content = generateContent();
             article = {
-                //"id": 1,
                 "title": generateTitle(),
                 "content": content,
                 "date": generateDate(),
                 "description": generateDescription(content),
                 "likes": Math.floor(Math.random() * 100),
                 "images": generateImages(),
-                "layout": generateLayout(),
+                "preferredArea": preferredArea(),
                 "url": "somerandomwebsite.com"
             }
 
             // give the first article a layout of one... for now
             if(i === 1){
-                article.layout = 1;
+                article.preferredArea = 1;
             }
 
             var data = {
@@ -226,10 +267,10 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
         }
     }
 
-    function generateLayout(){
-        var layouts = ["1", "2", "3", "4", "5", "8"];
+    function preferredArea(){
+        var area = [1, 2, 3, 4];
 
-        return layouts[Math.floor(Math.random() * 6)];
+        return area[Math.floor(Math.random() * 4)];
     }
 
     /**

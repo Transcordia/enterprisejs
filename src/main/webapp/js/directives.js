@@ -12,6 +12,13 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
             /*var grid = [
                 [1, 2, 2],
                 [3, 3, 4]
+
+                [0, 0, 0]
+                [0, 0, 0]
+                [0, 0, 0]
+                [0, 0, 0]
+                [0, 0, 0]
+                [0, 0, 0]
             ];*/
 
             var gridCombinations = {
@@ -23,9 +30,9 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                     "w": 'one-col', // 2
                     "h": 'two-row'
                 },
-                "3": {
-                    "w": 'one-col', // 3
-                    "h": 'three-row'
+                "8": {
+                    "w": 'two-col', // 2
+                    "h": 'one-row'
                 },
                 "4": {
                     "w": 'three-col', // 3
@@ -34,6 +41,10 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                 "5": {
                     "w": 'two-col', // 4
                     "h": 'two-row'
+                }/*,
+                "3": {
+                    "w": 'one-col', // 3
+                    "h": 'three-row'
                 },
                 "6": {
                     "w": 'two-col',  // 5
@@ -42,11 +53,7 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                 "7": {
                     "w": 'three-col', // 5
                     "h": 'two-row'
-                },
-                "8": {
-                    "w": 'two-col', // 2
-                    "h": 'one-row'
-                }
+                }*/
             };
 
             var options = {
