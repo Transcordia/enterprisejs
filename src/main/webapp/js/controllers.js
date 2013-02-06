@@ -12,6 +12,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
     $http.get('api/articles')
         .success(function(data, status, headers){
             var totalArea = 0;
+            var gridArea = 36;
             var i = 0;
             // we need a preferred area total of 6 for a page
             $scope.articles = [];
@@ -19,7 +20,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
             if(data.length == 0){
                 generateRandomArticles(50);
             }else{
-                while(totalArea < 36){
+                while(totalArea < gridArea){
                     // what is the preferred area of this article?
                     // add it to the total area
                     totalArea += data[i].preferredArea;
@@ -29,7 +30,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
                 }
 
                 // now that we have our articles we need to fit them into a layout
-                var remainingArea = 36;
+                var remainingArea = gridArea;
                 for(var j = 0; j < $scope.articles.length; j++){
                     if($scope.articles[j].preferredArea > remainingArea){
                         $scope.articles[j].preferredArea = remainingArea;
