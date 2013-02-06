@@ -9,16 +9,15 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
 
     $scope.urlToCheck = '';
 
-    $scope.articles = generateRandomArticles(20);
-
-    // give the first article a layout of one... for now
-    $scope.articles[0].layout = 1;
-
-    /*$http.get('api/articles')
+    $http.get('api/articles')
         .success(function(data, status, headers){
             $scope.articles = data;
-            $scope.articles = $scope.articles.splice(0,4);
-        });*/
+
+            if($scope.articles.length == 0){
+                generateRandomArticles(20);
+            }
+            //$scope.articles = $scope.articles.splice(0,4);
+        });
 
     $scope.addArticle = function(url){
         var data = {
@@ -135,7 +134,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
         for(var i = 1; i <= total; i++){
             content = generateContent();
             article = {
-                "id": 1,
+                //"id": 1,
                 "title": generateTitle(),
                 "content": content,
                 "date": generateDate(),
@@ -146,7 +145,22 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
                 "url": "somerandomwebsite.com"
             }
 
-            articles.push(article);
+            // give the first article a layout of one... for now
+            if(i === 1){
+                article.layout = 1;
+            }
+
+            var data = {
+                article: article
+            };
+
+            // persist each article
+            $http.post('api/articles', data)
+                .success(function(data, status, headers){
+                    $log.info(data);
+                });
+
+            //articles.push(article);
         }
 
         return articles;
