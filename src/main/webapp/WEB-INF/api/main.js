@@ -23,6 +23,30 @@ app.get('/', function (req) {
 	});
 });
 
+app.post('/login', function(req){
+    var response = {};
+    httpclient.request({
+        url: "https://www.googleapis.com/identitytoolkit/v1/relyingparty/createAuthUrl",
+        method: 'POST',
+        data: {
+            "identifier": "jhines@pykl.com",
+            "continueUrl": "192.168.10.143:8080/ejs",
+            "openidRealm": "",
+            "oauthConsumerKey": "",
+            "oauthScope": "",
+            "uiMode": "redirect",
+            "context": "enterprisejs"
+        },
+        success: function(content, status, contentType, exchange){
+            log.info('Content in the success callback: {}', content);
+            response = content;
+        },
+        error: function(message, status, exchange){
+            log.info('There was an error: {}', message);
+        }
+    });
+});
+
 app.post('/articles', function(req){
     var article = req.postParams.article;
 

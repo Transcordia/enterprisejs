@@ -7,7 +7,7 @@ angular.module('ejs', ['ejs.filters', 'ejs.services', 'ejs.directives', 'ui']).
     $routeProvider.when('/home',
         {
             templateUrl: 'partials/home.html',
-            controller: HomeCtrl
+            controller: AppCtrl
         });
 
     $routeProvider.when('/article/:id',
@@ -20,6 +20,34 @@ angular.module('ejs', ['ejs.filters', 'ejs.services', 'ejs.directives', 'ui']).
         {
             templateUrl: 'partials/templates.html',
             controller: ArticleCtrl
+        });
+
+    $routeProvider.when('/login',
+        {
+            templateUrl: 'partials/login.html',
+            controller: AppCtrl
+        });
+
+    $routeProvider.when('/logout',
+        {
+            templateUrl: 'partials/logout.html',
+            controller: AppCtrl
+        });
+
+    $routeProvider.when('/signup',
+        {
+            templateUrl: 'partials/signup.html',
+            controller: AppCtrl
+        });
+
+    $routeProvider.when('/gitcallback',
+        {
+            controller: GITCtrl
+        });
+
+    $routeProvider.when('/userstatus',
+        {
+            controller: UserStatusCtrl
         });
 
     $routeProvider.otherwise({redirectTo: '/home'});

@@ -3,7 +3,7 @@
 /* Controllers */
 
 
-function HomeCtrl($rootScope, $scope, $http, $log, $location, truncate) {
+function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routeParams) {
     $rootScope.showAddUrlModal = false;
     $scope.showAddArticleModal = false;
 
@@ -30,6 +30,13 @@ function HomeCtrl($rootScope, $scope, $http, $log, $location, truncate) {
                 $log.info($('.slides_container img'));
             });
     };
+
+    $rootScope.doLogin = function(){
+        $http.post('api/login')
+            .success(function(data, status){
+                $log.info(data);
+            })
+    }
 
     $scope.saveArticle = function(article){
         $scope.showAddArticleModal = false;
@@ -115,7 +122,18 @@ function HomeCtrl($rootScope, $scope, $http, $log, $location, truncate) {
         return layout;
     }
 }
-HomeCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "truncate"];
+AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "truncate"];
+
+function UserStatusCtrl($scope, $http, $log){
+    $log.info('UserStatusCtrl called!');
+
+}
+UserStatusCtrl.inject = ["$scope", "$http", "$log"];
+
+function GITCtrl($scope, $http, $log){
+    $log.info('GITCtrl called!');
+}
+GITCtrl.inject = ["$scope", "http", "$log"];
 
 function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout){
     $timeout(function(){
@@ -124,5 +142,7 @@ function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $
                 $scope.article = data;
             });
     }, 1000);
+
+    $scope.articleLayout = "one-col three-row"
 }
 ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout"];
