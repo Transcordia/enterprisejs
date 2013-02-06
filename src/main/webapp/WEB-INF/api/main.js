@@ -37,14 +37,18 @@ app.post('/login', function(req){
             "uiMode": "redirect",
             "context": "enterprisejs"
         },
+        contentType: 'application/json',
         success: function(content, status, contentType, exchange){
             log.info('Content in the success callback: {}', content);
             response = content;
         },
         error: function(message, status, exchange){
             log.info('There was an error: {}', message);
+            log.info('Exchange.content: ', JSON.stringify(exchange.content, null, 4));
         }
     });
+
+    return json({});
 });
 
 app.post('/articles', function(req){

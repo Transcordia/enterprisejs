@@ -57,7 +57,8 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
             };
 
             var init = function() {
-                element.isotope(options);
+                //element.isotope(options);
+                element.nested();
             };
 
             var setup = function () {
@@ -106,21 +107,23 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                  </div>\
                  */
 
-                element.isotope('remove', element.find('article'));
-                element.isotope('insert', $(articles));
+                //element.isotope('remove', element.find('article'));
+                //element.isotope('insert', $(articles));
                 //element.append(articles);
+                element.append(articles).nested('append', articles);
             };
 
             scope.$watch('articles', function (newValue, oldValue) {
                 //if (newValue.length == 0) init();
                 if (newValue && newValue.length > 0){
+                    element.nested();
                     setup();
                 }
 
                 //element.isotope('reLayout');
             });
 
-            init();
+            //init();
         }
     };
 }]);
