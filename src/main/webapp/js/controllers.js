@@ -331,3 +331,8 @@ function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $
     $scope.articleLayout = "one-col three-row"
 }
 ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout"];
+
+function SortTest($rootScope, $scope)
+{
+    $scope.articles = generateRandomArticles(10);
+}

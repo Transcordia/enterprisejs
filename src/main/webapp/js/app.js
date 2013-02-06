@@ -50,5 +50,11 @@ angular.module('ejs', ['ejs.filters', 'ejs.services', 'ejs.directives', 'ui']).
             controller: UserStatusCtrl
         });
 
+    $routeProvider.when('/sorttest',
+        {
+            controller: SortTest,
+            templateUrl: 'partials/sorttest.html'
+        });
+
     $routeProvider.otherwise({redirectTo: '/home'});
   }]);
