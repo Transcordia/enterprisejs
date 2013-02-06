@@ -10,9 +10,8 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
         },
         link: function (scope, element, attrs) {
             /*var grid = [
-                [1, 2, 3],
-                [4, 5, 3],
-                [6, 7, 3]
+                [1, 2, 2],
+                [1, 2, 2]
             ];*/
 
             var gridCombinations = {
@@ -57,14 +56,14 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
             };
 
             var init = function() {
-                //element.isotope(options);
-                element.nested();
+                element.isotope(options);
             };
 
+            var articles = '';
+
             var setup = function () {
-                var articles = '';
                 var j = 0;
-                var combos = ['1', '1', '3', '1', '1', '1', '1'];
+                var combos = ['2', '5'];
                 var area = {};
                 var imageWidth = "", imageHeight = "", imageSrc = "";
                 var articleHolder = "";
@@ -80,7 +79,7 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                         articleHolder = '<div class="article-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ imageSrc +'"></div>';
                     }
 
-                    articles += '<div id="'+ article._id +'" class="article '+ gridCombinations[article.layout].w +' '+ gridCombinations[article.layout].h +'">\
+                    articles += '<div id="'+ article._id +'" class="article '+ gridCombinations[combos[j]].w +' '+ gridCombinations[combos[j]].h +'">\
                                     <h4>'+ article.title +'</h4>'+ articleHolder +'\
                                     <p class="description">' + article.description + '</p>\
                                 </div>';
@@ -89,41 +88,20 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                     articleHolder = "";
                 });
 
-                /*
-                 <p class="stats clearfix">\
-                 <span class="likes-count">' + 0 + ' likes</span>\
-                 <span class="comment-count">' + 0 + ' comments</span>\
-                 <span class="reblog-count">' + 0 + ' reblogs</span>\
-                 </p>\
-                 <div class="convo clearfix">\
-                 <a href=""><div class="image-placeholder"></div></a>\
-                 <p>First comment here</p>\
-                 </div>\
-                 <div class="comments">\
-                 <div class="comment convo">\
-                 <a href=""><div class="image-placeholder"></div></a>\
-                 <p>Second comment here</p>\
-                 </div>\
-                 </div>\
-                 */
-
-                //element.isotope('remove', element.find('article'));
-                //element.isotope('insert', $(articles));
-                //element.append(articles);
-                element.append(articles).nested('append', articles);
+                element.isotope('remove', element.find('article'));
+                element.isotope('insert', $(articles));
             };
 
             scope.$watch('articles', function (newValue, oldValue) {
                 //if (newValue.length == 0) init();
                 if (newValue && newValue.length > 0){
-                    element.nested();
                     setup();
                 }
 
-                //element.isotope('reLayout');
+                element.isotope('reLayout');
             });
 
-            //init();
+            init();
         }
     };
 }]);
@@ -148,13 +126,6 @@ angular.module('ejs.directives').directive('feedImageSlider', ['$compile', '$log
                         };
 
                         article.images.forEach(addImage);
-
-                        /*html += '</div>\
-                                    <div class="btn-group">\
-                                        <button class="btn btn-mini prev-image"><i class="icon-step-backward"></i> Prev</button>\
-                                        <button class="btn btn-mini next-image">Next <i class="icon-step-forward"></i></button>\
-                                    </div>\
-                                </div>';*/
 
                         element.html(html);
                     }

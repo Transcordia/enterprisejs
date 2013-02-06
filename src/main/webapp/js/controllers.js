@@ -12,7 +12,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
     $http.get('api/articles')
         .success(function(data, status, headers){
             $scope.articles = data;
-            //$scope.articles = $scope.articles.splice(1);
+            $scope.articles = $scope.articles.splice(0,2);
         });
 
     $scope.addArticle = function(url){
@@ -116,8 +116,8 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
         }else{
             return 1;
         }
+
         // if an article has an image but no description assign a value of 1
-        // if an article has an image with an area of at least 80,000 px
         //  and a description assign a value of 4,5
         return layout;
     }
