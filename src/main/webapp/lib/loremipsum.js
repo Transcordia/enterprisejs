@@ -119,7 +119,8 @@ function rand(max, min)
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function generateRandomArticles(total){
+function generateRandomArticles(total, save){
+    save = save || true;
     var articles = [];
     var article = {};
     var content = "";
@@ -134,9 +135,26 @@ function generateRandomArticles(total){
             "description": generateDescription(content),
             "likes": Math.floor(Math.random() * 100),
             "images": generateImages(),
-            "layout": generateLayout(),
+            "preferredArea": preferredArea(),
             "url": "somerandomwebsite.com",
             "views": 0//((Math.floor(Math.random() * 100) + 10))
+        }
+
+        // give the first article a layout of one... for now
+        if(i === 1){
+            article.preferredArea = 1;
+        }
+
+        var data = {
+            article: article
+        };
+
+        // persist each article
+        if(save) {
+            $http.post('api/articles', data)
+                .success(function(data, status, headers){
+                    $log.info(data);
+                });
         }
 
         articles.push(article);
@@ -207,10 +225,11 @@ function generateImages(){
     }
 }
 
-function generateLayout(){
-    var layouts = ["1", "2", "3", "4", "5", "8"];
 
-    return layouts[Math.floor(Math.random() * 6)];
+function preferredArea(){
+    var area = [1, 2, 3, 4];
+
+    return area[Math.floor(Math.random() * 4)];
 }
 
 /**
