@@ -120,7 +120,7 @@ function rand(max, min)
 }
 
 function generateRandomArticles(total, save){
-    save = save || true;
+    save = save || false;
     var articles = [];
     var article = {};
     var content = "";
@@ -151,10 +151,7 @@ function generateRandomArticles(total, save){
 
         // persist each article
         if(save) {
-            $http.post('api/articles', data)
-                .success(function(data, status, headers){
-                    $log.info(data);
-                });
+            save(data);
         }
 
         articles.push(article);

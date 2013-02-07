@@ -18,7 +18,12 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
             $scope.articles = [];
 
             if(data.length == 0){
-                generateRandomArticles(50);
+                generateRandomArticles(50, function(data) {
+                    $http.post('api/articles', data)
+                        .success(function(data, status, headers){
+                            $log.info(data);
+                        });
+                });
             }else{
                 while(totalArea < gridArea){
                     // what is the preferred area of this article?
