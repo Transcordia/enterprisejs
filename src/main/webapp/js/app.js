@@ -22,34 +22,6 @@ angular.module('ejs', ['ejs.filters', 'ejs.services', 'ejs.directives', 'ui']).
             controller: ArticleCtrl
         });
 
-    $routeProvider.when('/login',
-        {
-            templateUrl: 'partials/login.html',
-            controller: AppCtrl
-        });
-
-    $routeProvider.when('/logout',
-        {
-            templateUrl: 'partials/logout.html',
-            controller: AppCtrl
-        });
-
-    $routeProvider.when('/signup',
-        {
-            templateUrl: 'partials/signup.html',
-            controller: AppCtrl
-        });
-
-    $routeProvider.when('/gitcallback',
-        {
-            controller: GITCtrl
-        });
-
-    $routeProvider.when('/userstatus',
-        {
-            controller: UserStatusCtrl
-        });
-
     $routeProvider.when('/sorttest',
         {
             controller: SortTest,

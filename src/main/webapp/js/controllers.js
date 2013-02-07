@@ -63,7 +63,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
                 }
 
                 $scope.articles[0].layout = "1";
-                //$scope.articles = $scope.articles.splice(0,4);
+                //$scope.articles[1].layout = "2";
             }
         });
 
@@ -175,17 +175,6 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
     }
 }
 AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "truncate"];
-
-function UserStatusCtrl($scope, $http, $log){
-    $log.info('UserStatusCtrl called!');
-
-}
-UserStatusCtrl.inject = ["$scope", "$http", "$log"];
-
-function GITCtrl($scope, $http, $log){
-    $log.info('GITCtrl called!');
-}
-GITCtrl.inject = ["$scope", "http", "$log"];
 
 function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout){
     $timeout(function(){
