@@ -12,13 +12,13 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
     $http.get('api/articles')
         .success(function(data, status, headers){
             var totalArea = 0;
-            var gridArea = 36;
+            var gridArea = 60;
             var i = 0;
             // we need a preferred area total of 6 for a page
             $scope.articles = [];
 
             if(data.length == 0){
-                generateRandomArticles(50);
+                generateRandomArticles(100);
             }else{
                 while(totalArea < gridArea){
                     // what is the preferred area of this article?
@@ -33,7 +33,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
                 var remainingArea = gridArea;
                 for(var j = 0; j < $scope.articles.length; j++){
                     if($scope.articles[j].preferredArea > remainingArea){
-                        $scope.articles[j].preferredArea = remainingArea;
+                        $scope.articles[j].preferredArea = remainingArea == 0 ? 1 : remainingArea;
                     }
 
                     if($scope.articles[j].preferredArea == 4){

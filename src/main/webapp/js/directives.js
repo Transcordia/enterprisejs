@@ -9,17 +9,20 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
             articles: '='
         },
         link: function (scope, element, attrs) {
-            /*var grid = [
-                [1, 2, 2],
-                [3, 3, 4]
-
+            var grid = [
+                [1, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0],
                 [0, 0, 0]
-                [0, 0, 0]
-                [0, 0, 0]
-                [0, 0, 0]
-                [0, 0, 0]
-                [0, 0, 0]
-            ];*/
+            ];
 
             var gridCombinations = {
                 "1": {
@@ -95,13 +98,18 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                 element.isotope('insert', $(articles));
             };
 
+            var findEmptySpaces = function(){
+                element.children('.article').each(function(article){
+                    console.log($(this).attr("class"));
+                });
+            }
+
             scope.$watch('articles', function (newValue, oldValue) {
                 //if (newValue.length == 0) init();
                 if (newValue && newValue.length > 0){
                     setup();
+                    //findEmptySpaces();
                 }
-
-                element.isotope('reLayout');
             });
 
             init();
