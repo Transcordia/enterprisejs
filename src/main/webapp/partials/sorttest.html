@@ -1,0 +1,8 @@
+<div id="container">
+    <button ng-click="start()">Start Sim</button> <button ng-click="stop()">Stop Sim</button>
+    <div id="chart" class="rickshaw_graph"></div>
+    <ol>
+        <li ng-repeat="article in articles">ID: {{article.id}} : Score: {{article.score}} : Views: {{article.views}} :Age: {{article.age}} : <button ng-click="(article.views = article.views + 10)">Add 10 views</button></li>
+    </ol>
+
+</div>
