@@ -114,6 +114,11 @@ function loremIpsumParagraph(numWords){
 /**
  * Article generation by James Hines
  ***/
+function rand(max, min)
+{
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 function generateRandomArticles(total){
     var articles = [];
     var article = {};
@@ -143,7 +148,7 @@ function generateRandomArticles(total){
 function generateTitle(){
     var title = "";
     var min = 5, max = 20;
-    var numWords = Math.floor(Math.random() * (max - min + 1)) + min;
+    var numWords = rand(max, min);
     title = toTitleCase(loremIpsumSentence(numWords));
 
     return title;
@@ -156,20 +161,22 @@ function toTitleCase(str){
 function generateContent(){
     var content = "";
     var min = 100, max = 300;
-    var numWords = Math.floor(Math.random() * (max - min + 1)) + min;
+    var numWords = rand(max, min);
     content = loremIpsumSentence(numWords);
 
     return content;
 }
 
 function generateDate(){
-    return standardizedNow();
+    var MILISECONDS_IN_HOURS = 3600000;
+    var d = Date.now() - (rand(1, 12) * MILISECONDS_IN_HOURS);
+    return standardizedNow(new Date(d));
 }
 
 function generateDescription(content){
     var description = "";
     var min = 10, max = content.split(" ").length;
-    description = content.split(" ").splice(0, Math.floor(Math.random() * (max - min + 1)) + min).join(" ");
+    description = content.split(" ").splice(0, rand(max, min)).join(" ");
 
     return description;
 }
@@ -185,8 +192,8 @@ function generateImages(){
     }else{
         for(var i = 1; i <= numImages; i++){
             var min = 50, max = 600;
-            width = Math.floor(Math.random() * (max - min + 1)) + min;
-            height = Math.floor(Math.random() * (max - min + 1)) + min;
+            width = rand(max, min);
+            height = rand(max, min);
 
             image = {
                 "src": "http://placehold.it/" + width + "x" + height,

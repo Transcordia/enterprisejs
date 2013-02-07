@@ -332,7 +332,141 @@ function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $
 }
 ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout"];
 
-function SortTest($rootScope, $scope)
+function SortTest($rootScope, $scope, $timeout)
 {
+    var MILISECONDS_IN_HOURS = 3600000;
+    $scope.pause = true;
     $scope.articles = generateRandomArticles(10);
+
+    function calculateScore(article, now)
+    {
+        var age = Math.floor((now - new Date(article.date).getTime())/MILISECONDS_IN_HOURS);
+        var gravity = 2.2;
+        article.score = (article.views) / (Math.pow(age + 2, gravity));
+        article.age = age;
+    }
+
+    function changeScore(current_time)
+    {
+        console.log("OLD DATE: " + (new Date($scope.articles[0].date))+" NEW DATE: ",new Date(current_time));
+        for(var i = 0; i < $scope.articles.length; i++)
+        {
+            $scope.articles[i].views += rand(5,10);
+
+            calculateScore($scope.articles[i], current_time);
+        }
+
+        $scope.articles.sort(function(a, b) {
+            //we actually want higher scores to move to the top, so this is the reverse the comparison on mdn
+            if(a.score > b.score)
+            {
+                return -1;
+            }
+            if(a.score < b.score)
+            {
+                return 1;
+            }
+
+            return 0;
+        });
+    }
+
+    //age is "difference in hours from article to now"
+    function colorFromTime(age, index)
+    {
+        function pad(n) {
+            n = Math.floor(n).toString(16);
+            return n.length < 2 ? n + '0' : n
+        }
+               //R  G  B
+        return '#' + pad(age) + pad(index) + pad(rand(0, 4));
+    }
+
+    function generateData(rank, time)
+    {
+        return { "x": time, "y": (22 - rank) };
+    }
+
+    function generateGraphData()
+    {
+        changeScore(0);
+        var series = [];
+
+        for(var i = 0; i < $scope.articles.length; i++)
+        {
+            var age = (Date.now() - new Date($scope.articles[i].date).getTime())/MILISECONDS_IN_HOURS;
+            series.push({ "data": [], "color": colorFromTime(age, i) });
+            series[i].data.push(generateData(i, 0));
+        }
+
+        return series;
+    }
+
+    var graph = new Rickshaw.Graph({
+        element: document.querySelector("#chart"),
+        width: 1000,
+        height: 250,
+        renderer: 'line',
+        series: generateGraphData()
+    });
+
+    /*var hoverDetail = new Rickshaw.Graph.HoverDetail( {
+        graph: graph,
+        formatter: function(series, x, y) {
+            return 'Time: '+x+ ' Rank: '+Math.floor(y + 22);
+        }
+    } );*/
+
+    graph.render();
+
+    $scope.stop = function()
+    {
+        $scope.pause = true;
+    }
+
+    $scope.start = function()
+    {
+        $scope.pause = false;
+        $timeout(update, 1000);
+    }
+
+    var offset = 1;
+    function update() {
+        //gives us the time in the future
+        var current_time = Date.now() + (MILISECONDS_IN_HOURS * offset);
+        var id = $scope.articles.length + 1;
+        $scope.articles.push({
+            "id": id,
+            "title": generateTitle(),
+            "content": '',
+            "date": standardizedNow(new Date(current_time)),
+            "description": '',
+            "likes": Math.floor(Math.random() * 100),
+            "images": '',
+            "layout": '',
+            "url": "somerandomwebsite.com",
+            "views": 0,//((Math.floor(Math.random() * 100) + 10))
+            "age": offset
+        });
+        graph.series.push({ "data": [], "color": colorFromTime(offset, id) });
+        graph.series[graph.series.length - 1].data.push(generateData(id, offset));
+
+        changeScore(current_time);
+
+        //generate the updated graph results
+        for(var i = 0; i < $scope.articles.length; i++)
+        {
+            graph.series[$scope.articles[i].id - 1].data.push(generateData(i, offset));
+        }
+        graph.update();
+
+        offset++;
+        if(offset === 12)
+        {
+            $scope.pause = true;
+        }
+        if(!$scope.pause) {
+            $timeout(update, 1000);
+        }
+    }
 }
