@@ -18,7 +18,12 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
             $scope.articles = [];
 
             if(data.length == 0){
-                generateRandomArticles(100);
+                generateRandomArticles(50, function(data) {
+                    $http.post('api/articles', data)
+                        .success(function(data, status, headers){
+                            $log.info(data);
+                        });
+                });
             }else{
                 while(totalArea < gridArea){
                     // what is the preferred area of this article?
@@ -168,144 +173,6 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
         //  and a description assign a value of 4,5
         return layout;
     }
-
-    function generateRandomArticles(total){
-        var articles = [];
-        var article = {};
-        var content = "";
-
-        for(var i = 1; i <= total; i++){
-            content = generateContent();
-            article = {
-                "title": generateTitle(),
-                "content": content,
-                "date": generateDate(),
-                "description": generateDescription(content),
-                "likes": Math.floor(Math.random() * 100),
-                "images": generateImages(),
-                "preferredArea": preferredArea(),
-                "url": "somerandomwebsite.com"
-            }
-
-            // give the first article a layout of one... for now
-            if(i === 1){
-                article.preferredArea = 1;
-            }
-
-            var data = {
-                article: article
-            };
-
-            // persist each article
-            $http.post('api/articles', data)
-                .success(function(data, status, headers){
-                    $log.info(data);
-                });
-
-            //articles.push(article);
-        }
-
-        return articles;
-    }
-
-    function generateTitle(){
-        var title = "";
-        var min = 5, max = 20;
-        var numWords = Math.floor(Math.random() * (max - min + 1)) + min;
-        title = toTitleCase(loremIpsumSentence(numWords));
-
-        return title;
-    }
-
-    function toTitleCase(str){
-        return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-    }
-
-    function generateContent(){
-        var content = "";
-        var min = 100, max = 300;
-        var numWords = Math.floor(Math.random() * (max - min + 1)) + min;
-        content = loremIpsumSentence(numWords);
-
-        return content;
-    }
-
-    function generateDate(){
-        return standardizedNow();
-    }
-
-    function generateDescription(content){
-        var description = "";
-        var min = 10, max = content.split(" ").length;
-        description = content.split(" ").splice(0, Math.floor(Math.random() * (max - min + 1)) + min).join(" ");
-
-        return description;
-    }
-
-    function generateImages(){
-        var numImages = Math.floor(Math.random() * 5);
-        var images = [];
-        var image = {};
-        var width = 0, height = 0;
-
-        if(numImages == 0){
-            return images;
-        }else{
-            for(var i = 1; i <= numImages; i++){
-                var min = 50, max = 600;
-                width = Math.floor(Math.random() * (max - min + 1)) + min;
-                height = Math.floor(Math.random() * (max - min + 1)) + min;
-
-                image = {
-                    "src": "http://placehold.it/" + width + "x" + height,
-                    "w": width,
-                    "h": height
-                }
-                images.push(image);
-            }
-
-            return images;
-        }
-    }
-
-    function preferredArea(){
-        var area = [1, 2, 3, 4];
-
-        return area[Math.floor(Math.random() * 4)];
-    }
-
-    /**
-     *  Returns time stamp as a string YYYY-mm-ddTHH:mm:ssZ
-     */
-    function standardizedNow(d) {
-        if (!d) d = new Date();
-        return dateToISO8601(d, '-', ':');
-    }
-
-    /**
-     * Convert a JS date object to an ISO8601 string representation. Optional separator characters
-     * for date and time can be supplied. Default values for separators are provided.
-     *
-     * @param {Date} d A JS date object to format
-     * @param {String} dateSep Separator for date terms. Default is '-'.
-     * @param {String} timeSep Separator for time terms. Default is ':'.
-     * @return {String} The ISO8601 formatted date and time value.
-     */
-    function dateToISO8601(d, dateSep, timeSep) {
-        function pad(n) {
-            return n < 10 ? '0' + n : n
-        }
-
-        if (typeof dateSep !== 'string') dateSep = '-';
-        if (typeof timeSep !== 'string') timeSep = ':';
-
-        return d.getUTCFullYear() + dateSep
-            + pad(d.getUTCMonth() + 1) + dateSep
-            + pad(d.getUTCDate()) + 'T'
-            + pad(d.getUTCHours()) + timeSep
-            + pad(d.getUTCMinutes()) + timeSep
-            + pad(d.getUTCSeconds());
-    }
 }
 AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "truncate"];
 
@@ -331,3 +198,142 @@ function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $
     $scope.articleLayout = "one-col three-row"
 }
 ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout"];
+
+function SortTest($rootScope, $scope, $timeout)
+{
+    var MILISECONDS_IN_HOURS = 3600000;
+    $scope.pause = true;
+    $scope.articles = generateRandomArticles(10, false);
+
+    function calculateScore(article, now)
+    {
+        var age = Math.floor((now - new Date(article.date).getTime())/MILISECONDS_IN_HOURS);
+        var gravity = 2.2;
+        article.score = (article.views) / (Math.pow(age + 2, gravity));
+        article.age = age;
+    }
+
+    function changeScore(current_time)
+    {
+        console.log("OLD DATE: " + (new Date($scope.articles[0].date))+" NEW DATE: ",new Date(current_time));
+        for(var i = 0; i < $scope.articles.length; i++)
+        {
+            $scope.articles[i].views += rand(5,10);
+
+            calculateScore($scope.articles[i], current_time);
+        }
+
+        $scope.articles.sort(function(a, b) {
+            //we actually want higher scores to move to the top, so this is the reverse the comparison on mdn
+            if(a.score > b.score)
+            {
+                return -1;
+            }
+            if(a.score < b.score)
+            {
+                return 1;
+            }
+
+            return 0;
+        });
+    }
+
+    //age is "difference in hours from article to now"
+    function colorFromTime(age, index)
+    {
+        function pad(n) {
+            n = Math.floor(n).toString(16);
+            return n.length < 2 ? n + '0' : n
+        }
+               //R  G  B
+        return '#' + pad(age) + pad(index) + pad(rand(0, 4));
+    }
+
+    function generateData(rank, time)
+    {
+        return { "x": time, "y": (22 - rank) };
+    }
+
+    function generateGraphData()
+    {
+        changeScore(0);
+        var series = [];
+
+        for(var i = 0; i < $scope.articles.length; i++)
+        {
+            var age = (Date.now() - new Date($scope.articles[i].date).getTime())/MILISECONDS_IN_HOURS;
+            series.push({ "data": [], "color": colorFromTime(age, i) });
+            series[i].data.push(generateData(i, 0));
+        }
+
+        return series;
+    }
+
+    var graph = new Rickshaw.Graph({
+        element: document.querySelector("#chart"),
+        width: 1000,
+        height: 250,
+        renderer: 'line',
+        series: generateGraphData()
+    });
+
+    /*var hoverDetail = new Rickshaw.Graph.HoverDetail( {
+        graph: graph,
+        formatter: function(series, x, y) {
+            return 'Time: '+x+ ' Rank: '+Math.floor(y + 22);
+        }
+    } );*/
+
+    graph.render();
+
+    $scope.stop = function()
+    {
+        $scope.pause = true;
+    }
+
+    $scope.start = function()
+    {
+        $scope.pause = false;
+        $timeout(update, 1000);
+    }
+
+    var offset = 1;
+    function update() {
+        //gives us the time in the future
+        var current_time = Date.now() + (MILISECONDS_IN_HOURS * offset);
+        var id = $scope.articles.length + 1;
+        $scope.articles.push({
+            "id": id,
+            "title": generateTitle(),
+            "content": '',
+            "date": standardizedNow(new Date(current_time)),
+            "description": '',
+            "likes": Math.floor(Math.random() * 100),
+            "images": '',
+            "layout": '',
+            "url": '',
+            "views": 0,//((Math.floor(Math.random() * 100) + 10))
+            "age": offset
+        });
+        graph.series.push({ "data": [], "color": colorFromTime(offset, id) });
+        graph.series[graph.series.length - 1].data.push(generateData(id, offset));
+
+        changeScore(current_time);
+
+        //generate the updated graph results
+        for(var i = 0; i < $scope.articles.length; i++)
+        {
+            graph.series[$scope.articles[i].id - 1].data.push(generateData(i, offset));
+        }
+        graph.update();
+
+        offset++;
+        if(offset === 12)
+        {
+            $scope.pause = true;
+        }
+        if(!$scope.pause) {
+            $timeout(update, 1000);
+        }
+    }
+}

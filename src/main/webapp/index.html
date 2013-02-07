@@ -10,12 +10,22 @@
 
     <link rel="stylesheet" href="lib/angular-ui/angular-ui.css"/>
 
+    <style>
+        .rickshaw_graph {
+            position: relative;
+        }
+        .rickshaw_graph svg {
+            display: block;
+            overflow: hidden;
+        }
+    </style>
 </head>
 <body>
 <div class="navbar">
     <div class="navbar-inner">
         <h3><a ng-href="#/home">EnterpriseJS</a></h3>
         <ul id="navigation">
+            <li><a ng-href="#/sorttest">Test sorting</a></li>
             <li><p ng-click="showAddUrlModal=true">Add <i class="icon-plus"></i></p></li>
             <li><a ng-href="#/templates">Templates</a></li>
             <li><a ng-click="doLogin()">Login</a></li>
@@ -48,5 +58,8 @@
 <script src="lib/slides.jquery.js"></script>
 <script src="lib/loremipsum.js"></script>
 
+
+<script src="http://code.shutterstock.com/rickshaw/vendor/d3.v2.js"></script>
+<script src="http://code.shutterstock.com/rickshaw/rickshaw.js"></script>
 </body>
 </html>
