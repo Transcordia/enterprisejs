@@ -3,62 +3,12 @@
 /* Directives */
 angular.module('ejs.directives', []);
 
-angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '$log', function (truncate, $timeout, $log) {
+angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$log', function (truncate, $timeout, $log) {
     return {
         scope: {
             articles: '='
         },
         link: function (scope, element, attrs) {
-            var grid = [
-                [1, 0, 0],
-                [0, 0, 0],
-                [0, 0, 0],
-                [0, 0, 0],
-                [0, 0, 0],
-                [0, 0, 0],
-                [0, 0, 0],
-                [0, 0, 0],
-                [0, 0, 0],
-                [0, 0, 0],
-                [0, 0, 0],
-                [0, 0, 0]
-            ];
-
-            /*var gridCombinations = {
-                "1": {
-                    "w": 'one-col', // 1
-                    "h": 'one-row'
-                },
-                "2": {
-                    "w": 'one-col', // 2
-                    "h": 'two-row'
-                },
-                "8": {
-                    "w": 'two-col', // 2
-                    "h": 'one-row'
-                },
-                "4": {
-                    "w": 'three-col', // 3
-                    "h": 'one-row'
-                },
-                "5": {
-                    "w": 'two-col', // 4
-                    "h": 'two-row'
-                }/*,
-                "3": {
-                    "w": 'one-col', // 3
-                    "h": 'three-row'
-                },
-                "6": {
-                    "w": 'two-col',  // 5
-                    "h": 'three-row'
-                },
-                "7": {
-                    "w": 'three-col', // 5
-                    "h": 'two-row'
-                }
-            };*/
-
             var gridCombinations = {
                 "1": {
                     "size": "size11"
@@ -81,11 +31,6 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                 selector: ".article",
                 minWidth: 340,
                 gutter: 32
-            };
-
-            var init = function() {
-                //element.isotope(options);
-                //element.nested({selector: ".article", minWidth: 225, gutter: 32})
             };
 
             var articles = '';
@@ -113,9 +58,6 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                     articleHolder = "";
                 });
 
-                //element.isotope('remove', element.find('article'));
-                //element.isotope('insert', $(articles));
-                //element.nested({selector: ".article", minWidth: 225, gutter: 32})
                 element.append(articles);
                 element.nested(options);
             };
@@ -126,8 +68,6 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                     setup();
                 }
             });
-
-            //init();
         }
     };
 }]);
