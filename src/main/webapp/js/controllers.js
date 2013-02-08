@@ -173,7 +173,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
 }
 AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "truncate"];
 
-function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout){
+function EditArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout){
     $timeout(function(){
         $http.get('api/articles/' + $routeParams.id)
             .success(function(data, status, headers){
@@ -183,12 +183,35 @@ function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $
 
     $scope.articleLayout = "one-col three-row"
 }
+EditArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout"];
+
+
+/**
+ * Single article view
+ *
+ * @param $rootScope
+ * @param $scope
+ * @param $http
+ * @param $log
+ * @param $location
+ * @param $routeParams
+ * @param $timeout
+ */
+function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout){   console.log("id: "+$routeParams.id);
+    $http.get('api/articles/' + $routeParams.id)
+        .success(function(data, status, headers){    console.log("RESULT: ",data);
+            $scope.article = data;
+        });
+
+    $scope.articleLayout = "one-col three-row"
+}
 ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout"];
 
 
 
 /**
  * Article sorting
+ * This is mostly for testing the sorting algorithm and will likely be deleted or commented out in the future when things get more final
  */
 function SortTest($rootScope, $scope, $timeout, $http)
 {

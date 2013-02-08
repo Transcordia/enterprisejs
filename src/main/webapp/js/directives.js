@@ -52,7 +52,7 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
 
                     articles += '<div id="'+ article._id +'" class="article '+ gridCombinations[article.layout].size+'">\
                                     <div>\
-                                        <h4>'+ article.title +'</h4>'+ articleHolder +'\
+                                        <h4><a href="#/article/' + article._id + '">'+ article.title +'</a></h4>'+ articleHolder +'\
                                         <p class="description">' + article.description + '</p>\
                                     </div>\
                                 </div>';
