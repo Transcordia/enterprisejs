@@ -24,7 +24,7 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                 [0, 0, 0]
             ];
 
-            var gridCombinations = {
+            /*var gridCombinations = {
                 "1": {
                     "w": 'one-col', // 1
                     "h": 'one-row'
@@ -56,17 +56,36 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                 "7": {
                     "w": 'three-col', // 5
                     "h": 'two-row'
-                }*/
-            };
+                }
+            };*/
+
+            var gridCombinations = {
+                "1": {
+                    "size": "size11"
+                },
+                "2": {
+                    "size": "size12"
+                },
+                "8": {
+                    "size": "size21"
+                },
+                "4": {
+                    "size": "size31"
+                },
+                "5": {
+                    "size": "size22"
+                }
+            }
 
             var options = {
-                animationEngine : 'best-available',
-                itemSelector: '.article',
-                layoutMode: 'masonry'
+                selector: ".article",
+                minWidth: 340,
+                gutter: 32
             };
 
             var init = function() {
-                element.isotope(options);
+                //element.isotope(options);
+                //element.nested({selector: ".article", minWidth: 225, gutter: 32})
             };
 
             var articles = '';
@@ -85,7 +104,7 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                         articleHolder = '<div class="article-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
                     }
 
-                    articles += '<div id="'+ article._id +'" class="article '+ gridCombinations[article.layout].w +' '+ gridCombinations[article.layout].h +'">\
+                    articles += '<div id="'+ article._id +'" class="article '+ gridCombinations[article.layout].size+'">\
                                     <h4>'+ article.title +'</h4>'+ articleHolder +'\
                                     <p class="description">' + article.description + '</p>\
                                 </div>';
@@ -94,25 +113,21 @@ angular.module('ejs.directives').directive('isotope', ['truncate', '$timeout', '
                     articleHolder = "";
                 });
 
-                element.isotope('remove', element.find('article'));
-                element.isotope('insert', $(articles));
+                //element.isotope('remove', element.find('article'));
+                //element.isotope('insert', $(articles));
+                //element.nested({selector: ".article", minWidth: 225, gutter: 32})
+                element.append(articles);
+                element.nested(options);
             };
-
-            var findEmptySpaces = function(){
-                element.children('.article').each(function(article){
-                    console.log($(this).attr("class"));
-                });
-            }
 
             scope.$watch('articles', function (newValue, oldValue) {
                 //if (newValue.length == 0) init();
                 if (newValue && newValue.length > 0){
                     setup();
-                    //findEmptySpaces();
                 }
             });
 
-            init();
+            //init();
         }
     };
 }]);

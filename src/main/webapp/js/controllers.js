@@ -12,13 +12,13 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
     $http.get('api/articles')
         .success(function(data, status, headers){
             var totalArea = 0;
-            var gridArea = 60;
+            var gridArea = 24;
             var i = 0;
-            // we need a preferred area total of 6 for a page
+
             $scope.articles = [];
 
             if(data.length == 0){
-                generateRandomArticles(50, function(data) {
+                generateRandomArticles(100, function(data) {
                     $http.post('api/articles', data)
                         .success(function(data, status, headers){
                             $log.info(data);
@@ -37,9 +37,9 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
                 // now that we have our articles we need to fit them into a layout
                 var remainingArea = gridArea;
                 for(var j = 0; j < $scope.articles.length; j++){
-                    if($scope.articles[j].preferredArea > remainingArea){
+                    /*if($scope.articles[j].preferredArea > remainingArea){
                         $scope.articles[j].preferredArea = remainingArea == 0 ? 1 : remainingArea;
-                    }
+                    }*/
 
                     if($scope.articles[j].preferredArea == 4){
                         $scope.articles[j].layout = "5";
@@ -59,11 +59,8 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
                         $scope.articles[j].layout = "1"
                     }
 
-                    remainingArea -= $scope.articles[j].preferredArea;
+                    //remainingArea -= $scope.articles[j].preferredArea;
                 }
-
-                $scope.articles[0].layout = "1";
-                //$scope.articles[1].layout = "2";
             }
         });
 

@@ -74,7 +74,7 @@ if (!Object.keys) {
             duration: 100,
             queue: true,
             complete: function () {}
-        },
+        }
     };
 
     $.Nested.prototype = {
