@@ -137,6 +137,7 @@ function generateRandomArticles(total, save){
             "images": generateImages(),
             "preferredArea": preferredArea(),
             "url": "somerandomwebsite.com",
+            "score": 0,
             "views": 0//((Math.floor(Math.random() * 100) + 10))
         }
 
@@ -261,7 +262,3 @@ function dateToISO8601(d, dateSep, timeSep) {
         + pad(d.getUTCMinutes()) + timeSep
         + pad(d.getUTCSeconds());
 }
-
-/**
- * Article sorting
- */

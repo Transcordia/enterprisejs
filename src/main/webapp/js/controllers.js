@@ -185,7 +185,12 @@ function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $
 }
 ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout"];
 
-function SortTest($rootScope, $scope, $timeout)
+
+
+/**
+ * Article sorting
+ */
+function SortTest($rootScope, $scope, $timeout, $http)
 {
     var MILISECONDS_IN_HOURS = 3600000;
     $scope.pause = true;
@@ -321,5 +326,15 @@ function SortTest($rootScope, $scope, $timeout)
         if(!$scope.pause) {
             $timeout(update, 1000);
         }
+    }
+
+    $scope.cronSort = function()
+    {
+        $http.get('api/articles/score')
+        .success(function(data, status, headers){
+            console.log("SUCCESS OCCURED: "+data);
+        }).error(function(data, status){
+                console.log("ERROR OCCURED: "+status);
+            });
     }
 }

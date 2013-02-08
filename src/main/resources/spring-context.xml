@@ -89,19 +89,19 @@
     </bean>
 
     <!-- Cron jobs are triggered by the scheduler service -->
-<!--
+
     <task:scheduler id="zocia-tasks" pool-size="10" />
 
-    <bean id="aggregateStats" class="com.zocia.roundtable.scheduling.DistributedWebCronJob">
+    <bean id="scoreArticles" class="com.zocia.roundtable.scheduling.DistributedWebCronJob">
         <property name="index" value="nep" />
-        <property name="localUrl" value="/api/ventures/aggregatedailystats" />
-        <property name="seconds" value="86400" />
+        <property name="localUrl" value="${localUrl}/articles/score" />
+        <property name="seconds" value="3600" />
     </bean>
 
     <task:scheduled-tasks scheduler="zocia-tasks">
-        <task:scheduled ref="aggregateStats" method="run"  cron="0 0 0 * * *" />
+        <task:scheduled ref="scoreArticles" method="run"  cron="0 0 0/1 * * *" />
     </task:scheduled-tasks>
--->
+
 
     <beans profile="default">
 <!--
