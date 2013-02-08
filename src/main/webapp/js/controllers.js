@@ -52,7 +52,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
                     if($scope.articles[j].preferredArea == 2){
                         $scope.articles[j].layout = "2"; // one cols two rows
                         // how do i determine the orientation of an article with a preferredArea of 2
-                        // $scope.articles[j].layout = "8"; // two cols one row
+                        //$scope.articles[j].layout = "8"; // two cols one row
                     }
 
                     if($scope.articles[j].preferredArea == 1){
