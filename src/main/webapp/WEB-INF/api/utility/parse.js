@@ -366,4 +366,4 @@ function dateToISO8601(d, dateSep, timeSep) {
         + pad(d.getUTCSeconds());
 }
 
-export('processUrl');
+export('processUrl', 'iso8601ToDate', 'dateToISO8601');
