@@ -50,6 +50,8 @@ app.get('/articles', function(req, id){
         articles.push(map.get(article));
     }
 
+    sortArticles(articles);
+
     return json(articles);
 });
 
@@ -62,8 +64,33 @@ app.get('/article/view/:id', function(req, id){
 
     var article = map.get(id);
 
-    return json(article);
+    article.views++;
+
+    map.put(article);
+
+    return json({ "views": article.views });
 });
+
+/**
+ * Sorts the list of articles according to score (this might be temporary, and removed if/when we switch over to zocia which would have sorting as part of elasticsearch)
+ * @param articles
+ */
+function sortArticles(articles)
+{
+    articles.sort(function(a, b) {
+        //we actually want higher scores to move to the top, so this is the reverse the comparison on mdn
+        if(a.score > b.score)
+        {
+            return -1;
+        }
+        if(a.score < b.score)
+        {
+            return 1;
+        }
+
+        return 0;
+    });
+}
 
 /**
  * Function for calculating the score of an article, using the hacknews style scoring algorithm .

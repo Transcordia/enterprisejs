@@ -10,7 +10,7 @@ angular.module('ejs', ['ejs.filters', 'ejs.services', 'ejs.directives', 'ui']).
             controller: AppCtrl
         });
 
-    $routeProvider.when('/article/:id',
+    $routeProvider.when('/article/edit/:id',
         {
             templateUrl: 'partials/edit-article.html',
             controller: EditArticleCtrl
@@ -25,7 +25,7 @@ angular.module('ejs', ['ejs.filters', 'ejs.services', 'ejs.directives', 'ui']).
     $routeProvider.when('/templates',
         {
             templateUrl: 'partials/templates.html',
-            controller: ArticleCtrl
+            controller: EditArticleCtrl
         });
 
     $routeProvider.when('/sorttest',

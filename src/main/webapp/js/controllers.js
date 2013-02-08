@@ -128,7 +128,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
             .success(function(data, status, headers){
                 $log.info(data);
 
-                $location.path('/article/' + data._id);
+                $location.path('/article/edit/' + data._id);
             });
     };
 
@@ -173,6 +173,9 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
 }
 AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "truncate"];
 
+/**
+ * For editing an article (mostly choosing layout after the article gets imported. This might not be needed, depending on how things go
+ */
 function EditArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout){
     $timeout(function(){
         $http.get('api/articles/' + $routeParams.id)
@@ -195,17 +198,21 @@ EditArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", 
  * @param $log
  * @param $location
  * @param $routeParams
- * @param $timeout
  */
-function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout){   console.log("id: "+$routeParams.id);
-    $http.get('api/articles/' + $routeParams.id)
+function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams){
+    var id = $routeParams.id;
+    $http.get('api/articles/' + id)
         .success(function(data, status, headers){    console.log("RESULT: ",data);
             $scope.article = data;
+            $http.get('api/article/view/'+ id)
+                .success(function(data) {
+                    $scope.article.views = data.views;
+                });
         });
 
     $scope.articleLayout = "one-col three-row"
 }
-ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout"];
+ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams"];
 
 
 
