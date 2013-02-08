@@ -27,10 +27,11 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                 }
             }
 
+            //var minWidth = window.innerWidth / 3;
             var options = {
                 selector: ".article",
-                minWidth: 340,
-                gutter: 32
+                minWidth: 345,
+                gutter: 10
             };
 
             var articles = '';
@@ -50,8 +51,10 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                     }
 
                     articles += '<div id="'+ article._id +'" class="article '+ gridCombinations[article.layout].size+'">\
-                                    <h4>'+ article.title +'</h4>'+ articleHolder +'\
-                                    <p class="description">' + article.description + '</p>\
+                                    <div>\
+                                        <h4>'+ article.title +'</h4>'+ articleHolder +'\
+                                        <p class="description">' + article.description + '</p>\
+                                    </div>\
                                 </div>';
                     j++;
 

@@ -22,9 +22,6 @@
 }
 
 .article{
-    /*position: absolute;
-    width: 192px;*/
-    padding: 15px 15px 0;
     overflow: hidden;
     font-size: 11px;
     background-color: white;
@@ -34,6 +31,10 @@
     margin: 10px;
     -webkit-transform-style: preserve-3d;
     -webkit-transition: -webkit-transform 1s;
+}
+
+.article div{
+    padding: 5px 5px 0;
 }
 
 .article h4{
