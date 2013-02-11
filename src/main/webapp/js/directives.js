@@ -112,3 +112,77 @@ angular.module('ejs.directives').directive('feedImageSlider', ['$compile', '$log
         }
     }
 }]);
+
+/**
+ * Reloads the twitter buttons. Without this, twitter buttons show up as unstyled "Tweet" links, which are boring and ugly.
+ *
+ * @example <div class="article-tweet-button" reload-twitter-btns>
+ <a href="https://twitter.com/share" class="twitter-share-button" data-lang="en">Tweet</a>
+ </div>
+ */
+angular.module('ejs.directives').directive('reloadTwitterBtns', function(){
+    return {
+        compile: function compile() {
+            return {
+                post: function(){
+                    if(twttr !== undefined) {
+                        twttr.widgets.load();
+                    }
+                }
+            }
+        }
+    }
+});
+
+/**
+ * Used for liking, and unliking and object
+ *
+ * @param [id] {string} The ID of the object to be liked
+ * @example <like id="{{id}}"></like>
+ */
+angular.module('ejs.directives').directive('like', ['$http', '$rootScope', function($http, $rootScope){
+    return {
+        restrict: 'E',
+        template: '<a ng-click="like()"><i class="likes"></i> {{likeText}}</a>',
+        replace: true,
+        link: function(scope, elm, attrs){
+            scope.likeText = "Like This";
+            scope.alreadyLiked = true;
+
+            attrs.$observe('objectid', function(object_id) {
+                if( (object_id !== '') && ($rootScope.auth.isAuthenticated) ) {
+                    $http.get("api/utility/like/" + object_id).success(function(data) {
+                        var result = JSON.parse(data);
+                        if(result) {
+                            scope.likeText = "Unlike";
+                        }
+                        scope.alreadyLiked = result;
+                    });
+                }
+            });
+
+            scope.like = function() {
+                if(!$rootScope.auth.isAuthenticated) {
+                    return;
+                }
+                if(scope.alreadyLiked) {
+                    $http.post("api/utility/unlike/" + attrs.objectid).success(function(data) {
+                        scope.likeText = "Like This";
+                        scope.alreadyLiked = false;
+                        if(scope.increaseLikes !== undefined) {
+                            scope.increaseLikes(data.likes);
+                        }
+                    });
+                } else {
+                    $http.post("api/utility/like/" + attrs.objectid).success(function(data) {
+                        scope.likeText = "Unlike";
+                        scope.alreadyLiked = true;
+                        if(scope.increaseLikes !== undefined) {
+                            scope.increaseLikes(data.likes);
+                        }
+                    });
+                }
+            }
+        }
+    }
+}]);

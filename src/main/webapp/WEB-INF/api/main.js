@@ -129,4 +129,54 @@ app.get('/articles/score', function(req) {
     }
     log.info("Article score calculated. "+keySet.size()+" articles updated.");
     return json(true);
-})
+});
+
+//likes a specific object. todo: can anonymous users like something?
+app.post('/utility/like/:id', function(req, id) {
+    var opts = {
+        url: getZociaUrl(req) + "/likes/" + req.auth.principal.id + "/" + id,
+        method: 'POST',
+        headers: Headers({ 'x-rt-index': 'gc' }),
+        async: false
+    };
+
+    var exchange = httpclient.request(opts);
+
+    return json(JSON.parse(exchange.content));
+});
+
+//checks to see if a user has already liked this particular object, if so, returns true, otherwise, returns false
+app.get('/utility/like/:id', function(req, id) {
+    if(!req.auth.isAuthenticated) {
+        return json(false);
+    }
+
+    var opts = {
+        url: getZociaUrl(req) + "/likes/" + req.auth.principal.id + "/" + id,
+        method: 'GET',
+        headers: Headers({ 'x-rt-index': 'gc' }),
+        async: false
+    };
+
+    var exchange = httpclient.request(opts);
+
+    if(exchange.status === 404) {
+        return json(false);
+    } else {
+        return json(true);
+    }
+});
+
+//deletes a like relationship, effectively decreasing total likes by one
+app.post('/utility/unlike/:id', function(req, id) {
+    var opts = {
+        url: getZociaUrl(req) + "/likes/" + req.auth.principal.id + "/" + id,
+        method: 'DELETE',
+        headers: Headers({ 'x-rt-index': 'gc', 'Authorization': _generateBasicAuthorization('backdoor', 'Backd00r') }),
+        async: false
+    };
+
+    var exchange = httpclient.request(opts);
+
+    return json(JSON.parse(exchange.content));
+});
