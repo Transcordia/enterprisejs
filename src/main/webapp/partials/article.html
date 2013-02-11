@@ -1,3 +1,13 @@
+<div ui-modal class="modal fade full-article" ng-model="$parent.showFullArticle">
+    <div class="modal-header">
+        <button type="button" ng-click="$parent.showFullArticle=false" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3>Full Article</h3>
+    </div>
+    <div class="modal-body">
+        <iframe src="{{article.url}}" width="400" height="400"></iframe><br>
+        <a href="{{article.url}}">Link to full article</a>
+    </div>
+</div>
 <div class="container">
     <div class="row">
         <div class="span8">
@@ -28,6 +38,7 @@
                 </div>
 
                 <span class="muted"><like objectid="{{article._id}}"></like> ({{article.likes}})</span>
+                <button type="button" ng-click="$parent.showFullArticle=true">Show full article</button>
             </div>
 
         </div>

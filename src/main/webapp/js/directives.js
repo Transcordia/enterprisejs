@@ -148,7 +148,7 @@ angular.module('ejs.directives').directive('like', ['$http', '$rootScope', funct
         link: function(scope, elm, attrs){
             scope.likeText = "Like This";
             scope.alreadyLiked = true;
-
+            /*
             attrs.$observe('objectid', function(object_id) {
                 if( (object_id !== '') && ($rootScope.auth.isAuthenticated) ) {
                     $http.get("api/utility/like/" + object_id).success(function(data) {
@@ -182,7 +182,7 @@ angular.module('ejs.directives').directive('like', ['$http', '$rootScope', funct
                         }
                     });
                 }
-            }
+            }  */
         }
     }
 }]);

@@ -136,7 +136,7 @@ function generateRandomArticles(total, save){
             "likes": Math.floor(Math.random() * 100),
             "images": generateImages(),
             "preferredArea": preferredArea(),
-            "url": "somerandomwebsite.com",
+            "url": "http://example.com",
             "score": 0,
             "views": 0//((Math.floor(Math.random() * 100) + 10))
         }

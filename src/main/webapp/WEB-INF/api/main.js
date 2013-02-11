@@ -130,7 +130,7 @@ app.get('/articles/score', function(req) {
     log.info("Article score calculated. "+keySet.size()+" articles updated.");
     return json(true);
 });
-
+/*
 //likes a specific object. todo: can anonymous users like something?
 app.post('/utility/like/:id', function(req, id) {
     var opts = {
@@ -179,4 +179,4 @@ app.post('/utility/unlike/:id', function(req, id) {
     var exchange = httpclient.request(opts);
 
     return json(JSON.parse(exchange.content));
-});
+});   */

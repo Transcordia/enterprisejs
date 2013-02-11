@@ -205,3 +205,6 @@
     margin-right: 15px;
 }
 
+.full-article .modal-body {
+    max-height: none;
+}
