@@ -128,7 +128,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
             .success(function(data, status, headers){
                 $log.info(data);
 
-                $location.path('/article/' + data._id);
+                $location.path('/article/edit/' + data._id);
             });
     };
 
@@ -173,7 +173,10 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
 }
 AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "truncate"];
 
-function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout){
+/**
+ * For editing an article (mostly choosing layout after the article gets imported. This might not be needed, depending on how things go
+ */
+function EditArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout){
     $timeout(function(){
         $http.get('api/articles/' + $routeParams.id)
             .success(function(data, status, headers){
@@ -183,12 +186,39 @@ function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $
 
     $scope.articleLayout = "one-col three-row"
 }
-ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout"];
+EditArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout"];
+
+
+/**
+ * Single article view
+ *
+ * @param $rootScope
+ * @param $scope
+ * @param $http
+ * @param $log
+ * @param $location
+ * @param $routeParams
+ */
+function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams){
+    var id = $routeParams.id;
+    $http.get('api/articles/' + id)
+        .success(function(data, status, headers){    console.log("RESULT: ",data);
+            $scope.article = data;
+            $http.get('api/article/view/'+ id)
+                .success(function(data) {
+                    $scope.article.views = data.views;
+                });
+        });
+
+    $scope.articleLayout = "one-col three-row"
+}
+ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams"];
 
 
 
 /**
  * Article sorting
+ * This is mostly for testing the sorting algorithm and will likely be deleted or commented out in the future when things get more final
  */
 function SortTest($rootScope, $scope, $timeout, $http)
 {
