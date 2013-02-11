@@ -62,7 +62,16 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                 });
 
                 element.append(articles);
-                element.nested(options);
+
+                var mq = window.matchMedia( "(min-width: 640px)" );
+
+                if (mq.matches) {
+                    // window width is at least 640px
+                    element.nested(options);
+                }
+                else {
+                    // window width is less than 640px
+                }
             };
 
             scope.$watch('articles', function (newValue, oldValue) {

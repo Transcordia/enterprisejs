@@ -137,7 +137,6 @@ if (!Object.keys) {
 
                 // render grid
                 self._renderGrid($(this), method);
-
             });
 
             // position grid
@@ -266,10 +265,8 @@ if (!Object.keys) {
         },
 
         _renderGrid: function ($box, method) {
-
             this.counter++;
             var ypos, gridy = ypos = 0;
-            var tot = 0;
             var direction = !method ? "append" : "prepend";
 
             // Width & height
@@ -298,7 +295,7 @@ if (!Object.keys) {
                 for (var column = 0; column < (this.columns - col); column++) {
 
                     // Add default empty matrix, used to calculate and update matrix for each box
-                    matrixY = gridy * (this.options.minWidth + this.options.gutter);
+                    var matrixY = gridy * (this.options.minWidth + this.options.gutter);
                     this._addMatrixRow(matrixY);
 
                     var fits = true;
@@ -338,6 +335,7 @@ if (!Object.keys) {
                 }
                 gridy++;
             }
+
         },
 
         _pushItem: function ($el, x, y, w, h, cols, rows, method) {
@@ -350,7 +348,7 @@ if (!Object.keys) {
                     width: w,
                     height: h,
                     cols: cols,
-                    rows: rows,
+                    rows: rows
                 });
             } else {
                 this.elements.push({
@@ -360,7 +358,7 @@ if (!Object.keys) {
                     width: w,
                     height: h,
                     cols: cols,
-                    rows: rows,
+                    rows: rows
                 });
             }
         },
@@ -409,10 +407,10 @@ if (!Object.keys) {
                         value['$el'].css({
                             'display': 'block',
                             'width': value['width'],
-                            'height': value['height'],
+                            'height': value['height']
                         }).animate({
                             'left': value['x'],
-                            'top': value['y'],
+                            'top': value['y']
                         }, duration);
                         t++;
                         if (t == $els.length) {
@@ -428,10 +426,10 @@ if (!Object.keys) {
                         value['$el'].css({
                             'display': 'block',
                             'width': value['width'],
-                            'height': value['height'],
+                            'height': value['height']
                         }).animate({
                             'left': value['x'],
-                            'top': value['y'],
+                            'top': value['y']
                         }, duration);
                         t++;
                         if (t == $els.length) {
@@ -448,7 +446,7 @@ if (!Object.keys) {
                         'width': value['width'],
                         'height': value['height'],
                         'left': value['x'],
-                        'top': value['y'],
+                        'top': value['y']
                     });
                     t++;
                     if (t == $els.length) {
@@ -476,7 +474,7 @@ if (!Object.keys) {
                 this._setBoxes(this.box.find(this.options.selector));
                 this._isResizing = false;
             }
-        },
+        }
 
     }
 
