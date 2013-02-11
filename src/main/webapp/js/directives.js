@@ -27,11 +27,11 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                 }
             }
 
-            //var minWidth = window.innerWidth / 3;
             var options = {
                 selector: ".article",
                 minWidth: 200,
-                gutter: 10
+                gutter: 10,
+                maxColumns: 3
             };
 
             var articles = '';
@@ -66,11 +66,12 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                 var mq = window.matchMedia( "(min-width: 640px)" );
 
                 if (mq.matches) {
-                    // window width is at least 640px
+                    // viewport width is at least 640px
                     element.nested(options);
                 }
                 else {
                     // window width is less than 640px
+
                 }
             };
 
