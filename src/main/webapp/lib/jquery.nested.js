@@ -472,6 +472,7 @@ if (!Object.keys) {
         resize: function ($els) {
             if (Object.keys(this.matrix[0]).length % Math.floor(this.element.width() / (this.options.minWidth + this.options.gutter)) > 0) {
                 this._isResizing = true;
+                this._setBoxes($els);
                 this._isResizing = false;
             }
         }

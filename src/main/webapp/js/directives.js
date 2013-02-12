@@ -43,9 +43,9 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                 var articleHolder = "";
                 scope.articles.forEach(function (article) {
                     if(article.images[0]){
-                        imageWidth = article.images[0].w;
-                        imageHeight = article.images[0].h;
-                        src = article.images[0].src;
+                        imageWidth = article.abstractImage.w;
+                        imageHeight = article.abstractImage.h;
+                        src = article.abstractImage.src;
                         articleHolder = '<div class="article-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
                     }
 

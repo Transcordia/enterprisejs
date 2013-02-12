@@ -123,27 +123,30 @@ function generateRandomArticles(total, save){
     save = save || false;
     var articles = [];
     var article = {};
-    var content = "";
+    var content = "", description = "", title = "";
+    var images = [];
+    var abstractImage;
 
     for(var i = 1; i <= total; i++){
+        title = generateTitle();
         content = generateContent();
+        description = generateDescription(content);
+        images = generateImages();
+        abstractImage = getAbstractImage(images);
+
         article = {
             "id": i,
-            "title": generateTitle(),
+            "title": title,
             "content": content,
             "date": generateDate(),
-            "description": generateDescription(content),
+            "description": description,
             "likes": Math.floor(Math.random() * 100),
-            "images": generateImages(),
-            "preferredArea": preferredArea(),
+            "images": images,
+            "abstractImage": abstractImage,
+            "preferredArea": preferredArea(title, content, description, abstractImage),
             "url": "http://example.com",
             "score": 0,
             "views": 0//((Math.floor(Math.random() * 100) + 10))
-        }
-
-        // give the first article a layout of one... for now
-        if(i === 1){
-            article.preferredArea = 1;
         }
 
         var data = {
@@ -168,6 +171,31 @@ function generateTitle(){
     title = toTitleCase(loremIpsumSentence(numWords));
 
     return title;
+}
+
+function getAbstractImage(images){
+    if(images.length > 0){
+        var largestImage = {};
+        var largestImageArea = 0, imageArea = 0;
+
+        // we'll use the image with the largest area as the abstract image
+        for(var i = 0; i < images.length; i++){
+            imageArea = images[i].w * images[i].h;
+
+            if(imageArea > largestImageArea){
+                largestImageArea = imageArea;
+                largestImage = {
+                    "src": images[i].src,
+                    "w": images[i].w,
+                    "h": images[i].h
+                };
+            }
+        }
+
+        return largestImage;
+    }else{
+        return {}
+    }
 }
 
 function toTitleCase(str){
@@ -224,10 +252,19 @@ function generateImages(){
 }
 
 
-function preferredArea(){
-    var area = [1, 2, 3, 4];
+function preferredArea(title, content, description, image){
+    var largestImage = {}; // by area
+    // area represents the square area of space an article occupies in the layout
+    // values can be 1, 2, 3, 4
+    var area = 1; // start with an area of 1
 
-    return area[Math.floor(Math.random() * 4)];
+    // does this article have an abstract image?
+
+
+
+
+
+    return area;
 }
 
 /**
