@@ -143,7 +143,7 @@ function generateRandomArticles(total, save){
             "likes": Math.floor(Math.random() * 100),
             "images": images,
             "abstractImage": abstractImage,
-            "preferredArea": preferredArea(title, content, description, abstractImage),
+            "preferredArea": preferredArea(description, abstractImage),
             "url": "http://example.com",
             "score": 0,
             "views": 0//((Math.floor(Math.random() * 100) + 10))
@@ -219,7 +219,7 @@ function generateDate(){
 
 function generateDescription(content){
     var description = "";
-    var min = 10, max = content.split(" ").length;
+    var min = 10, max = content.split(" ").length - 100;
     description = content.split(" ").splice(0, rand(max, min)).join(" ");
 
     return description;
@@ -252,17 +252,55 @@ function generateImages(){
 }
 
 
-function preferredArea(title, content, description, image){
-    var largestImage = {}; // by area
+function preferredArea(description, image){
+    /*var area = [1, 2, 3, 4, 5];
+    return area[Math.floor(Math.random() * 4)];*/
+
     // area represents the square area of space an article occupies in the layout
     // values can be 1, 2, 3, 4
     var area = 1; // start with an area of 1
 
-    // does this article have an abstract image?
+    // will this article fit into a 1 x 1?
+    // it will if it only has a title
+    if(Object.keys(image).length == 0 && description === ""){
+        return area;
+    }
 
+    // will this article fit into a 1 x 1?
+    // it will if it only has short description and no image for the abstract
+    if(Object.keys(image).length == 0 && description.split(" ").length <= 20){
+        return area;
+    }
 
+    // will this article fit into a 2 x 1?
+    // it will if it has a mid length description and no image for the abstract
+    if(Object.keys(image).length == 0 && (description.split(" ").length > 20 && description.split(" ").length <= 60)){
+        return area += 1; // preferred  area of 2
+    }
 
+    // will this article fit into a 1 x 2?
+    // it will if it has a mid length description and an image for the abstract
+    if(Object.keys(image).length > 0 && (description.split(" ").length > 20 && description.split(" ").length <= 60)){
+        return area += 2; // preferred  area of 3
+    }
 
+    // will this article fit into a 3 x 1?
+    // it will if it has a long description and no image for the abstract
+    if(Object.keys(image).length == 0 && description.split(" ").length > 60){
+        return area += 3; // preferred  area of 4
+    }
+
+    // will this article fit into a 3 x 1?
+    // it will if it has a long description and smaller image for the abstract
+    if(Object.keys(image).length > 0 && description.split(" ").length > 60 && image.w <= 500){
+        return area += 3; // preferred  area of 4
+    }
+
+    // will this article fit into a 2 x 2?
+    // it will if it has a long description and a larger image for the abstract
+    if(Object.keys(image).length > 0 && description.split(" ").length > 60 && image.w > 500){
+        return area += 4; // preferred  area of 5
+    }
 
     return area;
 }

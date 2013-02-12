@@ -12,7 +12,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
     $http.get('api/articles')
         .success(function(data, status, headers){
             var totalArea = 0;
-            var gridArea = 24;
+            var gridArea = 36;
             var i = 0;
 
             $scope.articles = [];
@@ -41,18 +41,20 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
                         $scope.articles[j].preferredArea = remainingArea == 0 ? 1 : remainingArea;
                     }*/
 
-                    if($scope.articles[j].preferredArea == 4){
+                    if($scope.articles[j].preferredArea == 5){
                         $scope.articles[j].layout = "5";
                     }
 
-                    if($scope.articles[j].preferredArea == 3){
+                    if($scope.articles[j].preferredArea == 4){
                         $scope.articles[j].layout = "4"
                     }
 
-                    if($scope.articles[j].preferredArea == 2){
+                    if($scope.articles[j].preferredArea == 3){
                         $scope.articles[j].layout = "2"; // one cols two rows
-                        // how do i determine the orientation of an article with a preferredArea of 2
-                        //$scope.articles[j].layout = "8"; // two cols one row
+                    }
+
+                    if($scope.articles[j].preferredArea == 2){
+                        $scope.articles[j].layout = "8"; // one cols two rows
                     }
 
                     if($scope.articles[j].preferredArea == 1){
