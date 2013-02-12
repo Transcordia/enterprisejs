@@ -100,8 +100,7 @@ angular.module('ejs.directives').directive('feedImageSlider', ['$compile', '$log
                                 .load(function(e){
                                     image.w = e.target.naturalWidth;
                                     image.h = e.target.naturalHeight;
-                                })
-                                .attr('src', image.src)
+                                }).attr('src', image.src)
                                 .appendTo(html);
                         };
 

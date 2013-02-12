@@ -94,7 +94,7 @@ function parseStructuredData(url){
     jsoupDocument = Jsoup.connect(url).get();
 
     var ogMeta = jsoupDocument.select('meta[property^=og:]');
-    if(ogMeta.size() > 0){
+    if(!ogMeta.isEmpty()){
         var structuredData = {
             "title": jsoupDocument.select('meta[property=og:title]').attr('content'),
             "description": jsoupDocument.select('meta[property=og:description]').attr('content'),
@@ -116,9 +116,39 @@ function parseStructuredData(url){
         return structuredData;
     }
 
-    log.info('No structured data found. Returning an empty object');
+    log.info('No structured data found. Parsing results from HTML');
+
+    var jsoupBody = jsoupDocument.body();
+
+    var content = jsoupBody.text();
+
+    var description = content.split(" ").splice(0, 50).join(" ");
+
+    var imageList = jsoupBody.select('img');
+    var images = [];
+
+    if(!imageList.isEmpty())
+    {
+        var it = imageList.iterator();
+        while(it.hasNext())
+        {
+            var imageElement = it.next();
+            images.push({
+                "src": imageElement.attr("abs:src"),
+                "w": "",
+                "h": ""
+            });
+        }
+    }
+
     return {
-        "images": []
+        "title": jsoupDocument.title(),
+        "description": description,
+        "content": content,
+        "images": images,
+        "url": url,
+        "date": standardizedNow(),
+        "likes": 0
     }
 }
 
