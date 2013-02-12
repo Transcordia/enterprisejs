@@ -63,7 +63,6 @@ if (!Object.keys) {
         selector: '.box',
         minWidth: 50,
         minColumns: 1,
-        maxColumns: 1,
         gutter: 1,
         resizeToFit: true, // will resize block bigger than the gap
         resizeToFitOptions: {
@@ -88,7 +87,7 @@ if (!Object.keys) {
             this._isResizing = false;
             this._update = true;
             this.maxy = new Array();
-            this.minResizeTriggered = false;
+            this.okToRender = false;
             this.maxColumns = this.options.maxColumns;
 
             // add smartresize
@@ -473,21 +472,6 @@ if (!Object.keys) {
         resize: function ($els) {
             if (Object.keys(this.matrix[0]).length % Math.floor(this.element.width() / (this.options.minWidth + this.options.gutter)) > 0) {
                 this._isResizing = true;
-                // if the viewport is already too small, meaning the viewport is smaller than
-                // the element with the most columns, we don't need to resize
-                if(this.columns - 1 > this.maxColumns && !this.minResizeTriggered){
-                    this._setBoxes(this.box.find(this.options.selector));
-                }else{
-                    this.columns = this.maxColumns + 2;
-                    this.minResizeTriggered = true;
-
-                    // if the viewport has gotten larger than the element
-                    // with the most columns, set the resize trigger event
-                    // flag back to false
-                    if(this.columns > this.maxColumns){
-                        this.minResizeTriggered = false;
-                    }
-                }
                 this._isResizing = false;
             }
         }

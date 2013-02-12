@@ -30,8 +30,7 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
             var options = {
                 selector: ".article",
                 minWidth: 200,
-                gutter: 10,
-                maxColumns: 3
+                gutter: 10
             };
 
             var articles = '';
