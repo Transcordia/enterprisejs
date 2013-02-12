@@ -267,38 +267,44 @@ function preferredArea(description, image){
     }
 
     // will this article fit into a 1 x 1?
-    // it will if it only has short description and no image for the abstract
+    // it will if it has short description and no image for the abstract
     if(Object.keys(image).length == 0 && description.split(" ").length <= 20){
         return area;
     }
 
     // will this article fit into a 2 x 1?
+    // it will if it has short description and an image for the abstract
+    if(Object.keys(image).length > 0 && description.split(" ").length <= 20){
+        return area += 1; // preferred  area of 2
+    }
+
+    // will this article fit into a 2 x 1?
     // it will if it has a mid length description and no image for the abstract
-    if(Object.keys(image).length == 0 && (description.split(" ").length > 20 && description.split(" ").length <= 60)){
+    if(Object.keys(image).length == 0 && (description.split(" ").length > 20 && description.split(" ").length <= 100)){
         return area += 1; // preferred  area of 2
     }
 
     // will this article fit into a 1 x 2?
     // it will if it has a mid length description and an image for the abstract
-    if(Object.keys(image).length > 0 && (description.split(" ").length > 20 && description.split(" ").length <= 60)){
+    if(Object.keys(image).length > 0 && (description.split(" ").length > 20 && description.split(" ").length <= 100)){
         return area += 2; // preferred  area of 3
     }
 
     // will this article fit into a 3 x 1?
     // it will if it has a long description and no image for the abstract
-    if(Object.keys(image).length == 0 && description.split(" ").length > 60){
+    if(Object.keys(image).length == 0 && description.split(" ").length > 100){
         return area += 3; // preferred  area of 4
     }
 
     // will this article fit into a 3 x 1?
     // it will if it has a long description and smaller image for the abstract
-    if(Object.keys(image).length > 0 && description.split(" ").length > 60 && image.w <= 500){
+    if(Object.keys(image).length > 0 && description.split(" ").length > 100 && image.w <= 500){
         return area += 3; // preferred  area of 4
     }
 
     // will this article fit into a 2 x 2?
     // it will if it has a long description and a larger image for the abstract
-    if(Object.keys(image).length > 0 && description.split(" ").length > 60 && image.w > 500){
+    if(Object.keys(image).length > 0 && description.split(" ").length > 100 && image.w > 500){
         return area += 4; // preferred  area of 5
     }
 
