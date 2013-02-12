@@ -284,6 +284,12 @@ if (!Object.keys) {
                 this.options.minColumns = col;
             }
 
+            //if this.columns and cols are equal, one of the for loops will never run, and the while loop will go on forever.
+            //this usually happens if the window is resized at or below the minColumn pixel width
+            if(this.columns === col) {
+                this.columns++;
+            }
+
             while (true) {
                 for (var y = col; y >= 0; y--) {
                     if (this.gridrow[gridy + y]) break;
@@ -297,10 +303,10 @@ if (!Object.keys) {
 
                     // Add default empty matrix, used to calculate and update matrix for each box
                     var matrixY = gridy * (this.options.minWidth + this.options.gutter);
+
                     this._addMatrixRow(matrixY);
 
                     var fits = true;
-
                     for (var y = 0; y < row; y++) {
                         for (var x = 0; x < col; x++) {
 
@@ -472,6 +478,7 @@ if (!Object.keys) {
         resize: function ($els) {
             if (Object.keys(this.matrix[0]).length % Math.floor(this.element.width() / (this.options.minWidth + this.options.gutter)) > 0) {
                 this._isResizing = true;
+                this._setBoxes($els);
                 this._isResizing = false;
             }
         }

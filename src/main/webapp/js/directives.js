@@ -30,6 +30,7 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
             var options = {
                 selector: ".article",
                 minWidth: 200,
+                minColumns: 2,
                 gutter: 10
             };
 
@@ -62,16 +63,9 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
 
                 element.append(articles);
 
-                var mq = window.matchMedia( "(min-width: 640px)" );
-
-                if (mq.matches) {
-                    // viewport width is at least 640px
-                    element.nested(options);
-                }
-                else {
-                    // window width is less than 640px
-
-                }
+                //at some point we might want to stop this from running if the window is too small
+                //might need further investigation depending on how the layout eventually is set up
+                element.nested(options);
             };
 
             scope.$watch('articles', function (newValue, oldValue) {
