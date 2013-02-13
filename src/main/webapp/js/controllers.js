@@ -84,6 +84,11 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
     };
 
     var imagesLoaded = 0;
+    var activeImage = 0;
+
+    function showActiveImage() {
+        $scope.article.images[activeImage].show = true;
+    }
 
     function stripSmallImages()
     {
@@ -92,11 +97,13 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
         // in this case, any images with a height less than 50px
         angular.forEach($scope.article.images, function(image, key){
             if(image.h > 49){
+                image.show = false;
                 largeImages.push(image);
             }
         });
 
         $scope.article.images = largeImages;
+        showActiveImage();
     }
 
     $scope.$on('Event:ImageLoaded', function() {
@@ -104,7 +111,25 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
         if(imagesLoaded === $scope.article.images.length) {
             stripSmallImages();
         }
-    })
+    });
+
+    $scope.previousImage = function() {
+        $scope.article.images[activeImage].show = false;
+        activeImage--;
+        if(activeImage < 0) {
+            activeImage = $scope.article.images.length - 1;
+        }
+        showActiveImage();
+    }
+
+    $scope.nextImage = function() {
+        $scope.article.images[activeImage].show = false;
+        activeImage++;
+        if(activeImage >= $scope.article.images.length) {
+            activeImage = 0;
+        }
+        showActiveImage();
+    }
 
     $scope.saveArticle = function(article){
         $scope.showAddArticleModal = false;
@@ -124,7 +149,7 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
         }
 
 
-        article.images = largeImages.slice(0);
+        article.images = $scope.article.images[activeImage];
         article.description = stripped;
 
         // assign this article a layout based on its content

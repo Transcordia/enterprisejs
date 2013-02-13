@@ -213,3 +213,10 @@
 .full-article .modal-body {
     max-height: none;
 }
+
+#feed_images .slides_container img.hide {
+    display: none;
+}
+#feed_images .slides_container img.show {
+    display: block;
+}
