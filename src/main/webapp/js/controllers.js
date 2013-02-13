@@ -3,7 +3,7 @@
 /* Controllers */
 
 
-function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routeParams) {
+function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
     $rootScope.showAddUrlModal = false;
     $scope.showAddArticleModal = false;
 
@@ -55,12 +55,24 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
             }
         });
 
-    $scope.addArticle = function(url){
-        var data = {
-            url: url
-        };
+    $rootScope.doLogin = function(){
+        $http.post('api/login')
+            .success(function(data, status){
+                $log.info(data);
+            })
+    }
+}
+AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams"];
 
-        $http.post('api/processurl', data)
+
+function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
+    $rootScope.showAddUrlModal = false;
+    $scope.showAddArticleModal = false;
+
+    $scope.addArticle = function(url){
+        $http.post('api/processurl', {
+            url: url
+        })
             .success(function(data, status, headers){
                 $log.info(data);
                 $rootScope.showAddUrlModal = false;
@@ -71,16 +83,31 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
             });
     };
 
-    $rootScope.doLogin = function(){
-        $http.post('api/login')
-            .success(function(data, status){
-                $log.info(data);
-            })
+    var imagesLoaded = 0;
+
+    function stripSmallImages()
+    {
+        var largeImages = [];
+        // loop through the images and remove any images that are too small
+        // in this case, any images with a height less than 50px
+        angular.forEach($scope.article.images, function(image, key){
+            if(image.h > 49){
+                largeImages.push(image);
+            }
+        });
+
+        $scope.article.images = largeImages;
     }
+
+    $scope.$on('Event:ImageLoaded', function() {
+        imagesLoaded++;
+        if(imagesLoaded === $scope.article.images.length) {
+            stripSmallImages();
+        }
+    })
 
     $scope.saveArticle = function(article){
         $scope.showAddArticleModal = false;
-        var largeImages = [];
 
         // strip the html tags out of the description
         var stripped = $.trim(strip(article.description));
@@ -88,21 +115,14 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
         // if the article has an empty content attribute and the description
         // is long enough, let's use the description
         /*if(article.content === "" && stripped.length > 200){
-            article.content = article.description;
-        }*/
+         article.content = article.description;
+         }*/
 
         // truncate long descriptions
         if(stripped.split(" ").length > 100){
             article.description = truncate(stripped, 100);
         }
 
-        // loop through the images and remove any images that are too small
-        // in this case, any images with a height less than 50px
-        angular.forEach(article.images, function(image, key){
-            if(image.h > 49){
-                largeImages.push(image);
-            }
-        });
 
         article.images = largeImages.slice(0);
         article.description = stripped;
@@ -169,7 +189,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
         }
     };
 }
-AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "truncate"];
+addArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "truncate"];
 
 /**
  * For editing an article (mostly choosing layout after the article gets imported. This might not be needed, depending on how things go
