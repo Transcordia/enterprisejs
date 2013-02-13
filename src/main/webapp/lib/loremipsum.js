@@ -143,7 +143,7 @@ function generateRandomArticles(total, save){
             "likes": Math.floor(Math.random() * 100),
             "images": images,
             "abstractImage": abstractImage,
-            "preferredArea": preferredArea(description, abstractImage),
+            "preferredArea": preferredArea(title, description, abstractImage),
             "url": "http://example.com",
             "score": 0,
             "views": 0//((Math.floor(Math.random() * 100) + 10))
@@ -251,11 +251,16 @@ function generateImages(){
     }
 }
 
+function abstractImageOrientation(image){
+    // perfectly square = 1
+    // landscape > 1
+    // highly landscape > 1.3
+    // portrait < 1
+    // highly portrait < 0.5
+}
 
-function preferredArea(description, image){
-    /*var area = [1, 2, 3, 4, 5];
-    return area[Math.floor(Math.random() * 4)];*/
 
+function preferredArea(title, description, image){
     // area represents the square area of space an article occupies in the layout
     // values can be 1, 2, 3, 4
     var area = 1; // start with an area of 1
@@ -298,13 +303,13 @@ function preferredArea(description, image){
 
     // will this article fit into a 3 x 1?
     // it will if it has a long description and smaller image for the abstract
-    if(Object.keys(image).length > 0 && description.split(" ").length > 100 && image.w <= 500){
+    if(Object.keys(image).length > 0 && description.split(" ").length > 100 && image.w <= 300){
         return area += 3; // preferred  area of 4
     }
 
     // will this article fit into a 2 x 2?
     // it will if it has a long description and a larger image for the abstract
-    if(Object.keys(image).length > 0 && description.split(" ").length > 100 && image.w > 500){
+    if(Object.keys(image).length > 0 && description.split(" ").length > 100 && image.w > 300){
         return area += 4; // preferred  area of 5
     }
 
