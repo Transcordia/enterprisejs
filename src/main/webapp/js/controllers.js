@@ -9,6 +9,11 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
 
     $scope.urlToCheck = '';
 
+    var url = "";
+    $scope.paging = {
+        size: 20
+    };
+
     $http.get('api/articles')
         .success(function(data, status, headers){
             var totalArea = 0;
@@ -22,6 +27,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
                     $http.post('api/articles', data)
                         .success(function(data, status, headers){
                             $log.info(data);
+                            $http.get('api/articles/score');
                         });
                 });
             }else{
@@ -141,37 +147,30 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
         return tmp.textContent||tmp.innerText;
     }
 
-    function assignLayout(article){
-        var layout = 1;
-        // an article can have a title, image, and description
-
-        // if an article has no images assign a value of 1
-        if(article.images.length === 0 && article.description !== ""){
-            // if an article has no images and a long description
-            if(article.description.split(" ").length > 70){
-                return 4;
-            }
-            return 1;
+    $scope.loadMore = function(term) {
+        //if there's no more pages to load
+        if(!$scope.paging.more) {
+            return;
         }
+        term = term || "";
+        $scope.paging.from += $scope.paging.size;
+        url = "api/article/search/?term=" + term + "&filters=" + buildFilters() + "&from=" + $scope.paging.from + "&size=" + $scope.paging.size + "&sort=" + sortBy + "&category=" + category + tagFilter;
 
-        // article has an image and a description
-        if(article.images.length > 0 && article.description !== ""){
-            // article has long description
-            if(article.description.split(" ").length > 40){
-                return 8;
+
+        $http.get( url ).success( function (data) {
+            if(data !== "false") {
+                if(data.length === 0) {
+                    $scope.paging.more = false;
+                } else {
+                    $scope.articles = $scope.articles.concat(data);
+                }
+            } else {
+                $log.info("ERROR getting article, or resource.");
             }
-
-            if(article.description.split(" ").length < 20){
-                return 1;
-            }
-        }else{
-            return 1;
-        }
-
-        // if an article has an image but no description assign a value of 1
-        //  and a description assign a value of 4,5
-        return layout;
-    }
+        }).error(function(data, status) {
+                $log.info("ERROR retrieving protected resource: "+data+" status: "+status);
+            });
+    };
 }
 AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "truncate"];
 
