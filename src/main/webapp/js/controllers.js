@@ -13,13 +13,10 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
     $scope.paging = {
         size: 20
     };
+    var from = 1;
 
-    $http.get('api/articles')
+    $http.get('api/articles/?from=' + from)
         .success(function(data, status, headers){
-            var totalArea = 0;
-            var gridArea = 36;
-            var i = 0;
-
             $scope.articles = [];
 
             if(data.length == 0){
@@ -31,22 +28,10 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
                         });
                 });
             }else{
-                while(totalArea < gridArea){
-                    // what is the preferred area of this article?
-                    // add it to the total area
-                    totalArea += data[i].preferredArea;
-                    i++;
-
-                    $scope.articles.push(data[i]);
-                }
+                $scope.articles = data;
 
                 // now that we have our articles we need to fit them into a layout
-                var remainingArea = gridArea;
                 for(var j = 0; j < $scope.articles.length; j++){
-                    /*if($scope.articles[j].preferredArea > remainingArea){
-                        $scope.articles[j].preferredArea = remainingArea == 0 ? 1 : remainingArea;
-                    }*/
-
                     if($scope.articles[j].preferredArea == 5){
                         $scope.articles[j].layout = "5";
                     }
@@ -66,8 +51,6 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
                     if($scope.articles[j].preferredArea == 1){
                         $scope.articles[j].layout = "1"
                     }
-
-                    //remainingArea -= $scope.articles[j].preferredArea;
                 }
             }
         });

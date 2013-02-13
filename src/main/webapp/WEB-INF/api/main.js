@@ -38,19 +38,22 @@ app.get('/articles/:id', function(req, id){
     return json(article);
 });
 
-app.get('/articles', function(req, id){
+app.get('/articles', function(req){
     var map = store.getMap('ejs', 'articles');
     var articles = [];
 
     var keySet = map.keySet();
 
-    var iterator = keySet.iterator();
-    while(iterator.hasNext()){
-        var article = iterator.next();
-        articles.push(map.get(article));
+    var keySetArray = keySet.toArray();
+
+    for(var article in keySetArray){
+        articles.push(map.get(keySetArray[article]));
     }
 
     sortArticles(articles);
+
+    var size = 20;
+    articles = articles.slice(parseInt(req.params.from), size + parseInt(req.params.from));
 
     return json(articles);
 });
