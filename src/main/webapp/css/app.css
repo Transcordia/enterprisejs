@@ -213,3 +213,20 @@
 .full-article .modal-body {
     max-height: none;
 }
+
+#feed_images .slides_container img.hide {
+    display: none;
+}
+#feed_images .slides_container img.show {
+    display: block;
+}
+
+.article p textarea {
+    width: 99%;
+}
+.article .description textarea {
+    height: 100px;
+}
+.article .content textarea {
+    height: 400px;
+}

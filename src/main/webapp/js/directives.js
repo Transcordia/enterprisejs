@@ -119,33 +119,18 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
     };
 }]);
 
-angular.module('ejs.directives').directive('feedImageSlider', ['$compile', '$log', function($compile, $log){
+angular.module('ejs.directives').directive('checkSize', function(){
     return {
-        compile: function(element, attrs, transclude){
-            return function(scope, element, attrs) {
-                scope.$watch('article', function(article){
-                    if(article){
-                        var html = angular.element('<div id="feed-images" class="feed-image-slider">\
-                                    <div class="slides_container">');
-
-                        var addImage = function(image) {
-                            var imgEle = angular.element('<img/>')
-                                .load(function(e){
-                                    image.w = e.target.naturalWidth;
-                                    image.h = e.target.naturalHeight;
-                                }).attr('src', image.src)
-                                .appendTo(html);
-                        };
-
-                        article.images.forEach(addImage);
-
-                        element.html(html);
-                    }
-                });
-            }
+        restrict: 'A',
+        link: function(scope, elem, attr) {
+            elem.on('load', function() {
+                scope.image.w = elem[0].naturalWidth;
+                scope.image.h = elem[0].naturalHeight;
+                scope.$emit('Event:ImageLoaded');
+            });
         }
-    }
-}]);
+    };
+});
 
 /**
  * Runs a function when the user reaches the bottom of the page. The individual function that is run is passed in as an argument.

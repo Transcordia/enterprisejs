@@ -1,10 +1,13 @@
 <div class="container">
     <div class="row">
         <div class="article {{articleLayout}}">
+            <h2>{{article.title}}</h2>
+
             <div class="article-holder new-article">
                 <img ng-src="{{article.images[0].src}}" alt="">
             </div>
-            <p class="description">{{article.description}}</p>
+            <p class="description"><textarea ng-model="article.description"></textarea></p>
+            <p class="content"><textarea ng-model="article.content"></textarea></p>
             <p class="stats clearfix">
                 <span class="likes-count">0 likes</span>
                 <span class="comment-count">0 comments</span>
@@ -15,6 +18,8 @@
                 <p></p>
             </div>
         </div>
+
+        <button ng-click="save()">Save</button>
     </div>
 
     <div class="row">
@@ -29,20 +34,6 @@
                 <button ng-click="toggleLayout(6)" class="btn btn-primary">6</button>
                 <button ng-click="toggleLayout(7)" class="btn btn-primary">7</button>
                 <button ng-click="toggleLayout(8)" class="btn btn-primary">8</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="span8">
-            <div class="article large">
-                <h2>{{article.title}}</h2>
-                <p class="description">{{article.description}}</p>
-
-                <div class="convo clearfix">
-                    <a href=""><div class="image-placeholder"></div></a>
-                    <p></p>
-                </div>
             </div>
         </div>
     </div>

@@ -1,41 +1,4 @@
-<!--<div ng-include src='"partials/add-article.html"'></div>-->
-<div ui-modal class="modal fade" ng-model="$parent.showAddUrlModal">
-    <div class="modal-header">
-        <button type="button" ng-click="$parent.showAddUrlModal=false" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3>Add An Article</h3>
-    </div>
-    <div class="modal-body">
-        <form>
-            <div class="input-append">
-                <input class="span5" type="url" ng-model="urlToCheck">
-                <button ng-click="addArticle(urlToCheck)" class="btn" type="button">Add It!</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<div ui-modal class="modal fade" ng-model="showAddArticleModal">
-    <div class="modal-header">
-        <button type="button" ng-click="showAddArticleModal=false" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3>Feed Article</h3>
-    </div>
-    <div class="modal-body">
-        <div id="add-article-modal">
-            <div class="clearfix">
-                <div class="leftside">
-                    <div feed-image-slider></div>
-                </div>
-                <div class="rightside">
-                    <h4>Article Title</h4>
-                    <p>{{article.title}}</p>
-                    <h4>Article Description</h4>
-                    <p ng-bind-html-unsafe="article.description"></p>
-                </div>
-            </div>
-            <button ng-click="saveArticle(article)" class="btn btn-warning">Save Article</button>
-        </div>
-    </div>
-</div>
+<div ng-include src='"partials/add-article.html"' ng-controller="addArticleCtrl"></div>
 
 <div when-scrolled="loadMore()" offset="0">
     <div id="article-container" nested articles="articles" newArticles="newArticles"></div>

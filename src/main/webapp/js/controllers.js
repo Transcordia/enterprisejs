@@ -3,7 +3,7 @@
 /* Controllers */
 
 
-function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routeParams) {
+function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
     $rootScope.showAddUrlModal = false;
     $scope.showAddArticleModal = false;
 
@@ -33,79 +33,11 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
             }
         });
 
-    $scope.addArticle = function(url){
-        var data = {
-            url: url
-        };
-
-        $http.post('api/processurl', data)
-            .success(function(data, status, headers){
-                $log.info(data);
-                $rootScope.showAddUrlModal = false;
-                $scope.showAddArticleModal = true;
-                $scope.article = data.response;
-
-                $log.info($('.slides_container img'));
-            });
-    };
-
     $rootScope.doLogin = function(){
         $http.post('api/login')
             .success(function(data, status){
                 $log.info(data);
             })
-    }
-
-    $scope.saveArticle = function(article){
-        $scope.showAddArticleModal = false;
-        var largeImages = [];
-
-        // strip the html tags out of the description
-        var stripped = $.trim(strip(article.description));
-
-        // if the article has an empty content attribute and the description
-        // is long enough, let's use the description
-        /*if(article.content === "" && stripped.length > 200){
-            article.content = article.description;
-        }*/
-
-        // truncate long descriptions
-        if(stripped.split(" ").length > 100){
-            article.description = truncate(stripped, 100);
-        }
-
-        // loop through the images and remove any images that are too small
-        // in this case, any images with a height less than 50px
-        angular.forEach(article.images, function(image, key){
-            if(image.h > 49){
-                largeImages.push(image);
-            }
-        });
-
-        article.images = largeImages.slice(0);
-        article.description = stripped;
-
-        // assign this article a layout based on its content
-        article.layout = assignLayout(article);
-        $log.info('This article was assigned a layout of ' + article.layout);
-
-        var data = {
-            article: article
-        };
-
-        $http.post('api/articles', data)
-            .success(function(data, status, headers){
-                $log.info(data);
-
-                $location.path('/article/edit/' + data._id);
-            });
-    };
-
-    function strip(html)
-    {
-        var tmp = document.createElement("DIV");
-        tmp.innerHTML = html;
-        return tmp.textContent||tmp.innerText;
     }
 
     function assignPreferredArea(articles){
@@ -152,12 +84,170 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
         }
     };
 }
-AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "truncate"];
+AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams"];
+
+
+function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
+    $rootScope.showAddUrlModal = false;
+    $scope.showAddArticleModal = false;
+
+    $scope.addArticle = function(url){
+        $http.post('api/processurl', {
+            url: url
+        })
+            .success(function(data, status, headers){
+                $log.info(data);
+                $rootScope.showAddUrlModal = false;
+                $scope.showAddArticleModal = true;
+                $scope.article = data.response;
+
+                $log.info($('.slides_container img'));
+            });
+    };
+
+    var imagesLoaded = 0;
+    var activeImage = 0;
+
+    function showActiveImage() {
+        $scope.article.images[activeImage].show = true;
+    }
+
+    function stripSmallImages()
+    {
+        var largeImages = [];
+        // loop through the images and remove any images that are too small
+        // in this case, any images with a height less than 50px
+        angular.forEach($scope.article.images, function(image, key){
+            if(image.h > 49){
+                image.show = false;
+                largeImages.push(image);
+            }
+        });
+
+        $scope.article.images = largeImages;
+        showActiveImage();
+    }
+
+    $scope.$on('Event:ImageLoaded', function() {
+        imagesLoaded++;
+        if(imagesLoaded === $scope.article.images.length) {
+            stripSmallImages();
+        }
+    });
+
+    $scope.previousImage = function() {
+        $scope.article.images[activeImage].show = false;
+        activeImage--;
+        if(activeImage < 0) {
+            activeImage = $scope.article.images.length - 1;
+        }
+        showActiveImage();
+    }
+
+    $scope.nextImage = function() {
+        $scope.article.images[activeImage].show = false;
+        activeImage++;
+        if(activeImage >= $scope.article.images.length) {
+            activeImage = 0;
+        }
+        showActiveImage();
+    }
+
+    $scope.noImage = function() {
+        $scope.article.images[activeImage].show = false;
+        activeImage = -1;
+    }
+
+    $scope.saveArticle = function(article){
+        $scope.showAddArticleModal = false;
+
+        // strip the html tags out of the description
+        var stripped = $.trim(strip(article.description));
+
+        // if the article has an empty content attribute and the description
+        // is long enough, let's use the description
+        /*if(article.content === "" && stripped.length > 200){
+         article.content = article.description;
+         }*/
+
+        // truncate long descriptions
+        if(stripped.split(" ").length > 100){
+            article.description = truncate(stripped, 100);
+        }
+
+        if(activeImage >= 0) {
+            article.images = $scope.article.images[activeImage];
+        } else {
+            article.images = [];
+        }
+
+        article.description = stripped;
+
+        // assign this article a layout based on its content
+        article.layout = assignLayout(article);
+        $log.info('This article was assigned a layout of ' + article.layout);
+
+        var data = {
+            article: article
+        };
+
+        $http.post('api/articles', data)
+            .success(function(data, status, headers){
+                $log.info(data);
+
+                $location.path('/article/edit/' + data._id);
+            });
+    };
+
+    function strip(html)
+    {
+        var tmp = document.createElement("DIV");
+        tmp.innerHTML = html;
+        return tmp.textContent||tmp.innerText;
+    }
+
+    function assignLayout(article){
+        var layout = 1;
+        // an article can have a title, image, and description
+
+        // if an article has no images assign a value of 1
+        if(article.images.length === 0 && article.description !== ""){
+            // if an article has no images and a long description
+            if(article.description.split(" ").length > 70){
+                return 4;
+            }
+            return 1;
+        }
+
+        // article has an image and a description
+        if(article.images.length > 0 && article.description !== ""){
+            // article has long description
+            if(article.description.split(" ").length > 40){
+                return 8;
+            }
+
+                    // now that we have our articles we need to fit them into a layout
+                    assignPreferredArea($scope.newArticles);
+            if(article.description.split(" ").length < 20){
+                return 1;
+            }
+        }else{
+            return 1;
+        }
+
+        // if an article has an image but no description assign a value of 1
+        //  and a description assign a value of 4,5
+        return layout;
+    }
+}
+addArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "truncate"];
 
 /**
  * For editing an article (mostly choosing layout after the article gets imported. This might not be needed, depending on how things go
  */
 function EditArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout){
+    //timeout added because there's a slight delay between initially saving an article and being able to load it from the server.
+    //there's likely a few solutions for improving this issue, but for now, we'll leave it in
     $timeout(function(){
         $http.get('api/articles/' + $routeParams.id)
             .success(function(data, status, headers){
@@ -165,7 +255,14 @@ function EditArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParam
             });
     }, 1000);
 
-    $scope.articleLayout = "one-col three-row"
+    $scope.articleLayout = "one-col three-row";
+
+    $scope.save = function() {
+        $http.put('api/articles', { "article": $scope.article })
+            .success(function(data, status, headers){
+                $location.path('/article/' + data._id);
+            });
+    }
 }
 EditArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout"];
 
@@ -191,7 +288,7 @@ function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams){
                 });
         });
 
-    $scope.articleLayout = "one-col three-row"
+    $scope.articleLayout = "one-col three-row";
 }
 ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams"];
 
