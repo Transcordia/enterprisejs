@@ -61,6 +61,42 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
                 $log.info(data);
             })
     }
+
+    $scope.loadMore = function() {
+        page++;
+        $log.info('Loading page ' + page);
+
+        $http.get('api/articles/?page='+ page +'&numArticles='+ numArticles)
+            .success(function(data){
+                $scope.newArticles = data;
+
+                // now that we have our articles we need to fit them into a layout
+                for(var j = 0; j < $scope.newArticles.length; j++){
+                    if($scope.newArticles[j].preferredArea == 5){
+                        $scope.newArticles[j].layout = "5";
+                    }
+
+                    if($scope.newArticles[j].preferredArea == 4){
+                        $scope.newArticles[j].layout = "4"
+                    }
+
+                    if($scope.newArticles[j].preferredArea == 3){
+                        $scope.newArticles[j].layout = "2"; // one cols two rows
+                    }
+
+                    if($scope.newArticles[j].preferredArea == 2){
+                        $scope.newArticles[j].layout = "8"; // one cols two rows
+                    }
+
+                    if($scope.newArticles[j].preferredArea == 1){
+                        $scope.newArticles[j].layout = "1"
+                    }
+                }
+
+                $scope.articles = $scope.articles.concat(data);
+                $log.info($scope.articles);
+            });
+    };
 }
 AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams"];
 
@@ -184,44 +220,37 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
         return tmp.textContent||tmp.innerText;
     }
 
-    $scope.loadMore = function() {
-        page++;
+    function assignLayout(article){
+        var layout = 1;
+        // an article can have a title, image, and description
 
-        if(page * numArticles <= totalArticles){
-            $log.info('Loading page ' + page);
-
-            $http.get('api/articles/?page='+ page +'&numArticles='+ numArticles)
-                .success(function(data){
-                    $scope.newArticles = data.articles;
-
-                    // now that we have our articles we need to fit them into a layout
-                    for(var j = 0; j < $scope.newArticles.length; j++){
-                        if($scope.newArticles[j].preferredArea == 5){
-                            $scope.newArticles[j].layout = "5";
-                        }
-
-                        if($scope.newArticles[j].preferredArea == 4){
-                            $scope.newArticles[j].layout = "4"
-                        }
-
-                        if($scope.newArticles[j].preferredArea == 3){
-                            $scope.newArticles[j].layout = "2"; // one cols two rows
-                        }
-
-                        if($scope.newArticles[j].preferredArea == 2){
-                            $scope.newArticles[j].layout = "8"; // one cols two rows
-                        }
-
-                        if($scope.newArticles[j].preferredArea == 1){
-                            $scope.newArticles[j].layout = "1"
-                        }
-                    }
-
-                    $scope.articles = $scope.articles.concat(data);
-                    $log.info($scope.articles);
-                });
+        // if an article has no images assign a value of 1
+        if(article.images.length === 0 && article.description !== ""){
+            // if an article has no images and a long description
+            if(article.description.split(" ").length > 70){
+                return 4;
+            }
+            return 1;
         }
-    };
+
+        // article has an image and a description
+        if(article.images.length > 0 && article.description !== ""){
+            // article has long description
+            if(article.description.split(" ").length > 40){
+                return 8;
+            }
+
+            if(article.description.split(" ").length < 20){
+                return 1;
+            }
+        }else{
+            return 1;
+        }
+
+        // if an article has an image but no description assign a value of 1
+        //  and a description assign a value of 4,5
+        return layout;
+    }
 }
 addArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "truncate"];
 
