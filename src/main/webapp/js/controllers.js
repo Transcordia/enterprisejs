@@ -18,8 +18,8 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
         .success(function(data, status, headers){
             page = 1;
 
-            if(data.length == 0){
-                generateRandomArticles(100, function(data) {
+            if(data.articles.length == 0){
+                generateRandomArticles(20, function(data) {
                     $http.post('api/articles', data)
                         .success(function(data, status, headers){
                             $log.info(data.articles);
@@ -41,11 +41,11 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
                     }
 
                     if($scope.articles[j].preferredArea == 3){
-                        $scope.articles[j].layout = "2"; // one cols two rows
+                        $scope.articles[j].layout = "2"; // one col two rows
                     }
 
                     if($scope.articles[j].preferredArea == 2){
-                        $scope.articles[j].layout = "8"; // one cols two rows
+                        $scope.articles[j].layout = "8"; // two cols one row
                     }
 
                     if($scope.articles[j].preferredArea == 1){
@@ -132,9 +132,10 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
 
     $scope.loadMore = function() {
         page++;
-        $log.info('Loading page ' + page);
 
         if(page * numArticles <= totalArticles){
+            $log.info('Loading page ' + page);
+
             $http.get('api/articles/?page='+ page +'&numArticles='+ numArticles)
                 .success(function(data){
                     $scope.newArticles = data.articles;
