@@ -87,8 +87,6 @@ if (!Object.keys) {
             this._isResizing = false;
             this._update = true;
             this.maxy = new Array();
-            this.okToRender = false;
-            this.maxColumns = this.options.maxColumns;
 
             // add smartresize
             $(window).smartresize(function () {
