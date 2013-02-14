@@ -142,7 +142,7 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
             activeImage = $scope.article.images.length - 1;
         }
         showActiveImage();
-    }
+    };
 
     $scope.nextImage = function() {
         $scope.article.images[activeImage].show = false;
@@ -151,12 +151,12 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
             activeImage = 0;
         }
         showActiveImage();
-    }
+    };
 
     $scope.noImage = function() {
         $scope.article.images[activeImage].show = false;
         activeImage = -1;
-    }
+    };
 
     $scope.saveArticle = function(article){
         $scope.showAddArticleModal = false;
@@ -226,8 +226,6 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
                 return 8;
             }
 
-                    // now that we have our articles we need to fit them into a layout
-                    assignPreferredArea($scope.newArticles);
             if(article.description.split(" ").length < 20){
                 return 1;
             }
