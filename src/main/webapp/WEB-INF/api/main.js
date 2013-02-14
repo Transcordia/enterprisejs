@@ -46,14 +46,14 @@ app.get('/articles', function(req){
 
     var keySetArray = keySet.toArray();
 
+    var numArticles = parseInt(req.params.numArticles);
+    var page = parseInt(req.params.page);
+
     for(var article in keySetArray){
         articles.push(map.get(keySetArray[article]));
     }
 
     sortArticles(articles);
-
-    var numArticles = parseInt(req.params.numArticles);
-    var page = parseInt(req.params.page);
 
     var start = (page - 1) * numArticles;
     var end = 0;
@@ -68,7 +68,7 @@ app.get('/articles', function(req){
 
     articles = articles.slice(start, end);
 
-    return json(articles);
+    return json({"articles": articles, "totalArticles": keySetArray.length});
 });
 
 app.post('/processurl', function(req){

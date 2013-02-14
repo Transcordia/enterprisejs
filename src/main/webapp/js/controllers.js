@@ -12,8 +12,9 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
 
     var page = 1;
     var numArticles = 10;
+    var totalArticles = 0;
 
-    $http.get('api/articles/?page=' + page +'&numArticles=20')
+    $http.get('api/articles/?page=' + page +'&numArticles='+ numArticles)
         .success(function(data, status, headers){
             page = 1;
 
@@ -21,12 +22,13 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
                 generateRandomArticles(100, function(data) {
                     $http.post('api/articles', data)
                         .success(function(data, status, headers){
-                            $log.info(data);
+                            $log.info(data.articles);
                             $http.get('api/articles/score');
                         });
                 });
             }else{
-                $scope.articles = data;
+                $scope.articles = data.articles;
+                totalArticles = data.totalArticles;
 
                 // now that we have our articles we need to fit them into a layout
                 for(var j = 0; j < $scope.articles.length; j++){
@@ -132,36 +134,38 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
         page++;
         $log.info('Loading page ' + page);
 
-        $http.get('api/articles/?page='+ page +'&numArticles='+ numArticles)
-            .success(function(data){
-                $scope.newArticles = data;
+        if(page * numArticles <= totalArticles){
+            $http.get('api/articles/?page='+ page +'&numArticles='+ numArticles)
+                .success(function(data){
+                    $scope.newArticles = data.articles;
 
-                // now that we have our articles we need to fit them into a layout
-                for(var j = 0; j < $scope.newArticles.length; j++){
-                    if($scope.newArticles[j].preferredArea == 5){
-                        $scope.newArticles[j].layout = "5";
+                    // now that we have our articles we need to fit them into a layout
+                    for(var j = 0; j < $scope.newArticles.length; j++){
+                        if($scope.newArticles[j].preferredArea == 5){
+                            $scope.newArticles[j].layout = "5";
+                        }
+
+                        if($scope.newArticles[j].preferredArea == 4){
+                            $scope.newArticles[j].layout = "4"
+                        }
+
+                        if($scope.newArticles[j].preferredArea == 3){
+                            $scope.newArticles[j].layout = "2"; // one cols two rows
+                        }
+
+                        if($scope.newArticles[j].preferredArea == 2){
+                            $scope.newArticles[j].layout = "8"; // one cols two rows
+                        }
+
+                        if($scope.newArticles[j].preferredArea == 1){
+                            $scope.newArticles[j].layout = "1"
+                        }
                     }
 
-                    if($scope.newArticles[j].preferredArea == 4){
-                        $scope.newArticles[j].layout = "4"
-                    }
-
-                    if($scope.newArticles[j].preferredArea == 3){
-                        $scope.newArticles[j].layout = "2"; // one cols two rows
-                    }
-
-                    if($scope.newArticles[j].preferredArea == 2){
-                        $scope.newArticles[j].layout = "8"; // one cols two rows
-                    }
-
-                    if($scope.newArticles[j].preferredArea == 1){
-                        $scope.newArticles[j].layout = "1"
-                    }
-                }
-
-                $scope.articles = $scope.articles.concat(data);
-                $log.info($scope.articles);
-            });
+                    $scope.articles = $scope.articles.concat(data);
+                    $log.info($scope.articles);
+                });
+        }
     };
 }
 AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "truncate"];

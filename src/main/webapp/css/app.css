@@ -17,12 +17,13 @@
 }
 
 #wrapper{
-    width: 100%;
+    max-width: 80%;
     margin: 0 auto;
 }
 
 #article-container{
-    padding-bottom: 30px;
+    margin: 0 auto;
+    padding-bottom: 50px;
 }
 
 .article{

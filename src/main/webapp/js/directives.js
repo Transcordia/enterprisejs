@@ -67,6 +67,8 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                     // viewport width is at least 640px
                     element.nested(options);
                 }
+
+                articles = "";
             };
 
             var append = function(newArticles){
@@ -91,7 +93,7 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                     articleHolder = "";
                 });
 
-                element.append(articles);
+                //element.append(articles);
 
                 //don't run jquery.nested if the browser size is below 640px. This prevents it from running on mobile, which would cause problems.
                 var mq = window.matchMedia( "(min-width: 640px)" );
@@ -99,7 +101,11 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                 if (mq.matches) {
                     // viewport width is at least 640px
                     element.append(articles).nested('append', articles);
+                }else{
+                    element.append(articles);
                 }
+
+                articles = "";
             }
 
             scope.$watch('articles', function (newValue, oldValue) {
