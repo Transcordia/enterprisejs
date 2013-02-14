@@ -11,15 +11,15 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
     $scope.articles = [];
 
     var page = 1;
-    var numArticles = 10;
-    var totalArticles = 0;
+    var numArticles = 20;
+    var totalArticles = 100;
 
     $http.get('api/articles/?page=' + page +'&numArticles='+ numArticles)
         .success(function(data, status, headers){
             page = 1;
 
             if(data.articles.length == 0){
-                generateRandomArticles(20, function(data) {
+                generateRandomArticles(totalArticles, function(data) {
                     $http.post('api/articles', data)
                         .success(function(data, status, headers){
                             $log.info(data.articles);
@@ -28,30 +28,8 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
                 });
             }else{
                 $scope.articles = data.articles;
-                totalArticles = data.totalArticles;
 
-                // now that we have our articles we need to fit them into a layout
-                for(var j = 0; j < $scope.articles.length; j++){
-                    if($scope.articles[j].preferredArea == 5){
-                        $scope.articles[j].layout = "5";
-                    }
-
-                    if($scope.articles[j].preferredArea == 4){
-                        $scope.articles[j].layout = "4"
-                    }
-
-                    if($scope.articles[j].preferredArea == 3){
-                        $scope.articles[j].layout = "2"; // one col two rows
-                    }
-
-                    if($scope.articles[j].preferredArea == 2){
-                        $scope.articles[j].layout = "8"; // two cols one row
-                    }
-
-                    if($scope.articles[j].preferredArea == 1){
-                        $scope.articles[j].layout = "1"
-                    }
-                }
+                assignPreferredArea($scope.articles);
             }
         });
 
@@ -130,6 +108,31 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
         return tmp.textContent||tmp.innerText;
     }
 
+    function assignPreferredArea(articles){
+        // now that we have our articles we need to fit them into a layout
+        for(var j = 0; j < articles.length; j++){
+            if(articles[j].preferredArea == 5){
+                articles[j].layout = "5";
+            }
+
+            if(articles[j].preferredArea == 4){
+                articles[j].layout = "4"
+            }
+
+            if(articles[j].preferredArea == 3){
+                articles[j].layout = "2"; // one cols two rows
+            }
+
+            if(articles[j].preferredArea == 2){
+                articles[j].layout = "8"; // one cols two rows
+            }
+
+            if(articles[j].preferredArea == 1){
+                articles[j].layout = "1"
+            }
+        }
+    }
+
     $scope.loadMore = function() {
         page++;
 
@@ -141,29 +144,9 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
                     $scope.newArticles = data.articles;
 
                     // now that we have our articles we need to fit them into a layout
-                    for(var j = 0; j < $scope.newArticles.length; j++){
-                        if($scope.newArticles[j].preferredArea == 5){
-                            $scope.newArticles[j].layout = "5";
-                        }
+                    assignPreferredArea($scope.newArticles);
 
-                        if($scope.newArticles[j].preferredArea == 4){
-                            $scope.newArticles[j].layout = "4"
-                        }
-
-                        if($scope.newArticles[j].preferredArea == 3){
-                            $scope.newArticles[j].layout = "2"; // one cols two rows
-                        }
-
-                        if($scope.newArticles[j].preferredArea == 2){
-                            $scope.newArticles[j].layout = "8"; // one cols two rows
-                        }
-
-                        if($scope.newArticles[j].preferredArea == 1){
-                            $scope.newArticles[j].layout = "1"
-                        }
-                    }
-
-                    $scope.articles = $scope.articles.concat(data);
+                    $scope.articles = $scope.articles.concat(data.articles);
                     $log.info($scope.articles);
                 });
         }
