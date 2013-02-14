@@ -221,7 +221,12 @@
     display: block;
 }
 
-.article .description textarea {
+.article p textarea {
     width: 99%;
+}
+.article .description textarea {
+    height: 100px;
+}
+.article .content textarea {
     height: 400px;
 }
