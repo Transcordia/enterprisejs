@@ -37,12 +37,10 @@
     </div>
 </div>
 
-<!--<div when-scrolled="loadMore(searchTerm)" offset="92">
-    <div id="article-container" nested articles="articles"></div>
+<div when-scrolled="loadMore()" offset="0">
+    <div id="article-container" nested articles="articles" newArticles="newArticles"></div>
     <div ng-show="(articles.length == 0)" class="loader">No articles found.</div>
     <div ng-show="(paging.more)" class="loader"><img src="images/ajax-loader.gif">Loading...</div>
     <div ng-show="((!paging.more) && (articles.length != 0))" class="loader">No more articles found.</div>
-</div>-->
-<div id="article-container" nested articles="articles"></div>
-
+</div>
 

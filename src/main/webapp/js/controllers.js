@@ -8,16 +8,14 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
     $scope.showAddArticleModal = false;
 
     $scope.urlToCheck = '';
+    $scope.articles = [];
 
-    var url = "";
-    $scope.paging = {
-        size: 20
-    };
-    var from = 1;
+    var page = 1;
+    var numArticles = 10;
 
-    $http.get('api/articles/?from=' + from)
+    $http.get('api/articles/?page=' + page +'&numArticles=20')
         .success(function(data, status, headers){
-            $scope.articles = [];
+            page = 1;
 
             if(data.length == 0){
                 generateRandomArticles(100, function(data) {
@@ -130,28 +128,39 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, truncate, $routePar
         return tmp.textContent||tmp.innerText;
     }
 
-    $scope.loadMore = function(term) {
-        //if there's no more pages to load
-        if(!$scope.paging.more) {
-            return;
-        }
-        term = term || "";
-        $scope.paging.from += $scope.paging.size;
-        url = "api/article/search/?term=" + term + "&filters=" + buildFilters() + "&from=" + $scope.paging.from + "&size=" + $scope.paging.size + "&sort=" + sortBy + "&category=" + category + tagFilter;
+    $scope.loadMore = function() {
+        page++;
+        $log.info('Loading page ' + page);
 
+        $http.get('api/articles/?page='+ page +'&numArticles='+ numArticles)
+            .success(function(data){
+                $scope.newArticles = data;
 
-        $http.get( url ).success( function (data) {
-            if(data !== "false") {
-                if(data.length === 0) {
-                    $scope.paging.more = false;
-                } else {
-                    $scope.articles = $scope.articles.concat(data);
+                // now that we have our articles we need to fit them into a layout
+                for(var j = 0; j < $scope.newArticles.length; j++){
+                    if($scope.newArticles[j].preferredArea == 5){
+                        $scope.newArticles[j].layout = "5";
+                    }
+
+                    if($scope.newArticles[j].preferredArea == 4){
+                        $scope.newArticles[j].layout = "4"
+                    }
+
+                    if($scope.newArticles[j].preferredArea == 3){
+                        $scope.newArticles[j].layout = "2"; // one cols two rows
+                    }
+
+                    if($scope.newArticles[j].preferredArea == 2){
+                        $scope.newArticles[j].layout = "8"; // one cols two rows
+                    }
+
+                    if($scope.newArticles[j].preferredArea == 1){
+                        $scope.newArticles[j].layout = "1"
+                    }
                 }
-            } else {
-                $log.info("ERROR getting article, or resource.");
-            }
-        }).error(function(data, status) {
-                $log.info("ERROR retrieving protected resource: "+data+" status: "+status);
+
+                $scope.articles = $scope.articles.concat(data);
+                $log.info($scope.articles);
             });
     };
 }

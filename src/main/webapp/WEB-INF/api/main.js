@@ -52,8 +52,21 @@ app.get('/articles', function(req){
 
     sortArticles(articles);
 
-    var size = 20;
-    articles = articles.slice(parseInt(req.params.from), size + parseInt(req.params.from));
+    var numArticles = parseInt(req.params.numArticles);
+    var page = parseInt(req.params.page);
+
+    var start = (page - 1) * numArticles;
+    var end = 0;
+
+    if(page * numArticles < articles.length){
+        end = page * numArticles;
+    }else{
+        end = articles.length;
+    }
+
+    log.info('Starting index {} Ending index {}', start, end);
+
+    articles = articles.slice(start, end);
 
     return json(articles);
 });

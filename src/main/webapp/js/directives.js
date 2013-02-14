@@ -6,7 +6,8 @@ angular.module('ejs.directives', []);
 angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$log', function (truncate, $timeout, $log) {
     return {
         scope: {
-            articles: '='
+            articles: '=',
+            newArticles: '='
         },
         link: function (scope, element, attrs) {
             var gridCombinations = {
@@ -37,9 +38,6 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
             var articles = '';
 
             var setup = function () {
-                var j = 0;
-                var combos = ['1', '8', '8', '1'];
-                var area = {};
                 var imageWidth = "", imageHeight = "", src = "";
                 var articleHolder = "";
                 scope.articles.forEach(function (article) {
@@ -56,7 +54,6 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                                         <p class="description">' + article.description + '</p>\
                                     </div>\
                                 </div>';
-                    j++;
 
                     articleHolder = "";
                 });
@@ -70,16 +67,46 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                     // viewport width is at least 640px
                     element.nested(options);
                 }
-                else {
-                    // window width is less than 640px
-
-                }
             };
 
+            var append = function(newArticles){
+                $log.info('Running append function...');
+                var imageWidth = "", imageHeight = "", src = "";
+                var articleHolder = "";
+                newArticles.forEach(function (article) {
+                    if(article.images[0]){
+                        imageWidth = article.abstractImage.w;
+                        imageHeight = article.abstractImage.h;
+                        src = article.abstractImage.src;
+                        articleHolder = '<div class="article-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
+                    }
+
+                    articles += '<div id="'+ article._id +'" class="article '+ gridCombinations[article.layout].size+'">\
+                                    <div>\
+                                        <h4><a href="#/article/' + article._id + '">'+ article.title +'</a></h4><p class="description"><b>Score: </b><i>'+ article.score +'</i></p>'+ articleHolder +'\
+                                        <p class="description">' + article.description + '</p>\
+                                    </div>\
+                                </div>';
+
+                    articleHolder = "";
+                });
+
+                element.append(articles);
+
+                //don't run jquery.nested if the browser size is below 640px. This prevents it from running on mobile, which would cause problems.
+                var mq = window.matchMedia( "(min-width: 640px)" );
+
+                if (mq.matches) {
+                    // viewport width is at least 640px
+                    element.append(articles).nested('append', articles);
+                }
+            }
+
             scope.$watch('articles', function (newValue, oldValue) {
-                //if (newValue.length == 0) init();
-                if (newValue && newValue.length > 0){
+                if (newValue.length > 0 && oldValue.length == 0){
                     setup();
+                }else if(newValue.length > 0 && oldValue.length > 0){
+                    append(scope.$parent.newArticles);
                 }
             });
         }
@@ -127,9 +154,9 @@ angular.module('ejs.directives').directive('whenScrolled', function() {
         angular.element(window).bind('scroll', function() {
             var rectObject = raw.getBoundingClientRect();
             //200 is the value of the footer height and some other things. offset is passed in as an option and is used for
-            if (Math.floor(rectObject.bottom) === $(window).height() - 200 - offset) {
+            if (Math.floor(rectObject.bottom) === $(window).height() - 0 - offset) {
                 scope.$apply(attr.whenScrolled);
-             }
+            }
         });
     };
 });
