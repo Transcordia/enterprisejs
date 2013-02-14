@@ -75,7 +75,6 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
                 .success(function(data){
                     $scope.newArticles = data.articles;
 
-                    // now that we have our articles we need to fit them into a layout
                     assignPreferredArea($scope.newArticles);
 
                     $scope.articles = $scope.articles.concat(data.articles);

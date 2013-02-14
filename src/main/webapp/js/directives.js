@@ -35,12 +35,12 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                 gutter: 10
             };
 
-            var articles = '';
+            var articleHtml = '';
 
-            var setup = function () {
+            var renderArticles = function (articles, append) {
                 var imageWidth = "", imageHeight = "", src = "";
                 var articleHolder = "";
-                scope.articles.forEach(function (article) {
+                articles.forEach(function (article) {
                     if(article.images[0]){
                         imageWidth = article.abstractImage.w;
                         imageHeight = article.abstractImage.h;
@@ -48,7 +48,7 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                         articleHolder = '<div class="article-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
                     }
 
-                    articles += '<div id="'+ article._id +'" class="article '+ gridCombinations[article.layout].size+'">\
+                    articleHtml += '<div id="'+ article._id +'" class="article '+ gridCombinations[article.layout].size+'">\
                                     <div>\
                                         <h4><a href="#/article/' + article._id + '">'+ article.title +'</a></h4><p class="description"><b>Score: </b><i>'+ article.score +'</i></p>'+ articleHolder +'\
                                         <p class="description">' + article.description + '</p>\
@@ -58,61 +58,29 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                     articleHolder = "";
                 });
 
-                element.append(articles);
-
                 //don't run jquery.nested if the browser size is below 640px. This prevents it from running on mobile, which would cause problems.
                 var mq = window.matchMedia( "(min-width: 640px)" );
 
                 if (mq.matches) {
                     // viewport width is at least 640px
-                    element.nested(options);
-                }
-
-                articles = "";
-            };
-
-            var append = function(newArticles){
-                $log.info('Running append function...');
-                var imageWidth = "", imageHeight = "", src = "";
-                var articleHolder = "";
-                newArticles.forEach(function (article) {
-                    if(article.images[0]){
-                        imageWidth = article.abstractImage.w;
-                        imageHeight = article.abstractImage.h;
-                        src = article.abstractImage.src;
-                        articleHolder = '<div class="article-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
+                    if(!append){
+                        element.append(articleHtml);
+                        element.nested(options);
+                    }else{
+                        element.append(articleHtml).nested('append', articleHtml);
                     }
-
-                    articles += '<div id="'+ article._id +'" class="article '+ gridCombinations[article.layout].size+'">\
-                                    <div>\
-                                        <h4><a href="#/article/' + article._id + '">'+ article.title +'</a></h4><p class="description"><b>Score: </b><i>'+ article.score +'</i></p>'+ articleHolder +'\
-                                        <p class="description">' + article.description + '</p>\
-                                    </div>\
-                                </div>';
-
-                    articleHolder = "";
-                });
-
-                //element.append(articles);
-
-                //don't run jquery.nested if the browser size is below 640px. This prevents it from running on mobile, which would cause problems.
-                var mq = window.matchMedia( "(min-width: 640px)" );
-
-                if (mq.matches) {
-                    // viewport width is at least 640px
-                    element.append(articles).nested('append', articles);
                 }else{
-                    element.append(articles);
+                    element.append(articleHtml);
                 }
 
-                articles = "";
-            }
+                articleHtml = "";
+            };
 
             scope.$watch('articles', function (newValue, oldValue) {
                 if (newValue.length > 0 && oldValue.length == 0){
-                    setup();
+                    renderArticles(scope.articles, false);
                 }else if(newValue.length > 0 && oldValue.length > 0){
-                    append(scope.$parent.newArticles);
+                    renderArticles(scope.$parent.newArticles, true);
                 }
             });
         }
