@@ -98,7 +98,7 @@ function parseStructuredData(url){
         var structuredData = {
             "title": jsoupDocument.select('meta[property=og:title]').attr('content'),
             "description": jsoupDocument.select('meta[property=og:description]').attr('content'),
-            "content": '',
+            "content": jsoupDocument.select('meta[property=og:description]').attr('content'),
             "images": [
                 {
                     "src": jsoupDocument.select('meta[property=og:image]').attr('content'),
