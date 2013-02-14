@@ -30,6 +30,16 @@ app.post('/articles', function(req){
     return json(article, 201);
 });
 
+//editing an article
+app.put('/articles', function(req){
+    var article = req.postParams.article;
+
+    var map = store.getMap('ejs', 'articles');
+
+    map.put(article);
+    return json(article, 201);
+});
+
 app.get('/articles/:id', function(req, id){
     var map = store.getMap('ejs', 'articles');
 

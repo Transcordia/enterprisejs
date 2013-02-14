@@ -131,6 +131,11 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
         showActiveImage();
     }
 
+    $scope.noImage = function() {
+        $scope.article.images[activeImage].show = false;
+        activeImage = -1;
+    }
+
     $scope.saveArticle = function(article){
         $scope.showAddArticleModal = false;
 
@@ -148,8 +153,12 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
             article.description = truncate(stripped, 100);
         }
 
+        if(activeImage >= 0) {
+            article.images = $scope.article.images[activeImage];
+        } else {
+            article.images = [];
+        }
 
-        article.images = $scope.article.images[activeImage];
         article.description = stripped;
 
         // assign this article a layout based on its content
@@ -220,6 +229,8 @@ addArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "
  * For editing an article (mostly choosing layout after the article gets imported. This might not be needed, depending on how things go
  */
 function EditArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout){
+    //timeout added because there's a slight delay between initially saving an article and being able to load it from the server.
+    //there's likely a few solutions for improving this issue, but for now, we'll leave it in
     $timeout(function(){
         $http.get('api/articles/' + $routeParams.id)
             .success(function(data, status, headers){
@@ -227,7 +238,14 @@ function EditArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParam
             });
     }, 1000);
 
-    $scope.articleLayout = "one-col three-row"
+    $scope.articleLayout = "one-col three-row";
+
+    $scope.save = function() {
+        $http.put('api/articles', { "article": $scope.article })
+            .success(function(data, status, headers){
+                $location.path('/article/' + data._id);
+            });
+    }
 }
 EditArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout"];
 
@@ -253,7 +271,7 @@ function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams){
                 });
         });
 
-    $scope.articleLayout = "one-col three-row"
+    $scope.articleLayout = "one-col three-row";
 }
 ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams"];
 

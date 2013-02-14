@@ -24,7 +24,7 @@
                 <div class="leftside">
                     <div id="feed-images" class="feed-image-slider">
                         <div class="slides_container">
-                            <a ng-click="previousImage()">Previous</a> | <a ng-click="nextImage()">Next</a>
+                            <a ng-click="previousImage()">Previous</a> | <a ng-click="nextImage()">Next</a> | <a ng-click="noImage()">None</a>
                             <div ng-repeat="image in article.images">
                                 <img ng-class="{ true: 'show', false: 'hide' }[image.show]" ng-src="{{image.src}}" check-size>
                             </div>
