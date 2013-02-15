@@ -149,6 +149,16 @@ function generateRandomArticles(total, save){
             "views": Math.floor(Math.random() * 200)
         }
 
+        article.layout = article.preferredArea.toString();
+
+        if(article.preferredArea == 3){
+            article.layout = "2"; // one cols two rows
+        }
+
+        if(article.preferredArea == 2){
+            article.layout = "8"; // one cols two rows
+        }
+
         var data = {
             article: article
         };

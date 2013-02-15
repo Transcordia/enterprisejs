@@ -21,8 +21,48 @@ app.get('/', function (req) {
 	});
 });
 
+//chooses an article layout based on the existance of an image, the length of the description
+function assignLayout(article)
+{
+    var layout = 1;
+    // an article can have a title, image, and description
+
+    // if an article has no images assign a value of 1
+    if(article.images.length === 0 && article.description !== ""){
+        // if an article has no images and a long description
+        if(article.description.split(" ").length > 70){
+            return 4;
+        }
+        return 1;
+    }
+
+    // article has an image and a description
+    if(article.images.length > 0 && article.description !== ""){
+        // article has long description
+        if(article.description.split(" ").length > 40){
+            return 8;
+        }
+
+        if(article.description.split(" ").length < 20){
+            return 1;
+        }
+    }else{
+        return 1;
+    }
+
+    // if an article has an image but no description assign a value of 1
+    //  and a description assign a value of 4,5
+    return layout;
+}
+
 app.post('/articles', function(req){
     var article = req.postParams.article;
+
+    if(article.layout === undefined) {
+        // assign this article a layout based on its content
+        article.layout = assignLayout(article);
+        log.info('This article was assigned a layout of ' + article.layout);
+    }
 
     var map = store.getMap('ejs', 'articles');
 

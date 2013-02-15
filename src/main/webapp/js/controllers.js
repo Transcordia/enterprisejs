@@ -28,8 +28,6 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
                 });
             }else{
                 $scope.articles = data.articles;
-
-                assignPreferredArea($scope.articles);
             }
         });
 
@@ -38,31 +36,6 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
             .success(function(data, status){
                 $log.info(data);
             })
-    }
-
-    function assignPreferredArea(articles){
-        // now that we have our articles we need to fit them into a layout
-        for(var j = 0; j < articles.length; j++){
-            if(articles[j].preferredArea == 5){
-                articles[j].layout = "5";
-            }
-
-            if(articles[j].preferredArea == 4){
-                articles[j].layout = "4"
-            }
-
-            if(articles[j].preferredArea == 3){
-                articles[j].layout = "2"; // one cols two rows
-            }
-
-            if(articles[j].preferredArea == 2){
-                articles[j].layout = "8"; // one cols two rows
-            }
-
-            if(articles[j].preferredArea == 1){
-                articles[j].layout = "1"
-            }
-        }
     }
 
     $scope.loadMore = function() {
@@ -74,8 +47,6 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
             $http.get('api/articles/?page='+ page +'&numArticles='+ numArticles)
                 .success(function(data){
                     $scope.newArticles = data.articles;
-
-                    assignPreferredArea($scope.newArticles);
 
                     $scope.articles = $scope.articles.concat(data.articles);
                     $log.info($scope.articles);
@@ -182,10 +153,6 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
 
         article.description = stripped;
 
-        // assign this article a layout based on its content
-        article.layout = assignLayout(article);
-        $log.info('This article was assigned a layout of ' + article.layout);
-
         var data = {
             article: article
         };
@@ -205,37 +172,6 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
         return tmp.textContent||tmp.innerText;
     }
 
-    function assignLayout(article){
-        var layout = 1;
-        // an article can have a title, image, and description
-
-        // if an article has no images assign a value of 1
-        if(article.images.length === 0 && article.description !== ""){
-            // if an article has no images and a long description
-            if(article.description.split(" ").length > 70){
-                return 4;
-            }
-            return 1;
-        }
-
-        // article has an image and a description
-        if(article.images.length > 0 && article.description !== ""){
-            // article has long description
-            if(article.description.split(" ").length > 40){
-                return 8;
-            }
-
-            if(article.description.split(" ").length < 20){
-                return 1;
-            }
-        }else{
-            return 1;
-        }
-
-        // if an article has an image but no description assign a value of 1
-        //  and a description assign a value of 4,5
-        return layout;
-    }
 }
 addArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "truncate"];
 
