@@ -5,12 +5,18 @@ var Jsoup = Packages.org.jsoup.Jsoup;
 var jsoupDocument = Packages.org.jsoup.nodes.Document;
 var Parser = Packages.org.jsoup.parser.Parser;
 
+/**
+ * 1. look for an rss feed url
+ * 2. look for an atom feed url
+ * 3. look for a feed url in document body
+ * 4. parse structured data
+ * 5. grab all text and images on the page (similar to what facebook and google+ do)
+ *
+ * @param {String} pageUrl the url of the site
+ * @return {object} An object as { "response": content } where content is an object containing parsed data from the site
+ */
 function processUrl(pageUrl)
 {
-    // 1. look for an rss feed url
-    // 2. look for an atom feed url
-    // 3. look for a feed url in document body
-    // 4. parse structured data
     var response = {};
     var feedLink;
     var feedUrl;
@@ -87,6 +93,15 @@ function processUrl(pageUrl)
     };
 }
 
+/**
+ * @description "structured data" basically is just meta elements in the <head> tag. however, not all sites will have those
+ * thus, as a final fallback, we want to simply grab all the text and images on the site, and attempt to make something out of that
+ * as we use the site more, and find that specific sites we commonly use enter this fallback area, we can write custom parsers for those sites
+ * one way to do this would be individual functions for each site we have a custom parser for, to avoid one huge function that parses multiple specific sites in different ways
+ *
+ * @param url {String} url of the site being parsed, passed from processUrl()
+ * @return Object containing the parsed data of the site
+ */
 function parseStructuredData(url){
     log.info('Parsing structured data...');
 
@@ -117,13 +132,14 @@ function parseStructuredData(url){
     }
 
     log.info('No structured data found. Parsing results from HTML');
-
     var jsoupBody = jsoupDocument.body();
 
     var content = jsoupBody.text();
 
+    //we want the description to be a small portion of the full content (content being the full unfiltered page text)
     var description = content.split(" ").splice(0, 50).join(" ");
 
+    //grab ALL the images! we don't care about size right here, it's not possible/feasible to get the size of the images here. we do that clientside, with a directive
     var imageList = jsoupBody.select('img');
     var images = [];
 

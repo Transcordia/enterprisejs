@@ -91,6 +91,11 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
     };
 }]);
 
+/**
+ * Loads an image, passing in the height and width to the provided scope, and emits an event that can be listened for
+ * The sibling or parent scope can then decide what to do with that image, based on the size (since we don't know what size the image is until it's loaded)
+ * In the EnterpriceJS project, this is used to filter out images that are deemed "too small"
+ */
 angular.module('ejs.directives').directive('checkSize', function(){
     return {
         restrict: 'A',
@@ -116,7 +121,11 @@ angular.module('ejs.directives').directive('whenScrolled', function() {
         var offset = attr.offset || 0;
         angular.element(window).bind('scroll', function() {
             var rectObject = raw.getBoundingClientRect();
-            //200 is the value of the footer height and some other things. offset is passed in as an option and is used for
+            //the number being subtracted from window.height() is the static height of any footers or other elements that are on all the pages.
+            //offset is passed in as an option and is the height of any padding or margins that might occur as part of the element this directive is used on
+            //
+            //WARNING: if there's any changes in that collection of elements (mostly in terms of changing the CSS), these numbers needs to be changed. this also prevents use of 'ems' as they don't translate consistently to pixel values
+            //there might be a way to handle this without using static numbers. if so, please do, as this current solution isn't as flexible and reusable as it could be
             if (Math.floor(rectObject.bottom) === $(window).height() - 0 - offset) {
                 scope.$apply(attr.whenScrolled);
             }
@@ -147,6 +156,9 @@ angular.module('ejs.directives').directive('reloadTwitterBtns', function(){
 
 /**
  * Used for liking, and unliking and object
+ * This directive assumes the existence of a $rootScope.auth property, which comes from auth.js in the BabsonGC project.
+ * The backend code for liking/unliking objects in zocia requires 2 id values, one for the object that is BEING liked, and one for the object DOING the liking
+ * Thus at the very least, there needs to be some sort of way to get the zocia/database ID of the user.
  *
  * @param [id] {string} The ID of the object to be liked
  * @example <like id="{{id}}"></like>

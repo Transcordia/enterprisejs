@@ -2,13 +2,10 @@
 
 /* Controllers */
 
-//don't run jquery.nested if the browser size is below 640px. This prevents it from running on mobile, which would cause problems.
+//
 var tablet = window.matchMedia( "(max-width: 1024px)" );
 
 function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
-    $rootScope.showAddUrlModal = false;
-    $scope.showAddArticleModal = false;
-
     $scope.urlToCheck = '';
     $scope.articles = [];
 
@@ -63,11 +60,13 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
 }
 AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams"];
 
-
+//Controller for adding articles. This is mostly for the pop-up modal windows when adding an article.
+//the template for this is located in add-article.html
 function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
     $rootScope.showAddUrlModal = false;
     $scope.showAddArticleModal = false;
 
+    //processes an URL that the user inputs, returning the result to us as a "proto-article" such that we can eventually add it to the database
     $scope.addArticle = function(url){
         $http.post('api/processurl', {
             url: url
@@ -85,6 +84,7 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
     var imagesLoaded = 0;
     var activeImage = 0;
 
+    //this is a function in case there's eventually more to showing the currently selected image other than setting a variable to true
     function showActiveImage() {
         $scope.article.images[activeImage].show = true;
     }
@@ -101,10 +101,13 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
             }
         });
 
+        //overwrite the images with the "approved" list (those that are large enough to matter)
         $scope.article.images = largeImages;
         showActiveImage();
     }
 
+    //because we don't know the image sizes until they've been loaded, we need to wait til the Event:ImageLoaded event has been fired for ALL the images before we filter out the small ones
+    //the Event:ImageLoaded event comes from the checkSize directive in directives.js
     $scope.$on('Event:ImageLoaded', function() {
         imagesLoaded++;
         if(imagesLoaded === $scope.article.images.length) {
@@ -112,6 +115,7 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
         }
     });
 
+    //the following functions are those that deal with choosing (or not) an image when everything is loaded
     $scope.previousImage = function() {
         $scope.article.images[activeImage].show = false;
         activeImage--;
@@ -130,11 +134,15 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
         showActiveImage();
     };
 
+    //setting activeImage to -1 will let the "saveArticle" bit know not to include an image.
+    //todo: this does not hide the next/previous image buttons, and can cause an out of bounds error if those are used after the image is hidden
     $scope.noImage = function() {
         $scope.article.images[activeImage].show = false;
         activeImage = -1;
     };
 
+    //Once the user is OK with the parsed article, and has decided on an image to use, this does all the further processing needed to save said article.
+    //todo: maybe move some of this processing server side?
     $scope.saveArticle = function(article){
         $scope.showAddArticleModal = false;
 
@@ -172,6 +180,7 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
             });
     };
 
+    //strips html elements from content by wrapping it in a div and then getting the plaintext
     function strip(html)
     {
         var tmp = document.createElement("DIV");
@@ -183,7 +192,7 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
 addArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "truncate"];
 
 /**
- * For editing an article (mostly choosing layout after the article gets imported. This might not be needed, depending on how things go
+ * For editing an article (mostly choosing layout after the article gets imported. This might not be needed, depending on how things go)
  */
 function EditArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout){
     //timeout added because there's a slight delay between initially saving an article and being able to load it from the server.
