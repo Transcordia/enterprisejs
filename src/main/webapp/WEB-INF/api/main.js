@@ -21,7 +21,7 @@ app.get('/', function (req) {
 	});
 });
 
-//chooses an article layout based on the existance of an image, the length of the description
+//chooses an article layout based on the existence of an image, the length of the description
 function assignLayout(article)
 {
     var layout = 1;
@@ -60,6 +60,7 @@ app.post('/articles', function(req){
 
     if(article.layout === undefined) {
         // assign this article a layout based on its content
+        //it's probably easier to do this once on article creation
         article.layout = assignLayout(article);
         log.info('This article was assigned a layout of ' + article.layout);
     }
@@ -88,6 +89,7 @@ app.get('/articles/:id', function(req, id){
     return json(article);
 });
 
+//gets a list of articles
 app.get('/articles', function(req){
     var map = store.getMap('ejs', 'articles');
     var articles = [];
@@ -121,10 +123,12 @@ app.get('/articles', function(req){
     return json({"articles": articles, "totalArticles": keySetArray.length});
 });
 
+//processing articles is in utility/parse.js
 app.post('/processurl', function(req){
     return json(processUrl(req.postParams.url));
 });
 
+//increases the view count of an article
 app.get('/article/view/:id', function(req, id){
     var map = store.getMap('ejs', 'articles');
 
@@ -197,6 +201,7 @@ app.get('/articles/score', function(req) {
     return json(true);
 });
 /*
+    Liking commented out because it relies on zocia at the moment.
 //likes a specific object. todo: can anonymous users like something?
 app.post('/utility/like/:id', function(req, id) {
     var opts = {
