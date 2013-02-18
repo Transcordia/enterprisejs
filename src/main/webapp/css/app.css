@@ -478,7 +478,7 @@ p{
 
 @media (max-width: 1024px) {
     #wrapper{
-        max-width: none;
+        width: 100%;
         margin: 0;
     }
 

@@ -5,6 +5,113 @@ var tablet = window.matchMedia( "(max-width: 1024px)" );
 /* Directives */
 angular.module('ejs.directives', []);
 
+//note: the paging for the articles needs to ONLY handle ~6 articles at a time. this will likely change how the article paging works on the tablet, as we're just going to grab the "next" 6 articles and display them
+//other note: the next 6 might not actually be 6, as we'll need to sort out which ones were displayed on the current page and change things around a bit
+//this could result in some changes in how paging works when it comes to tablet
+function tabletLayout(articles)
+{
+    /* we know there's a finite set of full layouts for tablet
+       so we establish a list of this set
+       then we get the top 6 articles
+       go through them and find out what each preferred layout is
+       then we (randomly?) pick a possible full layout, and see if we can get all 6 articles in there (or really, we find out how many we can get)
+       we do this until we find one which fits all 6 articles, or fits the highest number
+       if needed, we change the remaining unfit articles to layouts that WILL work in the full layout, because that's how we roll
+       :dealwithit:
+    */
+    //we are ignoring any variant that has 2x2 and 3x2 because the layout list in the directive (gridCombinations) doesn't include those yet.
+    var variants = [
+        [1,1,1,1,1,1],
+        [1,1,1,1,8],
+        [1,1,8,8],
+        [1,1,8,2],
+        [2,2,1,1],
+        [4,1,1,1],
+        [2,8,8],
+        [4,8,1],
+        [4,4]
+    ];
+    //we already have the list of articles
+    var numericLayoutList = [];
+    var indexStoredLayoutList = [];
+    for(var i = 0; i < articles.length; i++)
+    {
+        numericLayoutList.push(parseInt(articles[i].layout));
+        indexStoredLayoutList.push({ "id": i, "layout": articles[i].layout });
+    }
+
+    console.log("HERE'S the LAYOUT LIST: ",numericLayoutList);
+
+    //so we loop through and find which ones have the "best" matches
+    //it might be best to count how many out of the variant DONT match
+    //as this will give us the amount of articles we would need to change
+    //any variant with a 0 result is instant success
+    //otherwise, we take the lowest result found
+    function countFailedMatches(variant) {
+        //we're mutating layout, so we need a proper copy of the list of layouts so we don't mess it up
+        var layout = numericLayoutList.slice(0);
+
+        for(var i = 0; i < variant.length; i++)
+        {
+            var index = layout.indexOf(variant[i]);
+            if(index != -1)
+            {
+                layout.splice(index, 1);
+            }
+        }
+        return layout.length;
+    }
+
+    var bestChoice = -1;
+    var bestResult = numericLayoutList.length;
+    for(var i = 0; i < variants.length; i++)
+    {
+        var result = countFailedMatches(variants[i]);
+        console.log("result: "+result+" best: "+bestResult);
+        if(result < bestResult)
+        {
+            bestResult = result;
+            bestChoice = i;
+        }
+        //break early if we find a perfect match
+        if(result === 0)
+        {
+            i = variants.length;
+        }
+    }
+    console.log("found best choice of: "+bestChoice+" resulting layout collection will be: ",variants[bestChoice]);
+
+    //found the best full layout variant to use, so we'll now format the articles as required by the layout. this will be similar to the countFailedMatches
+    //except this time we need to get rid of values from both variants (in any order) and layouts (in the first order)
+    //this will leave us with the resulting matches where the layout needs changing
+    //and then we'll go through and make those changes
+    //copy the arrays
+    var layout = numericLayoutList.slice(0);
+    var variant = variants[bestChoice].slice(0);
+
+    for(var i = 0; i < variants[bestChoice].length; i++)
+    {
+        var index = layout.indexOf(variants[bestChoice][i]);
+        if(index != -1)
+        {
+            layout.splice(index, 1);
+            indexStoredLayoutList.splice(index, 1);
+            variant.splice(variant.indexOf(variants[bestChoice][i]), 1);
+        }
+    }
+
+    console.log("layout result: ",indexStoredLayoutList," variant result: ",variant);
+    //now we have a filtered variant and article layout list.
+    //we simply loop through the articles and set their layouts to the "required" ones
+    //thus earning our desired design
+
+    for(var i = 0; i < variant.length; i++)
+    {
+        var articleIndex = indexStoredLayoutList[i].id;
+        articles[articleIndex].layout = variant[i].toString();
+    }
+}
+
 angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$log', function (truncate, $timeout, $log) {
     return {
         scope: {
@@ -15,20 +122,20 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
             var gridCombinations = {
                 "1": {
                     "size": "size11"
-                },
+                }, //1x1
                 "2": {
                     "size": "size12"
-                },
+                }, //1x2
                 "8": {
                     "size": "size21"
-                },
+                }, //2x1
                 "4": {
                     "size": "size31"
-                },
+                }, //3x1
                 "5": {
                     "size": "size22"
-                }
-            }
+                } //2x2
+            };
 
             var options = {
                 selector: ".article",
@@ -53,14 +160,16 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                 </div>
             </div>*/
 
-            /*articleHtml += '<div id="'+ article._id +'" class="article' + image + gridCombinations[article.layout].size+'">\
-                                            <div>\
-                                                <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>'+ abstractImage +'\
-                                                <p class="description">' + article.description + '</p>\
-                                            </div>\
-                                        </div>';*/
+            //don't run jquery.nested if the browser size is below 640px. This prevents it from running on mobile, which would cause problems.
+            var mq = window.matchMedia( "(min-width: 640px)" );
 
             var renderArticles = function (articles, appending) {
+
+                if( (tablet.matches) && (!mq.matches))
+                {
+                    tabletLayout(articles);
+                }
+
                 var imageWidth = "", imageHeight = "", src = "";
                 var abstractImage = "";
                 var image = " ";
@@ -106,8 +215,6 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                     i++;
                 });
 
-                //don't run jquery.nested if the browser size is below 640px. This prevents it from running on mobile, which would cause problems.
-                var mq = window.matchMedia( "(min-width: 640px)" );
 
                 if (mq.matches) {
                     // viewport width is at least 640px
