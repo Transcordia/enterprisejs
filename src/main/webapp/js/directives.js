@@ -62,20 +62,21 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
 
             var renderArticles = function (articles, append) {
                 var imageWidth = "", imageHeight = "", src = "";
-                var articleHolder = "";
+                var abstractImage = "";
                 var image = " ";
                 articles.forEach(function (article) {
                     if(Object.keys(article.abstractImage).length > 0){
                         imageWidth = article.abstractImage.w;
                         imageHeight = article.abstractImage.h;
                         src = article.abstractImage.src;
-                        articleHolder = '<img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'">';
+                        abstractImage = '<img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'">';
                         image = " has-image ";
                     }
 
                     articleHtml += '<div class="article' + image + gridCombinations[article.layout].size+'">\
-                                        <div class="article-abstract-image">'+ articleHolder +'\
-                                            <div class="article-abstract-title transparent"><h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1></div>\
+                                        <div class="abstract-title-wrapper"><h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1></div>\
+                                        <div class="article-abstract-image">'+ abstractImage +'\
+                                            <div class="article-abstract-title transparent"></div>\
                                         </div>\
                                         <div class="clearfix">\
                                             <div class="article-abstract-meta">\
@@ -86,7 +87,7 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                                         </div>\
                                     </div>';
 
-                    articleHolder = "";
+                    abstractImage = "";
                     image = " ";
                 });
 

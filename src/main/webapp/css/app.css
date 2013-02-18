@@ -127,6 +127,29 @@ p{
     overflow: hidden;
 }
 
+.abstract-title-wrapper{
+    position: absolute;
+    top: 9.85em;
+    width: 66%;
+    left: 0.75em;
+    z-index: 1;
+    overflow: hidden;
+    height: 96px;
+}
+
+.article h1{
+}
+
+.article h1 a{
+    color: white;
+    text-decoration: none;
+}
+
+.article h1 a:hover{
+    color: #fcd404;
+    text-decoration: none;
+}
+
 .article-abstract-image img{
     width: 100%;
 }
@@ -134,17 +157,16 @@ p{
 .article-abstract-title{
     height: 104px;
     width: 70%;
-    top: 9.25em;
+    top: 10.5em;
     background-color: black;
     position: absolute;
     overflow: hidden;
-    padding: 0 1em;
 }
 
 .transparent {
     zoom: 1;
     filter: alpha(opacity=25);
-    opacity: 0.25;
+    opacity: 0.4;
 }
 
 .article-abstract-meta{
