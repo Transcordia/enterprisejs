@@ -31,10 +31,36 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
             var options = {
                 selector: ".article",
                 minWidth: 320,
-                minColumns: 2
+                minColumns: 2,
+                resizeToFit: true,
+                resizeToFitOptions: {
+                    resizeAny: true
+                }
             };
 
             var articleHtml = '';
+
+            /*<div class="article">
+                <div class="article-abstract-image"></div>
+                <div class="article-abstract-title">
+                Aenean lacinia bibendum nulla sed consectetur.
+                Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+                Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
+                </div>
+                <div class="clearfix">
+                    <div class="article-abstract-meta">
+                        <div class="time-posted">1 hour ago</div>
+                        <div class="articles-views">10</div>
+                    </div>
+                </div>
+            </div>*/
+
+            /*articleHtml += '<div id="'+ article._id +'" class="article' + image + gridCombinations[article.layout].size+'">\
+                                    <div>\
+                                        <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>'+ articleHolder +'\
+                                        <p class="description">' + article.description + '</p>\
+                                    </div>\
+                                </div>';*/
 
             var renderArticles = function (articles, append) {
                 var imageWidth = "", imageHeight = "", src = "";
@@ -45,16 +71,22 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                         imageWidth = article.abstractImage.w;
                         imageHeight = article.abstractImage.h;
                         src = article.abstractImage.src;
-                        articleHolder = '<div class="article-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
+                        articleHolder = '<img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'">';
                         image = " has-image ";
                     }
 
-                    articleHtml += '<div id="'+ article._id +'" class="article' + image + gridCombinations[article.layout].size+'">\
-                                    <div>\
-                                        <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>'+ articleHolder +'\
-                                        <p class="description">' + article.description + '</p>\
-                                    </div>\
-                                </div>';
+                    articleHtml += '<div class="article' + image + gridCombinations[article.layout].size+'">\
+                                        <div class="article-abstract-image">'+ articleHolder +'\
+                                            <div class="article-abstract-title transparent"><h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1></div>\
+                                        </div>\
+                                        <div class="clearfix">\
+                                            <div class="article-abstract-meta">\
+                                                <p>' + article.description + '</p>\
+                                                <div class="time-posted">1 hour ago</div>\
+                                                <div class="articles-views">10</div>\
+                                            </div>\
+                                        </div>\
+                                    </div>';
 
                     articleHolder = "";
                     image = " ";

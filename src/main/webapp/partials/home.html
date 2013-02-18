@@ -1,6 +1,12 @@
 <div ng-include src='"partials/add-article.html"' ng-controller="addArticleCtrl"></div>
 
-<div when-scrolled="loadMore()" offset="0">
-    <div id="article-container" nested articles="articles" newArticles="newArticles"></div>
+<div class="ejs-hero">
+    <div><img ng-src="/ejs/img/hero_image_sample.jpg" alt=""></div>
+</div>
+
+<div id="wrapper">
+    <div when-scrolled="loadMore()" offset="0">
+        <div id="article-container" nested articles="articles" newArticles="newArticles"></div>
+    </div>
 </div>
 

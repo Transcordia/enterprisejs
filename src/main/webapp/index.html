@@ -30,18 +30,19 @@
 <body>
 <div class="navbar">
     <div class="navbar-inner">
-        <h3><a ng-href="#/home">EnterpriseJS</a></h3>
-        <ul id="navigation">
-            <li><a ng-href="#/sorttest">Test sorting</a></li>
-            <li><p ng-click="showAddUrlModal=true">Add <i class="icon-plus"></i></p></li>
-            <li><a ng-href="#/templates">Templates</a></li>
-        </ul>
+        <!--<h3><a ng-href="#/home">EnterpriseJS</a></h3>-->
+        <div>
+            <a ng-href="#/home"><img ng-src="img/ejs_logo.jpg" alt=""></a>
+            <ul id="navigation">
+                <!--<li><a ng-href="#/sorttest">Test sorting</a></li>
+               <li><p ng-click="showAddUrlModal=true">Add <i class="icon-plus"></i></p></li>
+               <li><a ng-href="#/templates">Templates</a></li>-->
+            </ul>
+        </div>
     </div>
 </div>
 
-<div id="wrapper">
-    <div ng-view></div>
-</div>
+<div ng-view></div>
 
 <!-- In production use:
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js"></script>
