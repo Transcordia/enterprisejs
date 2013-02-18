@@ -1,3 +1,19 @@
+h1, h2, h3, h4, h4{
+    line-height: 115%;
+    font-family: 'Squada One', cursive;
+}
+
+h1{
+    font-size: 24.5px;
+    text-transform: uppercase;
+}
+
+p{
+    font-family: 'allerregular', Arial, sans-serif;
+    line-height: 150%;
+    font-size: 14px;
+}
+
 .navbar-inner{
     border-radius: 0;
     -webkit-border-radius: 0;
@@ -17,7 +33,7 @@
 }
 
 #wrapper{
-    max-width: 90%;
+    width: 90%;
     margin: 0 auto;
 }
 
@@ -39,7 +55,21 @@
 }
 
 .article div{
-    padding: 5px 5px 0;
+    padding: 20px;
+}
+
+.article.size21.has-image .article-holder img{
+    max-width: 50%;
+}
+
+.article.size21.has-image h4{
+    float: right;
+    width: 45%;
+}
+
+.article.size21.has-image p.description{
+    float: right;
+    width: 45%;
 }
 
 .article h4{
@@ -51,6 +81,7 @@
 }
 
 .article-holder img{
+    max-width: 100%;
     float: left;
     margin-right: 15px;
 }

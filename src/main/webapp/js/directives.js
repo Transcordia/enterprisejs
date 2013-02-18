@@ -30,9 +30,8 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
 
             var options = {
                 selector: ".article",
-                minWidth: 200,
-                minColumns: 2,
-                gutter: 10
+                minWidth: 320,
+                minColumns: 2
             };
 
             var articleHtml = '';
@@ -40,22 +39,25 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
             var renderArticles = function (articles, append) {
                 var imageWidth = "", imageHeight = "", src = "";
                 var articleHolder = "";
+                var image = " ";
                 articles.forEach(function (article) {
-                    if(article.images[0]){
+                    if(Object.keys(article.abstractImage).length > 0){
                         imageWidth = article.abstractImage.w;
                         imageHeight = article.abstractImage.h;
                         src = article.abstractImage.src;
                         articleHolder = '<div class="article-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
+                        image = " has-image ";
                     }
 
-                    articleHtml += '<div id="'+ article._id +'" class="article '+ gridCombinations[article.layout].size+'">\
+                    articleHtml += '<div id="'+ article._id +'" class="article' + image + gridCombinations[article.layout].size+'">\
                                     <div>\
-                                        <h4><a href="#/article/' + article._id + '">'+ article.title +'</a></h4><p class="description"><b>Score: </b><i>'+ article.score +'</i></p>'+ articleHolder +'\
+                                        <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>'+ articleHolder +'\
                                         <p class="description">' + article.description + '</p>\
                                     </div>\
                                 </div>';
 
                     articleHolder = "";
+                    image = " ";
                 });
 
                 //don't run jquery.nested if the browser size is below 640px. This prevents it from running on mobile, which would cause problems.
