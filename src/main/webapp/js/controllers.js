@@ -2,6 +2,8 @@
 
 /* Controllers */
 
+//don't run jquery.nested if the browser size is below 640px. This prevents it from running on mobile, which would cause problems.
+var tablet = window.matchMedia( "(max-width: 1024px)" );
 
 function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
     $rootScope.showAddUrlModal = false;
@@ -13,6 +15,11 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
     var page = 1;
     var numArticles = 20;
     var totalArticles = 100;
+
+    if (tablet.matches) {
+        // viewport is tablet
+        numArticles = 6;
+    }
 
     $http.get('api/articles/?page=' + page +'&numArticles='+ numArticles)
         .success(function(data, status, headers){
@@ -36,7 +43,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
             .success(function(data, status){
                 $log.info(data);
             })
-    }
+    };
 
     $scope.loadMore = function() {
         page++;
@@ -321,13 +328,13 @@ function SortTest($rootScope, $scope, $timeout, $http)
     $scope.stop = function()
     {
         $scope.pause = true;
-    }
+    };
 
     $scope.start = function()
     {
         $scope.pause = false;
         $timeout(update, 1000);
-    }
+    };
 
     var offset = 1;
     function update() {
@@ -377,5 +384,5 @@ function SortTest($rootScope, $scope, $timeout, $http)
         }).error(function(data, status){
                 console.log("ERROR OCCURED: "+status);
             });
-    }
+    };
 }

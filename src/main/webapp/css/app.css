@@ -261,3 +261,23 @@ p{
 .article .content textarea {
     height: 400px;
 }
+
+@media (max-width: 1024px) {
+    #wrapper{
+        max-width: none;
+        margin: 0;
+    }
+
+    .one-col{
+        width: 33%;
+    }
+
+    .two-col{
+        width: 66%;
+    }
+
+    .three-col{
+        width: 99%;
+    }
+}
+

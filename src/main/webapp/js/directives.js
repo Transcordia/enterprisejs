@@ -1,5 +1,7 @@
 'use strict';
 
+var tablet = window.matchMedia( "(max-width: 1024px)" );
+
 /* Directives */
 angular.module('ejs.directives', []);
 
@@ -30,7 +32,7 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
 
             var options = {
                 selector: ".article",
-                minWidth: 320,
+                minWidth: (tablet.matches) ? 330 : 320,
                 minColumns: 2
             };
 
