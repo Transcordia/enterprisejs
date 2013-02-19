@@ -143,6 +143,7 @@ function generateRandomArticles(total, save){
             "likes": Math.floor(Math.random() * 100),
             "images": images,
             "abstractImage": abstractImage,
+            "abstractImageOrientation": abstractImageOrientation(abstractImage),
             "preferredArea": preferredArea(title, description, abstractImage),
             "url": "http://example.com",
             "score": 0,
@@ -267,7 +268,18 @@ function abstractImageOrientation(image){
     // highly landscape > 1.3
     // portrait < 1
     // highly portrait < 0.5
-    return image.w / image.h;
+
+    if(image.w / image.h > 1){
+        return "landscape";
+    }
+
+    if(image.w / image.h == 1){
+        return "square";
+    }
+
+    if(image.w / image.h < 1){
+        return "portrait";
+    }
 }
 
 
@@ -289,9 +301,18 @@ function preferredArea(title, description, image){
         return area;
     }
 
+    // will this article fit into a 1 x 1?
+    // it will if it has a short description and non-portrait image for the abstract
+    if(Object.keys(image).length > 0
+        && (description.split(" ").length > 0
+        && description.split(" ").length <= 30)
+        && orientation == "landscape"){
+        return area; // preferred  area of 1
+    }
+
     // will this article fit into a 2 x 1?
     // it will if it has short description and an image for the abstract
-    if(Object.keys(image).length > 0 && description.split(" ").length <= 20 && orientation < 1){
+    if(Object.keys(image).length > 0 && description.split(" ").length <= 20 && orientation == "portrait"){
         return area += 1; // preferred  area of 2
     }
 
@@ -300,7 +321,7 @@ function preferredArea(title, description, image){
     // with a portrait orientation
     if(Object.keys(image).length > 0
         && description.split(" ").length > 20
-        && orientation < 1){
+        && orientation == "portrait"){
         return area += 1; // preferred  area of 2
     }
 
@@ -317,7 +338,7 @@ function preferredArea(title, description, image){
     if(Object.keys(image).length > 0
         && (description.split(" ").length > 0
         && description.split(" ").length <= 80)
-        && orientation > 1){
+        && orientation == "landscape"){
         return area += 2; // preferred  area of 3
     }
 

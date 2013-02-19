@@ -139,8 +139,6 @@ p{
 
 .abstract-image-holder{
     width: 85%;
-    min-height: 200px;
-    overflow: hidden;
     margin: 0 auto;
 }
 
@@ -150,21 +148,21 @@ p{
 
 .article h1 a{
     color: #333333;
-    -webkit-transition: color .4s linear;
-    -moz-transition: color .4s linear;
-    -o-transition: color .4s linear;
-    -ms-transition: color .4s linear;
-    transition: color .4s linear;
+    -webkit-transition: color .2s linear;
+    -moz-transition: color .2s linear;
+    -o-transition: color .2s linear;
+    -ms-transition: color .2s linear;
+    transition: color .2s linear;
 }
 
 .article.featured h1 a{
     color: white;
     text-decoration: none;
-    -webkit-transition: color .4s linear;
-    -moz-transition: color .4s linear;
-    -o-transition: color .4s linear;
-    -ms-transition: color .4s linear;
-    transition: color .4s linear;
+    -webkit-transition: color .2s linear;
+    -moz-transition: color .2s linear;
+    -o-transition: color .2s linear;
+    -ms-transition: color .2s linear;
+    transition: color .2s linear;
 }
 
 .article h1 a:hover{
@@ -237,7 +235,7 @@ p{
 
 .description{
     margin: 10px 0 5px;
-    overflow: visible;
+    overflow: hidden;
     word-wrap: break-word;
     padding: 1em 1.5em;
 }
@@ -392,6 +390,90 @@ p{
 }
 .article .content textarea {
     height: 400px;
+}
+
+.article.size21.portrait h1{
+    float: right;
+    width: 44%;
+}
+
+.article.size21.portrait p{
+    float: right;
+    width: 44%;
+}
+
+.article.size21.portrait img{
+    float: left;
+}
+
+.article.size21.portrait .abstract-image-holder{
+    margin: 20px 5px 20px 20px;
+    width: 42%;
+    height: 280px;
+    overflow: hidden;
+    float: left;
+}
+
+.article.size31.landscape h1{
+    width: 62.5%;
+    float: left;
+}
+
+.article.size31.landscape .abstract-image-holder{
+    margin: 20px 5px 20px 20px;
+    width: 62%;
+    height: 205px;
+    overflow: hidden;
+    float: left;
+}
+
+.article.size31.landscape p{
+    width: 30.5%;
+    float: right;
+    position: relative;
+    top: -90px;
+    height: 280px;
+    overflow: hidden;
+}
+
+.article.size22.landscape .abstract-image-holder{
+    margin: 0 auto;
+    width: 93%;
+}
+
+.article.size22.landscape img{
+    width: 100%;
+}
+
+.article.size22.landscape p{
+    height: 135px;
+}
+
+.article.size11.landscape img{
+    display: none;
+}
+
+.article.size11.portrait img{
+    display: none;
+}
+
+.article.size12.landscape img{
+    width: 100%
+}
+
+.article.size21.landscape h1{
+    float: left;
+    width: 45%
+}
+
+.article.size21.landscape img{
+    float: left;
+    width: 45%
+}
+
+.article.size21.landscape p{
+    float: right;
+    width: 45%;
 }
 
 @media (max-width: 1024px) {

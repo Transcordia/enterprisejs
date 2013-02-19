@@ -53,10 +53,18 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                 </div>
             </div>*/
 
+            /*articleHtml += '<div id="'+ article._id +'" class="article' + image + gridCombinations[article.layout].size+'">\
+                                            <div>\
+                                                <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>'+ abstractImage +'\
+                                                <p class="description">' + article.description + '</p>\
+                                            </div>\
+                                        </div>';*/
+
             var renderArticles = function (articles, appending) {
                 var imageWidth = "", imageHeight = "", src = "";
                 var abstractImage = "";
                 var image = " ";
+                var imageOrientation = " ";
                 var i = 1;
                 articles.forEach(function (article) {
                     if(Object.keys(article.abstractImage).length > 0){
@@ -65,9 +73,10 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                         src = article.abstractImage.src;
                         abstractImage = '<div class="abstract-image-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
                         image = " has-image ";
+                        imageOrientation = " " + article.abstractImageOrientation + " ";
                     }
 
-                    if(i < 5 && !appending){
+                    if(i < 4 && !appending){
                         articleHtml += '<div class="article featured' + image + gridCombinations[article.layout].size+'">\
                                             <div class="abstract-title-holder"><h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1></div>\
                                             <div class="article-abstract-image">'+ abstractImage +'\
@@ -82,18 +91,18 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                                             </div>\
                                         </div>';
                     }else{
-                        articleHtml += '<div id="'+ article._id +'" class="article' + image + gridCombinations[article.layout].size+'">\
-                                            <div>\
+                        articleHtml += '<div class="article' + imageOrientation + gridCombinations[article.layout].size +'">\
+                                            <div class="clearfix">\
                                                 <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>'+ abstractImage +'\
                                                 <p class="description">' + article.description + '</p>\
                                             </div>\
                                         </div>';
+
+                        abstractImage = "";
+                        image = " ";
+                        imageOrientation = " ";
                     }
 
-
-
-                    abstractImage = "";
-                    image = " ";
                     i++;
                 });
 

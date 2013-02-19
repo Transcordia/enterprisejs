@@ -5,13 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.pykl</groupId>
-    <artifactId>enterprisejs</artifactId>
+    <artifactId>ejs</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <packaging>war</packaging>
 
     <name>EnterpriseJS :: Web</name>
-    <inceptionYear>2012</inceptionYear>
+    <inceptionYear>2013</inceptionYear>
     <url>http://enterprisejs.org</url>
 
     <licenses>
@@ -38,6 +38,9 @@
         <trimpath-version>1.0.7</trimpath-version>
         <springext-version>1.0.8</springext-version>
         <store-version>1.0.6-SNAPSHOT</store-version>
+        <beanstalk-version>1.0.5</beanstalk-version>
+        <beanstalk.environment.name>${environment}-ejs</beanstalk.environment.name>
+        <beanstalk.s3.name>${environment}.${project.groupId}.${project.artifactId}.images</beanstalk.s3.name>
     </properties>
 
     <dependencies>
@@ -187,7 +190,21 @@
     </dependencies>
 
     <build>
+        <finalName>enterprisejs</finalName>
         <plugins>
+            <plugin>
+                <groupId>org.pykl.maven.plugins</groupId>
+                <artifactId>maven-beanstalk-plugin</artifactId>
+                <version>${beanstalk-version}</version>
+                <configuration>
+                    <accessKey>${aws.access_key}</accessKey>
+                    <secretKey>${aws.secret_key}</secretKey>
+                    <applicationName>${project.groupId}.${project.artifactId}</applicationName>
+                    <environmentName>${beanstalk.environment.name}</environmentName>
+                    <s3Bucket>${beanstalk.s3.name}</s3Bucket>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -377,7 +394,7 @@
                 <environment>qa</environment>
                 <!-- The URL to access web services from the gcplatform. -->
                 <zociaUrl>http://qa-zocia.elasticbeanstalk.com/api</zociaUrl>
-                <localUrl>http://qa-babson-gcee.elasticbeanstalk.com/api</localUrl>
+                <localUrl>http://qa-ejs.elasticbeanstalk.com/api</localUrl>
 
                 <!-- Hazelcast configuration
                      hz.name - Specifies a unique name for the hazelcast cluster.
@@ -386,20 +403,20 @@
                      hz.aws.enabled - true if deployed to amazon ec2 environment where multicast is
                          not supported.
                 -->
-                <hz.name>hz-babsongc-${environment}</hz.name>
+                <hz.name>hz-ejs-${environment}</hz.name>
                 <hz.multicast.enabled>false</hz.multicast.enabled>
                 <hz.aws.enabled>true</hz.aws.enabled>
 
                 <!-- Amazon Web Services configuration
                 -->
-                <aws.access_key>${babsongc.qa.aws.access_key}</aws.access_key>
-                <aws.secret_key>${babsongc.qa.aws.secret_key}</aws.secret_key>
+                <aws.access_key>${ejs.qa.aws.access_key}</aws.access_key>
+                <aws.secret_key>${ejs.qa.aws.secret_key}</aws.secret_key>
 
                 <aws.s3.access_key>AKIAIO5RYV6PBMMEM5IA</aws.s3.access_key>
                 <aws.s3.secret_key>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</aws.s3.secret_key>
                 <aws.s3.bucket>qa.zocia.upload.files</aws.s3.bucket>
 
-                <beanstalk.environment.name>${environment}-babson-gcee</beanstalk.environment.name>
+                <beanstalk.environment.name>${environment}-ejs</beanstalk.environment.name>
                 <beanstalk.s3.name>${environment}.${project.groupId}.${project.artifactId}.images</beanstalk.s3.name>
             </properties>
         </profile>
@@ -417,14 +434,14 @@
                      hz.aws.enabled - true if deployed to amazon ec2 environment where multicast is
                          not supported.
                 -->
-                <hz.name>hz-babsongc-${environment}</hz.name>
+                <hz.name>hz-ejs-${environment}</hz.name>
                 <hz.multicast.enabled>false</hz.multicast.enabled>
                 <hz.aws.enabled>true</hz.aws.enabled>
 
                 <!-- Amazon Web Services configuration
                 -->
-                <aws.access_key>${babsongc.qa.aws.access_key}</aws.access_key>
-                <aws.secret_key>${babsongc.qa.aws.secret_key}</aws.secret_key>
+                <aws.access_key>${ejs.qa.aws.access_key}</aws.access_key>
+                <aws.secret_key>${ejs.qa.aws.secret_key}</aws.secret_key>
             </properties>
         </profile>
     </profiles>
