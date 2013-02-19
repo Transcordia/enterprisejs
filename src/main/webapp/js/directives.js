@@ -110,6 +110,11 @@ function tabletLayout(articles)
         var articleIndex = indexStoredLayoutList[i].id;
         articles[articleIndex].layout = variant[i].toString();
     }
+
+    //the last part of this is that we need to tell the paging stuff that THESE articles are the ones being used, and THOSE are the ones that are left over
+    //then we need a way to handle the leftovers.
+    //likely this means pulling in the next "set" of articles so that we, once again, have 6 articles
+    //this is going to require an alternate take on the paging system as i don't know if it can really handle this set up
 }
 
 angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$log', function (truncate, $timeout, $log) {
@@ -214,7 +219,6 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
 
                     i++;
                 });
-
 
                 if (mq.matches) {
                     // viewport width is at least 640px
