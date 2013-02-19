@@ -11,7 +11,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
 
     var page = 1;
     var numArticles = 20;
-    var totalArticles = 100;
+    var totalArticles = 102;
 
     if (tablet.matches) {
         // viewport is tablet

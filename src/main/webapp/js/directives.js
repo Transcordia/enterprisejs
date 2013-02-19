@@ -53,7 +53,7 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                 </div>
             </div>*/
 
-            var renderArticles = function (articles, append) {
+            var renderArticles = function (articles, appending) {
                 var imageWidth = "", imageHeight = "", src = "";
                 var abstractImage = "";
                 var image = " ";
@@ -67,14 +67,14 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                         image = " has-image ";
                     }
 
-                    if(i < 5){
+                    if(i < 5 && !appending){
                         articleHtml += '<div class="article featured' + image + gridCombinations[article.layout].size+'">\
                                             <div class="abstract-title-holder"><h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1></div>\
                                             <div class="article-abstract-image">'+ abstractImage +'\
                                                 <div class="article-abstract-title transparent"></div>\
                                             </div>\
                                             <div class="article-abstract-meta">\
-                                                <p>' + article.description + '</p>\
+                                                <p class="3-col">' + article.description + '</p>\
                                                 <div class="clearfix">\
                                                     <div class="time-posted"><p><i>1 hour ago</i></p></div>\
                                                     <div class="article-views"><p>10</p></div>\
@@ -102,7 +102,7 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
 
                 if (mq.matches) {
                     // viewport width is at least 640px
-                    if(!append){
+                    if(!appending){
                         element.append(articleHtml);
                         element.nested(options);
                     }else{

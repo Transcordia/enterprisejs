@@ -28,7 +28,8 @@ p{
 }
 
 .navbar-inner div{
-    width: 960px;
+    /*width: 960px;*/
+    width: 90%;
     margin: 0 auto;
 }
 
@@ -63,7 +64,7 @@ p{
 }
 
 #wrapper{
-    max-width: 965px;
+    /*max-width: 965px;*/
     width: 90%;
     margin: 0 auto;
 }
