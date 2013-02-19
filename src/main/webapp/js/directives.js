@@ -78,11 +78,11 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                                         <div class="article-abstract-image">'+ abstractImage +'\
                                             <div class="article-abstract-title transparent"></div>\
                                         </div>\
-                                        <div class="clearfix">\
-                                            <div class="article-abstract-meta">\
-                                                <p>' + article.description + '</p>\
-                                                <div class="time-posted">1 hour ago</div>\
-                                                <div class="articles-views">10</div>\
+                                        <div class="article-abstract-meta">\
+                                            <p>' + article.description + '</p>\
+                                            <div class="clearfix">\
+                                                <div class="time-posted"><p><i>1 hour ago</i></p></div>\
+                                                <div class="article-views"><p>10</p></div>\
                                             </div>\
                                         </div>\
                                     </div>';
