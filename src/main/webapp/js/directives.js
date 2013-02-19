@@ -53,42 +53,48 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                 </div>
             </div>*/
 
-            /*articleHtml += '<div id="'+ article._id +'" class="article' + image + gridCombinations[article.layout].size+'">\
-                                    <div>\
-                                        <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>'+ articleHolder +'\
-                                        <p class="description">' + article.description + '</p>\
-                                    </div>\
-                                </div>';*/
-
             var renderArticles = function (articles, append) {
                 var imageWidth = "", imageHeight = "", src = "";
                 var abstractImage = "";
                 var image = " ";
+                var i = 1;
                 articles.forEach(function (article) {
                     if(Object.keys(article.abstractImage).length > 0){
                         imageWidth = article.abstractImage.w;
                         imageHeight = article.abstractImage.h;
                         src = article.abstractImage.src;
-                        abstractImage = '<img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'">';
+                        abstractImage = '<div class="abstract-image-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
                         image = " has-image ";
                     }
 
-                    articleHtml += '<div class="article' + image + gridCombinations[article.layout].size+'">\
-                                        <div class="abstract-title-wrapper"><h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1></div>\
-                                        <div class="article-abstract-image">'+ abstractImage +'\
-                                            <div class="article-abstract-title transparent"></div>\
-                                        </div>\
-                                        <div class="article-abstract-meta">\
-                                            <p>' + article.description + '</p>\
-                                            <div class="clearfix">\
-                                                <div class="time-posted"><p><i>1 hour ago</i></p></div>\
-                                                <div class="article-views"><p>10</p></div>\
+                    if(i < 5){
+                        articleHtml += '<div class="article featured' + image + gridCombinations[article.layout].size+'">\
+                                            <div class="abstract-title-holder"><h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1></div>\
+                                            <div class="article-abstract-image">'+ abstractImage +'\
+                                                <div class="article-abstract-title transparent"></div>\
                                             </div>\
-                                        </div>\
-                                    </div>';
+                                            <div class="article-abstract-meta">\
+                                                <p>' + article.description + '</p>\
+                                                <div class="clearfix">\
+                                                    <div class="time-posted"><p><i>1 hour ago</i></p></div>\
+                                                    <div class="article-views"><p>10</p></div>\
+                                                </div>\
+                                            </div>\
+                                        </div>';
+                    }else{
+                        articleHtml += '<div id="'+ article._id +'" class="article' + image + gridCombinations[article.layout].size+'">\
+                                            <div>\
+                                                <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>'+ abstractImage +'\
+                                                <p class="description">' + article.description + '</p>\
+                                            </div>\
+                                        </div>';
+                    }
+
+
 
                     abstractImage = "";
                     image = " ";
+                    i++;
                 });
 
                 //don't run jquery.nested if the browser size is below 640px. This prevents it from running on mobile, which would cause problems.

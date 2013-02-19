@@ -63,8 +63,8 @@ p{
 }
 
 #wrapper{
-    width: 965px;
-    /*width: 90%;*/
+    max-width: 965px;
+    width: 90%;
     margin: 0 auto;
 }
 
@@ -127,28 +127,52 @@ p{
     overflow: hidden;
 }
 
-.abstract-title-wrapper{
+.abstract-title-holder{
     position: absolute;
     top: 9.85em;
     width: 66%;
-    left: 0.75em;
     z-index: 1;
     overflow: hidden;
     height: 96px;
-    margin-left: 0.5em;
 }
 
-.article h1{
+.abstract-image-holder{
+    width: 85%;
+    min-height: 200px;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.featured .abstract-image-holder{
+    width: 100%;
 }
 
 .article h1 a{
+    color: #333333;
+    -webkit-transition: color .4s linear;
+    -moz-transition: color .4s linear;
+    -o-transition: color .4s linear;
+    -ms-transition: color .4s linear;
+    transition: color .4s linear;
+}
+
+.article.featured h1 a{
     color: white;
     text-decoration: none;
+    -webkit-transition: color .4s linear;
+    -moz-transition: color .4s linear;
+    -o-transition: color .4s linear;
+    -ms-transition: color .4s linear;
+    transition: color .4s linear;
 }
 
 .article h1 a:hover{
     color: #fcd404;
     text-decoration: none;
+}
+
+.article div h1{
+    padding: 0 1em;
 }
 
 .article-abstract-image img{
@@ -175,7 +199,7 @@ p{
 }
 
 .article-abstract-meta p{
-    padding: 1em;
+    padding: 1em 1.5em;
 }
 
 .article-abstract-meta .time-posted{
@@ -214,6 +238,7 @@ p{
     margin: 10px 0 5px;
     overflow: visible;
     word-wrap: break-word;
+    padding: 1em 1.5em;
 }
 
 .convo{
