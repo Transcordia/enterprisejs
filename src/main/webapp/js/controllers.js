@@ -4,6 +4,7 @@
 
 //
 var tablet = window.matchMedia( "(max-width: 1024px)" );
+var mobile = window.matchMedia( "(max-width: 640px)" );
 
 function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
     $scope.urlToCheck = '';
@@ -12,8 +13,10 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
     var page = 1;
     var numArticles = 20;
     var totalArticles = 102;
+    var tabletMode = ((tablet.matches) && !(mobile.matches));
 
-    if (tablet.matches) {
+    if (tabletMode)
+    {
         // viewport is tablet
         numArticles = 6;
     }
@@ -50,13 +53,23 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
 
             $http.get('api/articles/?page='+ page +'&numArticles='+ numArticles)
                 .success(function(data){
-                    $scope.newArticles = data.articles;
+                    if(!tabletMode)
+                    {
+                        $scope.newArticles = data.articles;
 
-                    $scope.articles = $scope.articles.concat(data.articles);
+                        $scope.articles = $scope.articles.concat(data.articles);
+                    } else { //if the user is on a tablet, then we want to replace the article list with the old articles + the new page of articles
+                        $scope.articles = $scope.extraTabletArticles.concat(data.articles);
+                        window.scrollTo(0, 0);
+                    }
                     $log.info($scope.articles);
                 });
         }
     };
+
+    $scope.$on('extraArticles', function(event, extras) {
+        $scope.extraTabletArticles = extras;
+    });
 }
 AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams"];
 
@@ -76,6 +89,10 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
                 $rootScope.showAddUrlModal = false;
                 $scope.showAddArticleModal = true;
                 $scope.article = data.response;
+                if($scope.article.images.length === 0)
+                {
+                    activeImage = -1;
+                }
 
                 $log.info($('.slides_container img'));
             });
@@ -103,7 +120,12 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
 
         //overwrite the images with the "approved" list (those that are large enough to matter)
         $scope.article.images = largeImages;
-        showActiveImage();
+        if($scope.article.images.length > 0)
+        {
+            showActiveImage();
+        } else {
+            activeImage = -1;
+        }
     }
 
     //because we don't know the image sizes until they've been loaded, we need to wait til the Event:ImageLoaded event has been fired for ALL the images before we filter out the small ones
@@ -160,7 +182,8 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
             article.description = truncate(stripped, 100);
         }
 
-        if(activeImage >= 0) {
+        if(activeImage >= 0)
+        {
             article.images = $scope.article.images[activeImage];
         } else {
             article.images = [];
