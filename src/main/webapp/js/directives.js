@@ -30,35 +30,31 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                 }
             }
 
-            var options = {
-                selector: ".article",
-                minWidth: (tablet.matches) ? 330 : 320,
-                minColumns: 2
-            };
-
             var articleHtml = '';
 
-            /*<div class="article">
-                <div class="article-abstract-image"></div>
-                <div class="article-abstract-title">
-                Aenean lacinia bibendum nulla sed consectetur.
-                Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-                Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-                </div>
-                <div class="clearfix">
-                    <div class="article-abstract-meta">
-                        <div class="time-posted">1 hour ago</div>
-                        <div class="articles-views">10</div>
-                    </div>
-                </div>
-            </div>*/
+            function getNumLines(charsInLine, string){
+                var lines = 1;
 
-            /*articleHtml += '<div id="'+ article._id +'" class="article' + image + gridCombinations[article.layout].size+'">\
-                                            <div>\
-                                                <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>'+ abstractImage +'\
-                                                <p class="description">' + article.description + '</p>\
-                                            </div>\
-                                        </div>';*/
+                var words = string.split(" ");
+
+                while(words.join(" ").length > charsInLine){
+                    var count = 0;
+
+                    for(var i = 0; i < words.length; i++){
+                        count += words[i].length + 1;
+
+                        if(count > charsInLine){
+                            lines++;
+
+                            words = words.slice(i);
+
+                            break;
+                        }
+                    }
+                }
+
+                return lines;
+            }
 
             var renderArticles = function (articles, appending) {
                 var imageWidth = "", imageHeight = "", src = "";
@@ -71,10 +67,12 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                         imageWidth = article.abstractImage.w;
                         imageHeight = article.abstractImage.h;
                         src = article.abstractImage.src;
-                        abstractImage = '<div class="abstract-image-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
+                        abstractImage = '<div class="abstract-image-holder"><img src="'+ src +'"></div>';
                         image = " has-image ";
                         imageOrientation = " " + article.abstractImageOrientation + " ";
                     }
+
+                    var lines = getNumLines(40, "Cornua nisi sole orbem naturae carmen nulli postquam peragebant titan distinxit gentes origo moles");
 
                     if(i < 4 && !appending){
                         articleHtml += '<div class="article featured' + image + gridCombinations[article.layout].size+'">\
@@ -90,16 +88,20 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                                                 </div>\
                                             </div>\
                                         </div>';
+
+                        image = " ";
                     }else{
-                        articleHtml += '<div class="article' + imageOrientation + gridCombinations[article.layout].size +'">\
-                                            <div class="clearfix">\
-                                                <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>'+ abstractImage +'\
-                                                <p class="description">' + article.description + '</p>\
+                        articleHtml += '<div class="article' + image + imageOrientation + gridCombinations[article.layout].size +'">\
+                                            <div class="article-content">\
+                                                <div class="title-description clearfix">\
+                                                    <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>'+ abstractImage +'\
+                                                    <p class="description">' + article.description + '</p>\
+                                                </div>\
                                             </div>\
                                         </div>';
 
                         abstractImage = "";
-                        image = " ";
+                        image = " no-image";
                         imageOrientation = " ";
                     }
 
@@ -112,8 +114,42 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                 if (mq.matches) {
                     // viewport width is at least 640px
                     if(!appending){
+                        var nestedOptions = {
+                            selector: ".article",
+                            minWidth: (tablet.matches) ? 330 : 320,
+                            minColumns: 2,
+                            animate: true,
+                            animationOptions: {
+                                complete: function(){
+                                    var parentWidth = 0;
+                                    $('.article-content').each(function(index){
+                                        $(this).width($(this).parent().width() - 40);
+                                        $(this).height($(this).parent().height() - 40);
+
+                                        if($(this).parent().hasClass('portrait size21')){
+                                            parentWidth = $(this).parent().width();
+
+                                            var img = $(this).find('img').removeAttr('width').css('height', '280px');
+                                            var h1 = $(this).find('h1');
+                                            var p = $(this).find('p');
+                                            var abstractImageHolder = $(this).find('.abstract-image-holder');
+                                            abstractImageHolder.css('width', img.css('width'));
+
+                                            h1.width(parentWidth - abstractImageHolder.width() - 60);
+                                            p.width(parentWidth - abstractImageHolder.width() - 60);
+                                        }
+
+                                        if($(this).parent().hasClass('landscape size12')){
+                                            var img = $(this).find('img').removeAttr('width').css('width', '280px');
+                                        }
+                                    });
+                                }
+                            }
+
+                        };
+
                         element.append(articleHtml);
-                        element.nested(options);
+                        element.nested(nestedOptions);
                     }else{
                         element.append(articleHtml).nested('append', articleHtml);
                     }

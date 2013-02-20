@@ -29,7 +29,7 @@ p{
 
 .navbar-inner div{
     /*width: 960px;*/
-    width: 90%;
+    width: 94%;
     margin: 0 auto;
 }
 
@@ -98,7 +98,7 @@ p{
 
 .article.size21.has-image p.description{
     float: right;
-    width: 45%;
+    width: 44%;
 }
 
 .article h4{
@@ -138,7 +138,6 @@ p{
 }
 
 .abstract-image-holder{
-    width: 85%;
     margin: 0 auto;
 }
 
@@ -170,8 +169,9 @@ p{
     text-decoration: none;
 }
 
-.article div h1{
-    padding: 0 1em;
+.article .title-description h1{
+    /*padding: 0 1em;*/
+    margin: 0;
 }
 
 .article-abstract-image img{
@@ -237,7 +237,7 @@ p{
     margin: 10px 0 5px;
     overflow: hidden;
     word-wrap: break-word;
-    padding: 1em 1.5em;
+    /*padding: 1em 1.5em;*/
 }
 
 .convo{
@@ -407,9 +407,7 @@ p{
 }
 
 .article.size21.portrait .abstract-image-holder{
-    margin: 20px 5px 20px 20px;
-    width: 42%;
-    height: 280px;
+    /*margin: 20px 5px 20px 20px;*/
     overflow: hidden;
     float: left;
 }
@@ -420,7 +418,7 @@ p{
 }
 
 .article.size31.landscape .abstract-image-holder{
-    margin: 20px 5px 20px 20px;
+    /*margin: 20px 5px 20px 20px;*/
     width: 62%;
     height: 205px;
     overflow: hidden;
@@ -434,6 +432,12 @@ p{
     top: -90px;
     height: 280px;
     overflow: hidden;
+}
+
+.article.size31.no-image .title-description{
+    -moz-column-count: 3; /* Firefox */
+    -webkit-column-count: 3; /* Safari and Chrome */
+    column-count: 3;
 }
 
 .article.size22.landscape .abstract-image-holder{
@@ -461,6 +465,10 @@ p{
     width: 100%
 }
 
+.article.size12.landscape h1{
+    margin-bottom: 0.5em;
+}
+
 .article.size21.landscape h1{
     float: left;
     width: 45%
@@ -474,6 +482,11 @@ p{
 .article.size21.landscape p{
     float: right;
     width: 45%;
+}
+
+.article-content{
+    margin: 20px auto;
+    overflow: hidden;
 }
 
 @media (max-width: 1024px) {
