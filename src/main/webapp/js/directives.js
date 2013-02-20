@@ -41,8 +41,6 @@ function tabletLayout(articles, scope)
         indexStoredLayoutList.push({ "id": i, "_id": articles[i]._id, "layout": articles[i].layout, "shown": false });
     }
 
-    console.log("HERE'S the LAYOUT LIST: ",numericLayoutList);
-
     //so we loop through and find which ones have the "best" matches
     //it might be best to count how many out of the variant DONT match
     //as this will give us the amount of articles we would need to change
@@ -80,7 +78,7 @@ function tabletLayout(articles, scope)
             i = variants.length;
         }
     }
-    console.log("found best choice of: "+bestChoice+" resulting layout collection will be: ",variants[bestChoice]);
+    //console.log("found best choice of: "+bestChoice+" resulting layout collection will be: ",variants[bestChoice]);
 
     //found the best full layout variant to use, so we'll now format the articles as required by the layout. this will be similar to the countFailedMatches
     //except this time we need to get rid of values from both variants (in any order) and layouts (in the first order)
@@ -101,7 +99,6 @@ function tabletLayout(articles, scope)
         }
     }
 
-    console.log("layout result: ",indexStoredLayoutList," variant result: ",variant);
     //now we have a filtered variant and article layout list.
     //we simply loop through the articles and set their layouts to the "required" ones
     //thus earning our desired design
@@ -134,16 +131,6 @@ function tabletLayout(articles, scope)
         }
         return true;
     });
-
-    console.log("ARTICLES LENGTH: "+articles.length);
-
-    //ERROR: when removing an element from an array, we lose the connection between that element and the stored ID from earlier. THIS BREAKS EVERYTHING
-    /*for(i = 0; i < indexStoredLayoutList.length; i++)
-    {
-        var articleIndex = indexStoredLayoutList[i].id;
-        console.log("getting rid of id: "+articleIndex);
-        extras.push(articles.splice(articleIndex, 1)[0]);
-    } */
 
     scope.$emit('extraArticles', extras);
 

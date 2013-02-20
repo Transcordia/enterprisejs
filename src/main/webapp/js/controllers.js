@@ -61,7 +61,6 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
                     } else { //if the user is on a tablet, then we want to replace the article list with the old articles + the new page of articles
                         $scope.articles = $scope.extraTabletArticles.concat(data.articles);
                         window.scrollTo(0, 0);
-                        console.log("ARTICLES LENGTH = "+$scope.articles.length);
                     }
                     $log.info($scope.articles);
                 });
@@ -69,7 +68,6 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
     };
 
     $scope.$on('extraArticles', function(event, extras) {
-        console.log("HEY THESE ARE EXTRAS",extras);
         $scope.extraTabletArticles = extras;
     });
 }
