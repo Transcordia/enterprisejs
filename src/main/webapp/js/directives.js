@@ -8,7 +8,7 @@ angular.module('ejs.directives', []);
 //note: the paging for the articles needs to ONLY handle ~6 articles at a time. this will likely change how the article paging works on the tablet, as we're just going to grab the "next" 6 articles and display them
 //other note: the next 6 might not actually be 6, as we'll need to sort out which ones were displayed on the current page and change things around a bit
 //this could result in some changes in how paging works when it comes to tablet
-function tabletLayout(articles)
+function tabletLayout(articles, scope)
 {
     /* we know there's a finite set of full layouts for tablet
        so we establish a list of this set
@@ -34,10 +34,11 @@ function tabletLayout(articles)
     //we already have the list of articles
     var numericLayoutList = [];
     var indexStoredLayoutList = [];
-    for(var i = 0; i < articles.length; i++)
+    var i = 0;
+    for(; i < articles.length; i++)
     {
         numericLayoutList.push(parseInt(articles[i].layout));
-        indexStoredLayoutList.push({ "id": i, "layout": articles[i].layout });
+        indexStoredLayoutList.push({ "id": i, "_id": articles[i]._id, "layout": articles[i].layout, "shown": false });
     }
 
     console.log("HERE'S the LAYOUT LIST: ",numericLayoutList);
@@ -64,10 +65,10 @@ function tabletLayout(articles)
 
     var bestChoice = -1;
     var bestResult = numericLayoutList.length;
-    for(var i = 0; i < variants.length; i++)
+    for(i = 0; i < variants.length; i++)
     {
         var result = countFailedMatches(variants[i]);
-        console.log("result: "+result+" best: "+bestResult);
+
         if(result < bestResult)
         {
             bestResult = result;
@@ -89,7 +90,7 @@ function tabletLayout(articles)
     var layout = numericLayoutList.slice(0);
     var variant = variants[bestChoice].slice(0);
 
-    for(var i = 0; i < variants[bestChoice].length; i++)
+    for(i = 0; i < variants[bestChoice].length; i++)
     {
         var index = layout.indexOf(variants[bestChoice][i]);
         if(index != -1)
@@ -105,16 +106,48 @@ function tabletLayout(articles)
     //we simply loop through the articles and set their layouts to the "required" ones
     //thus earning our desired design
 
-    for(var i = 0; i < variant.length; i++)
+    for(i = 0; i < variant.length; i++)
     {
         var articleIndex = indexStoredLayoutList[i].id;
         articles[articleIndex].layout = variant[i].toString();
+        indexStoredLayoutList[i].shown = true;
     }
 
     //the last part of this is that we need to tell the paging stuff that THESE articles are the ones being used, and THOSE are the ones that are left over
     //then we need a way to handle the leftovers.
     //likely this means pulling in the next "set" of articles so that we, once again, have 6 articles
     //this is going to require an alternate take on the paging system as i don't know if it can really handle this set up
+    indexStoredLayoutList = indexStoredLayoutList.filter(function(element) {
+        return !element.shown;
+    });
+
+    var extras = [];
+
+    articles = articles.filter(function(element, index) {
+        for(i = 0; i < indexStoredLayoutList.length; i++)
+        {
+            if(indexStoredLayoutList[i]._id === element._id)
+            {
+                extras.push(element);
+                return false;
+            }
+        }
+        return true;
+    });
+
+    console.log("ARTICLES LENGTH: "+articles.length);
+
+    //ERROR: when removing an element from an array, we lose the connection between that element and the stored ID from earlier. THIS BREAKS EVERYTHING
+    /*for(i = 0; i < indexStoredLayoutList.length; i++)
+    {
+        var articleIndex = indexStoredLayoutList[i].id;
+        console.log("getting rid of id: "+articleIndex);
+        extras.push(articles.splice(articleIndex, 1)[0]);
+    } */
+
+    scope.$emit('extraArticles', extras);
+
+    return articles;
 }
 
 angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$log', function (truncate, $timeout, $log) {
@@ -164,15 +197,15 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                     </div>
                 </div>
             </div>*/
-
-            //don't run jquery.nested if the browser size is below 640px. This prevents it from running on mobile, which would cause problems.
+            //tests to see if the browser window is ABOVE 640px
             var mq = window.matchMedia( "(min-width: 640px)" );
 
             var renderArticles = function (articles, appending) {
 
-                if( (tablet.matches) && (!mq.matches))
+                if( (tablet.matches) && (mq.matches) )
                 {
-                    tabletLayout(articles);
+                    articles = tabletLayout(articles, scope);
+                    element.html('');
                 }
 
                 var imageWidth = "", imageHeight = "", src = "";
@@ -220,6 +253,7 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                     i++;
                 });
 
+                //don't run jquery.nested if the browser size is below 640px. This prevents it from running on mobile, which would cause problems.
                 if (mq.matches) {
                     // viewport width is at least 640px
                     if(!appending){
@@ -236,6 +270,9 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
             };
 
             scope.$watch('articles', function (newValue, oldValue) {
+                if(tablet.matches) {
+                    oldValue.length = 0;
+                }
                 if (newValue.length > 0 && oldValue.length == 0){
                     renderArticles(scope.articles, false);
                 }else if(newValue.length > 0 && oldValue.length > 0){

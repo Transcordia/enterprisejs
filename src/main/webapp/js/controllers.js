@@ -4,6 +4,7 @@
 
 //
 var tablet = window.matchMedia( "(max-width: 1024px)" );
+var mobile = window.matchMedia( "(max-width: 640px)" );
 
 function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
     $scope.urlToCheck = '';
@@ -12,8 +13,10 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
     var page = 1;
     var numArticles = 20;
     var totalArticles = 102;
+    var tabletMode = ((tablet.matches) && !(mobile.matches));
 
-    if (tablet.matches) {
+    if (tabletMode)
+    {
         // viewport is tablet
         numArticles = 6;
     }
@@ -50,13 +53,25 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
 
             $http.get('api/articles/?page='+ page +'&numArticles='+ numArticles)
                 .success(function(data){
-                    $scope.newArticles = data.articles;
+                    if(!tabletMode)
+                    {
+                        $scope.newArticles = data.articles;
 
-                    $scope.articles = $scope.articles.concat(data.articles);
+                        $scope.articles = $scope.articles.concat(data.articles);
+                    } else { //if the user is on a tablet, then we want to replace the article list with the old articles + the new page of articles
+                        $scope.articles = $scope.extraTabletArticles.concat(data.articles);
+                        window.scrollTo(0, 0);
+                        console.log("ARTICLES LENGTH = "+$scope.articles.length);
+                    }
                     $log.info($scope.articles);
                 });
         }
     };
+
+    $scope.$on('extraArticles', function(event, extras) {
+        console.log("HEY THESE ARE EXTRAS",extras);
+        $scope.extraTabletArticles = extras;
+    });
 }
 AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams"];
 
