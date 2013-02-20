@@ -89,6 +89,10 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
                 $rootScope.showAddUrlModal = false;
                 $scope.showAddArticleModal = true;
                 $scope.article = data.response;
+                if($scope.article.images.length === 0)
+                {
+                    activeImage = -1;
+                }
 
                 $log.info($('.slides_container img'));
             });
@@ -116,7 +120,12 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
 
         //overwrite the images with the "approved" list (those that are large enough to matter)
         $scope.article.images = largeImages;
-        showActiveImage();
+        if($scope.article.images.length > 0)
+        {
+            showActiveImage();
+        } else {
+            activeImage = -1;
+        }
     }
 
     //because we don't know the image sizes until they've been loaded, we need to wait til the Event:ImageLoaded event has been fired for ALL the images before we filter out the small ones
@@ -173,7 +182,8 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
             article.description = truncate(stripped, 100);
         }
 
-        if(activeImage >= 0) {
+        if(activeImage >= 0)
+        {
             article.images = $scope.article.images[activeImage];
         } else {
             article.images = [];
