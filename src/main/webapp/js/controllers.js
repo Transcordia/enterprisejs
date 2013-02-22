@@ -5,6 +5,10 @@
 //
 var tablet = window.matchMedia( "(max-width: 1024px)" );
 var mobile = window.matchMedia( "(max-width: 640px)" );
+function is_touch_device() {
+    return !!('ontouchstart' in window) // works on most browsers
+        || !!('onmsgesturechange' in window); // works on ie10
+};
 
 function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
     $scope.urlToCheck = '';
@@ -13,7 +17,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
     var page = 1;
     var numArticles = 20;
     var totalArticles = 102;
-    var tabletMode = ((tablet.matches) && !(mobile.matches));
+    var tabletMode = ((tablet.matches) && !(mobile.matches)) && (is_touch_device());
 
     if (tabletMode)
     {

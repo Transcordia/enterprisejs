@@ -1,6 +1,10 @@
 'use strict';
 
 var tablet = window.matchMedia( "(max-width: 1024px)" );
+function is_touch_device() {
+    return !!('ontouchstart' in window) // works on most browsers
+        || !!('onmsgesturechange' in window); // works on ie10
+};
 
 /* Directives */
 angular.module('ejs.directives', []);
@@ -192,7 +196,7 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                 //tests to see if the browser window is ABOVE 640px
                 var mq = window.matchMedia( "(min-width: 640px)" );
 
-                if( (tablet.matches) && (mq.matches) )
+                if( (tablet.matches) && (mq.matches) && (is_touch_device()) )
                 {
                     articles = tabletLayout(articles, scope);
                     element.html('');
@@ -328,7 +332,7 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
             };
 
             scope.$watch('articles', function (newValue, oldValue) {
-                if(tablet.matches) {
+                if( (tablet.matches) && (is_touch_device()) ) {
                     oldValue.length = 0;
                 }
                 if (newValue.length > 0 && oldValue.length == 0){
@@ -369,17 +373,28 @@ angular.module('ejs.directives').directive('whenScrolled', function() {
     return function(scope, elm, attr) {
         var raw = elm[0];
         var offset = attr.offset || 0;
-        angular.element(window).bind('scroll', function() {
-            var rectObject = raw.getBoundingClientRect();
-            //the number being subtracted from window.height() is the static height of any footers or other elements that are on all the pages.
-            //offset is passed in as an option and is the height of any padding or margins that might occur as part of the element this directive is used on
-            //
-            //WARNING: if there's any changes in that collection of elements (mostly in terms of changing the CSS), these numbers needs to be changed. this also prevents use of 'ems' as they don't translate consistently to pixel values
-            //there might be a way to handle this without using static numbers. if so, please do, as this current solution isn't as flexible and reusable as it could be
-            if (Math.floor(rectObject.bottom) === $(window).height() - 0 - offset) {
+
+        if( (tablet.matches) && (is_touch_device()) )
+        {
+            jQuery(element).bind('swiperight', function() {
                 scope.$apply(attr.whenScrolled);
-            }
-        });
+            });
+            jQuery(element).bind('swipeleft', function() {
+                scope.$apply(attr.whenScrolled);
+            });
+        } else {
+            angular.element(window).bind('scroll', function() {
+                var rectObject = raw.getBoundingClientRect();
+                //the number being subtracted from window.height() is the static height of any footers or other elements that are on all the pages.
+                //offset is passed in as an option and is the height of any padding or margins that might occur as part of the element this directive is used on
+                //
+                //WARNING: if there's any changes in that collection of elements (mostly in terms of changing the CSS), these numbers needs to be changed. this also prevents use of 'ems' as they don't translate consistently to pixel values
+                //there might be a way to handle this without using static numbers. if so, please do, as this current solution isn't as flexible and reusable as it could be
+                if (Math.floor(rectObject.bottom) === $(window).height() - 0 - offset) {
+                    scope.$apply(attr.whenScrolled);
+                }
+            });
+        }
     };
 });
 
