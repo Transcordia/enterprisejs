@@ -137,6 +137,10 @@ p{
     height: 96px;
 }
 
+.abstract-title-holder h1{
+    padding-left: 1em;
+}
+
 .abstract-image-holder{
     margin: 0 auto;
 }
@@ -210,15 +214,29 @@ p{
     padding-top: 0;
 }
 
+.article-views p{
+    padding: 0;
+    margin: 0;
+}
+
 .article-abstract-meta .article-views{
     padding: 1em;
-    /*border-left: 2px solid #d3d3d3;
-    border-top: 2px solid #d3d3d3;*/
-    box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
-    -moz-box-shadow: 0 1px 2px rgba(34,25,25,0.4);
-    -webkit-box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
+    border-top-left-radius: 5px 2px;
+    border-left: 1px solid rgba(211, 211, 211, 0.4);
+    border-top: 1px solid rgba(211, 211, 211, 0.4);
     float: right;
 }
+
+.article-abstract-meta .time-posted p{
+    margin: 0.75em 0 0 0;
+    padding: 0
+}
+
+.article-abstract-meta .clearfix{
+    position: relative;
+    padding-left: 1.5em;
+}
+
 
 .new-article img{
     float: left;
@@ -415,19 +433,24 @@ p{
 .article.size31.landscape h1{
     width: 62.5%;
     float: left;
+    margin-bottom: 0.5em;
 }
 
 .article.size31.landscape .abstract-image-holder{
-    /*margin: 20px 5px 20px 20px;*/
+    /*margin: 20px 5px 20px 20px;
     width: 62%;
-    height: 205px;
+    height: 205px;*/
     overflow: hidden;
-    float: left;
+    float: right;
+}
+
+.article.size31.landscape .abstract-image-holder img{
+    width: auto;
 }
 
 .article.size31.landscape p{
     width: 30.5%;
-    float: right;
+    float: left;
     position: relative;
     top: -90px;
     height: 280px;
@@ -441,16 +464,20 @@ p{
 }
 
 .article.size22.landscape .abstract-image-holder{
-    margin: 0 auto;
-    width: 93%;
+    /*margin: 0 auto;
+    width: 93%;*/
 }
 
 .article.size22.landscape img{
     width: 100%;
 }
 
+.article.size22.landscape h1{
+    margin-bottom: 0.25em;
+}
+
 .article.size22.landscape p{
-    height: 135px;
+
 }
 
 .article.size11.landscape img{
@@ -470,8 +497,9 @@ p{
 }
 
 .article.size21.landscape h1{
-    float: left;
-    width: 45%
+    float: none;
+    width: 100%;
+    margin-bottom: 0.5em;
 }
 
 .article.size21.landscape img{
@@ -480,13 +508,28 @@ p{
 }
 
 .article.size21.landscape p{
-    float: right;
-    width: 45%;
+    float: left;
+}
+
+.article.size21.landscape .abstract-image-holder{
+    float: left;
 }
 
 .article-content{
     margin: 20px auto;
     overflow: hidden;
+}
+
+.nested-moved img{
+    display: none;
+}
+
+.nested-moved .title-description h1{
+    width: 100%;
+}
+
+.nested-moved .title-description p{
+    width: 100%;
 }
 
 @media (max-width: 1024px) {

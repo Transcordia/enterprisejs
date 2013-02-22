@@ -297,7 +297,7 @@ function preferredArea(title, description, image){
 
     // will this article fit into a 1 x 1?
     // it will if it has short description and no image for the abstract
-    if(Object.keys(image).length == 0 && description.split(" ").length <= 20){
+    if(Object.keys(image).length == 0 && description.split(" ").length <= 40){
         return area;
     }
 
@@ -311,8 +311,10 @@ function preferredArea(title, description, image){
     }
 
     // will this article fit into a 2 x 1?
-    // it will if it has short description and an image for the abstract
-    if(Object.keys(image).length > 0 && description.split(" ").length <= 20 && orientation == "portrait"){
+    // it will if it has long description and a landscape image for the abstract
+    if(Object.keys(image).length > 0
+        && description.split(" ").length >= 60
+        && orientation == "landscape"){
         return area += 1; // preferred  area of 2
     }
 
@@ -328,7 +330,7 @@ function preferredArea(title, description, image){
     // will this article fit into a 2 x 1?
     // it will if it has a mid length description and no image for the abstract
     if(Object.keys(image).length == 0
-        && (description.split(" ").length > 20
+        && (description.split(" ").length > 40
         && description.split(" ").length <= 80)){
         return area += 1; // preferred  area of 2
     }
@@ -336,7 +338,7 @@ function preferredArea(title, description, image){
     // will this article fit into a 1 x 2?
     // it will if it has a description and non-portrait image for the abstract
     if(Object.keys(image).length > 0
-        && (description.split(" ").length > 0
+        && (description.split(" ").length > 60
         && description.split(" ").length <= 80)
         && orientation == "landscape"){
         return area += 2; // preferred  area of 3
@@ -344,7 +346,7 @@ function preferredArea(title, description, image){
 
     // will this article fit into a 3 x 1?
     // it will if it has a long description and no image for the abstract
-    if(Object.keys(image).length == 0 && description.split(" ").length > 80){
+    if(Object.keys(image).length == 0 && description.split(" ").length > 120){
         return area += 3; // preferred  area of 4
     }
 

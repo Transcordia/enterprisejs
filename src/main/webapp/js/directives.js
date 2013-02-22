@@ -222,7 +222,7 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                                                 <div class="article-abstract-title transparent"></div>\
                                             </div>\
                                             <div class="article-abstract-meta">\
-                                                <p class="3-col">' + article.description + '</p>\
+                                                <p>' + article.description + '</p>\
                                                 <div class="clearfix">\
                                                     <div class="time-posted"><p><i>1 hour ago</i></p></div>\
                                                     <div class="article-views"><p>10</p></div>\
@@ -261,6 +261,15 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                             animationOptions: {
                                 complete: function(){
                                     var parentWidth = 0;
+                                    $('.article.featured').each(function(){
+                                        var offset = $(this).height() - $(this).find('.article-abstract-image').outerHeight();
+                                        offset -= $(this).find('.article-abstract-meta p').first().outerHeight();
+                                        offset -= $(this).find('.article-abstract-meta .clearfix').outerHeight() + 10;
+
+                                        $(this).find('.article-abstract-meta .clearfix').css('top', offset + 'px');
+
+                                    });
+
                                     $('.article-content').each(function(index){
                                         $(this).width($(this).parent().width() - 40);
                                         $(this).height($(this).parent().height() - 40);
@@ -278,8 +287,27 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                                             p.width(parentWidth - abstractImageHolder.width() - 60);
                                         }
 
+                                        if($(this).parent().hasClass('landscape size21')){
+                                            parentWidth = $(this).parent().width();
+
+                                            var img = $(this).find('img').removeAttr('height').css('width', '300px');
+                                            var p = $(this).find('p');
+                                            var abstractImageHolder = $(this).find('.abstract-image-holder');
+
+                                            abstractImageHolder.css('width', img.css('width'));
+                                            p.width(parentWidth - abstractImageHolder.width() - 60);
+                                            $(this).find('.title-description').css('-webkit-column-count', '2');
+                                        }
+
                                         if($(this).parent().hasClass('landscape size12')){
-                                            var img = $(this).find('img').removeAttr('width').css('width', '280px');
+                                            var img = $(this).find('img').removeAttr('height').css('width', '280px');
+                                        }
+
+                                        if($(this).parent().hasClass('nested-moved')){
+                                            $(this).find('img').css('display', 'none');
+                                            $(this).find('.title-description').removeAttr('style');
+                                            $(this).find('.title-description p').css('width', '100%');
+                                            $(this).find('.title-description h1').css('width', '100%');
                                         }
                                     });
                                 }
