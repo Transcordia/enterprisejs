@@ -9,38 +9,36 @@
     </div>
 </div>
 <div class="container">
-    <div class="row">
+    <div class="row article">
         <div class="span8">
+            <h2>{{article.title}}</h2>
 
-            <div class="article large">
-                <h2>{{article.title}}</h2>
-
-                <div class="article-holder new-article">
-                    <img ng-src="{{article.images[0].src}}" alt="">
-                </div>
-
+            <div class="content">
+                <img ng-src="{{article.images[0].src}}" alt="">
                 <p class="description">{{article.content}}</p>
+            </div>
+        </div>
+
+        <div class="span4">
+            <div class="sidebar">
+                <div class="clearfix">
+                    <div class="time-posted"><p><i>1 hour ago</i></p></div>
+                </div>
 
                 <p class="stats clearfix">
-                    <!--<span class="likes-count">{{likes}} likes</span>
-                    <!--<span class="comment-count">{{comments}} comments</span>
-                    <span class="reblog-count">{{reblogs}} reblogs</span>-->
-                    <span class="view-count">{{article.views}} views</span>
+                    <span class="view-count">{{article.views}}</span>
                 </p>
 
-                <div class="convo clearfix">
-                    <a href=""><div class="image-placeholder"></div></a>
-                    <p></p>
-                </div>
+                <a class="btn" ng-click="$parent.showFullArticle=true">View Original</a>
+                <!-- not sure how much modifications we can do with twitter and facebook buttons-->
+                <a class="btn" href="https://twitter.com/share">Share on Twitter</a>
+                <a class="btn" href="https://facebook.com">Share on Facebook</a>
+                <!--<div class="article-tweet-button" reload-twitter-btns>
+                    <a href="https://twitter.com/share" data-url="{{url}}" data-text="Enterprise JS: {{article.title}}" class="twitter-share-button" data-lang="en">Tweet</a>
+                </div>-->
 
-                <div class="article-tweet-button" reload-twitter-btns>
-                    <a href="https://twitter.com/share" data-url="{{url}}" data-text="Babson GC: {{article.title}}" class="twitter-share-button" data-lang="en">Tweet</a>
-                </div>
-
-                <span class="muted"><like objectid="{{article._id}}"></like> ({{article.likes}})</span>
-                <button type="button" ng-click="$parent.showFullArticle=true">Show full article</button>
+                <!--<span class="muted"><like objectid="{{article._id}}"></like> ({{article.likes}})</span>-->
             </div>
-
         </div>
     </div>
 </div>

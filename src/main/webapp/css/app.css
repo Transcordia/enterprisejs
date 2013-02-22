@@ -532,6 +532,74 @@ p{
     width: 100%;
 }
 
+/**
+  CSS for viewing a single article
+**/
+.row.article {
+    background-color: #e4e4e4;
+}
+
+.row.article .span8 {
+    background-color: #e8e8e8;
+    margin-left: 0px;
+    padding-left: 20px;
+}
+
+.row.article .content img {
+    float: left;
+}
+
+.row.article .sidebar {
+    margin: 10px;
+}
+
+.row.article .sidebar a.btn {
+    background-image: linear-gradient(bottom, rgb(185,185,185) 0%, rgb(230,230,230) 100%);
+    background-image: -o-linear-gradient(bottom, rgb(185,185,185) 0%, rgb(230,230,230) 100%);
+    background-image: -moz-linear-gradient(bottom, rgb(185,185,185) 0%, rgb(230,230,230) 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(185,185,185) 0%, rgb(230,230,230) 100%);
+    background-image: -ms-linear-gradient(bottom, rgb(185,185,185) 0%, rgb(230,230,230) 100%);
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0, rgb(185,185,185)),
+        color-stop(1, rgb(230,230,230))
+    );
+
+    border:1px solid;
+    border-color: #b1b1b1;
+    border-radius: 0;
+    font-family: 'Squada One';
+    width: 90%;
+    text-align: left;
+    font-size: 24px;
+    padding: 10px;
+}
+
+.row.article .sidebar a.btn:hover {
+    background-image: linear-gradient(bottom, rgb(230,230,230) 0%, rgb(185,185,185) 100%);
+    background-image: -o-linear-gradient(bottom, rgb(230,230,230) 0%, rgb(185,185,185) 100%);
+    background-image: -moz-linear-gradient(bottom, rgb(230,230,230) 0%, rgb(185,185,185) 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(230,230,230) 0%, rgb(185,185,185) 100%);
+    background-image: -ms-linear-gradient(bottom, rgb(230,230,230) 0%, rgb(185,185,185) 100%);
+
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0, rgb(230,230,230)),
+        color-stop(1, rgb(185,185,185))
+    );
+}
+
+.row.article .sidebar .stats .view-count {
+    font-family: 'Squada One';
+    font-size: 45px;
+    padding-left: 30px;
+    margin: 10px 0;
+}
+
 @media (max-width: 1024px) {
     #wrapper{
         width: 100%;
