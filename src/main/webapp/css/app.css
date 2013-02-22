@@ -537,20 +537,39 @@ p{
 **/
 .row.article {
     background-color: #e4e4e4;
+    margin-bottom: 20px;
 }
 
 .row.article .span8 {
     background-color: #e8e8e8;
     margin-left: 0px;
     padding-left: 20px;
+    padding-bottom: 20px;
 }
 
 .row.article .content img {
     float: left;
+    padding-right: 20px;
+}
+
+.row.article .content p.description {
+    overflow: visible;
 }
 
 .row.article .sidebar {
     margin: 10px;
+}
+
+.row.article .sidebar .time-posted {
+    color: #d3d3d3;
+}
+
+.row.article .sidebar .stats .view-count {
+    font-family: 'Squada One';
+    font-size: 45px;
+    padding-left: 30px;
+    margin: 10px 0;
+    background: url('../img/icon_pageViews.png') no-repeat 0 3px;
 }
 
 .row.article .sidebar a.btn {
@@ -593,12 +612,7 @@ p{
     );
 }
 
-.row.article .sidebar .stats .view-count {
-    font-family: 'Squada One';
-    font-size: 45px;
-    padding-left: 30px;
-    margin: 10px 0;
-}
+
 
 @media (max-width: 1024px) {
     #wrapper{
