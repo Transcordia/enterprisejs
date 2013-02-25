@@ -18,3 +18,9 @@ angular.module('ejs.services').
             return originalString.split(" ").splice(0,length).join(" ");
         }
     });
+
+angular.module('ejs.services').factory('TimeAgo', function(){
+    return function(time){
+        return moment(time, 'YYYYMMDD').fromNow();
+    }
+});

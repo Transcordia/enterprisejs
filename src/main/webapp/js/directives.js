@@ -137,7 +137,7 @@ function tabletLayout(articles, scope)
     return articles;
 }
 
-angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$log', function (truncate, $timeout, $log) {
+angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$log', 'TimeAgo', function (truncate, $timeout, $log, TimeAgo) {
     return {
         scope: {
             articles: '=',
@@ -203,12 +203,15 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                 var image = " ";
                 var imageOrientation = " ";
                 var i = 1;
+                var date = "";
+
                 articles.forEach(function (article) {
+                    date = TimeAgo(article.date);
                     if(Object.keys(article.abstractImage).length > 0){
                         imageWidth = article.abstractImage.w;
                         imageHeight = article.abstractImage.h;
                         src = article.abstractImage.src;
-                        abstractImage = '<div class="abstract-image-holder"><img src="'+ src +'"></div>';
+                        abstractImage = '<div class="abstract-image-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
                         image = " has-image ";
                         imageOrientation = " " + article.abstractImageOrientation + " ";
                     }
@@ -224,8 +227,8 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                                             <div class="article-abstract-meta">\
                                                 <p>' + article.description + '</p>\
                                                 <div class="clearfix">\
-                                                    <div class="time-posted"><p><i>1 hour ago</i></p></div>\
-                                                    <div class="article-views"><p>10</p></div>\
+                                                    <div class="time-posted"><p><i>'+ date +'</i></p></div>\
+                                                    <div class="article-views"><p><img src="/ejs/img/icon_pageViews.png" /> '+ article.views +'</p></div>\
                                                 </div>\
                                             </div>\
                                         </div>';
@@ -237,6 +240,12 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                                                 <div class="title-description clearfix">\
                                                     <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>'+ abstractImage +'\
                                                     <p class="description">' + article.description + '</p>\
+                                                </div>\
+                                            </div>\
+                                            <div class="article-abstract-meta">\
+                                                <div class="clearfix">\
+                                                    <div class="time-posted"><p><i>'+ date +'</i></p></div>\
+                                                    <div class="article-views"><p><img src="/ejs/img/icon_pageViews.png" /> ' + article.views + '</p></div>\
                                                 </div>\
                                             </div>\
                                         </div>';
@@ -272,14 +281,14 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
 
                                     $('.article-content').each(function(index){
                                         $(this).width($(this).parent().width() - 40);
-                                        $(this).height($(this).parent().height() - 40);
+                                        $(this).height($(this).parent().height() - 85);
 
                                         if($(this).parent().hasClass('portrait size21')){
                                             parentWidth = $(this).parent().width();
 
-                                            var img = $(this).find('img').removeAttr('width').css('height', '280px');
+                                            var img = $(this).find('.abstract-image-holder img').removeAttr('width').css('height', '280px');
                                             var h1 = $(this).find('h1');
-                                            var p = $(this).find('p');
+                                            var p = $(this).find('p.description');
                                             var abstractImageHolder = $(this).find('.abstract-image-holder');
                                             abstractImageHolder.css('width', img.css('width'));
 
@@ -290,23 +299,27 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                                         if($(this).parent().hasClass('landscape size21')){
                                             parentWidth = $(this).parent().width();
 
-                                            var img = $(this).find('img').removeAttr('height').css('width', '300px');
+                                            var img = $(this).find('.abstract-image-holder img').removeAttr('height').css('width', '300px');
                                             var p = $(this).find('p');
                                             var abstractImageHolder = $(this).find('.abstract-image-holder');
 
                                             abstractImageHolder.css('width', img.css('width'));
                                             p.width(parentWidth - abstractImageHolder.width() - 60);
-                                            $(this).find('.title-description').css('-webkit-column-count', '2');
+                                            //$(this).find('.title-description').css('-webkit-column-count', '2');
+                                            $(this).find('.title-description').css({
+                                                '-webkit-column-count': '2',
+                                                'column-gap': '40px'
+                                            });
                                         }
 
                                         if($(this).parent().hasClass('landscape size12')){
-                                            var img = $(this).find('img').removeAttr('height').css('width', '280px');
+                                            var img = $(this).find('.abstract-image-holder img').removeAttr('height').css('width', '280px');
                                         }
 
                                         if($(this).parent().hasClass('nested-moved')){
                                             $(this).find('img').css('display', 'none');
                                             $(this).find('.title-description').removeAttr('style');
-                                            $(this).find('.title-description p').css('width', '100%');
+                                            $(this).find('.title-description p.description').css('width', '100%');
                                             $(this).find('.title-description h1').css('width', '100%');
                                         }
                                     });

@@ -1,5 +1,5 @@
 body{
-    background: url('../img/ejs_bg.png') #ebebeb repeat
+    background: url('../img/img_bg_pattern.jpg') #ebebeb repeat
 }
 
 h1, h2, h3, h4, h4{
@@ -23,8 +23,8 @@ p{
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
     border: none;
-    background: url('../img/ejs_header_bg.jpg') repeat-x;
-    height: 48px;
+    background: url('../img/img_header_bg.png') repeat-x;
+    height: 88px;
 }
 
 .navbar-inner div{
@@ -49,9 +49,9 @@ p{
 }
 
 .ejs-hero{
-    background: url('../img/hero_bg.jpg') repeat-x;
-    width: 100%;
+    width: 90%;
     height: 180px;
+    margin: 0 auto;
 }
 
 .ejs-hero div{
@@ -217,26 +217,9 @@ p{
 .article-views p{
     padding: 0;
     margin: 0;
+    text-shadow: 0px 1px 0px #ffffff;
+    font-size: 22px;
 }
-
-.article-abstract-meta .article-views{
-    padding: 1em;
-    border-top-left-radius: 5px 2px;
-    border-left: 1px solid rgba(211, 211, 211, 0.4);
-    border-top: 1px solid rgba(211, 211, 211, 0.4);
-    float: right;
-}
-
-.article-abstract-meta .time-posted p{
-    margin: 0.75em 0 0 0;
-    padding: 0
-}
-
-.article-abstract-meta .clearfix{
-    position: relative;
-    padding-left: 1.5em;
-}
-
 
 .new-article img{
     float: left;
@@ -415,11 +398,6 @@ p{
     width: 44%;
 }
 
-.article.size21.portrait p{
-    float: right;
-    width: 44%;
-}
-
 .article.size21.portrait img{
     float: left;
 }
@@ -442,6 +420,25 @@ p{
     height: 205px;*/
     overflow: hidden;
     float: right;
+}
+
+.article .article-abstract-meta .article-views p{
+    padding: 0.25em 1em;
+    border-top-left-radius: 5px 2px;
+    border-left: 1px solid rgba(211, 211, 211, 0.4);
+    border-top: 1px solid rgba(211, 211, 211, 0.4);
+    float: right;
+}
+
+.article .article-abstract-meta .time-posted p{
+    width: 100%;
+    margin: 0.75em 0 0 0;
+    padding: 0
+}
+
+.article-abstract-meta .clearfix{
+    position: relative;
+    padding-left: 1.5em;
 }
 
 .article.size31.landscape .abstract-image-holder img{
@@ -480,7 +477,7 @@ p{
 
 }
 
-.article.size11.landscape img{
+.article.size11.landscape .article-content img{
     display: none;
 }
 
@@ -502,12 +499,12 @@ p{
     margin-bottom: 0.5em;
 }
 
-.article.size21.landscape img{
+.article.size21.landscape .article-content img{
     float: left;
     width: 45%
 }
 
-.article.size21.landscape p{
+.article.size21.landscape .article-content p.description{
     float: left;
 }
 
@@ -520,7 +517,7 @@ p{
     overflow: hidden;
 }
 
-.nested-moved img{
+.nested-moved .article-content img{
     display: none;
 }
 
@@ -530,6 +527,24 @@ p{
 
 .nested-moved .title-description p{
     width: 100%;
+}
+
+.featured .article-views p img,
+.article-views p img,
+.landscape .article-views p img{
+    position: relative;
+    top: -1px;
+}
+
+.article-views p img{
+    top: 9px;
+}
+
+.landscape .article-views p img,
+.no-image.size21 .article-views p img,
+.no-image.size11 .article-views p img,
+.no-image.size31 .article-views p img{
+    top: 0px;
 }
 
 @media (max-width: 1024px) {
