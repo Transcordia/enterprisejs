@@ -412,4 +412,106 @@ function dateToISO8601(d, dateSep, timeSep) {
         + pad(d.getUTCSeconds());
 }
 
-export('processUrl', 'iso8601ToDate', 'dateToISO8601');
+
+function abstractImageOrientation(image){
+    // perfectly square = 1
+    // landscape > 1
+    // highly landscape > 1.3
+    // portrait < 1
+    // highly portrait < 0.5
+
+    if(image.w / image.h > 1){
+        return "landscape";
+    }
+
+    if(image.w / image.h == 1){
+        return "square";
+    }
+
+    if(image.w / image.h < 1){
+        return "portrait";
+    }
+}
+
+
+function preferredArea(title, description, image){
+    // area represents the square area of space an article occupies in the layout
+    // values can be 1, 2, 3, 4
+    var area = 1; // start with an area of 1
+    var orientation = abstractImageOrientation(image);
+
+    // will this article fit into a 1 x 1?
+    // it will if it only has a title
+    if(Object.keys(image).length == 0 && description === ""){
+        return area;
+    }
+
+    // will this article fit into a 1 x 1?
+    // it will if it has short description and no image for the abstract
+    if(Object.keys(image).length == 0 && description.split(" ").length <= 20){
+        return area;
+    }
+
+    // will this article fit into a 1 x 1?
+    // it will if it has a short description and non-portrait image for the abstract
+    if(Object.keys(image).length > 0
+        && (description.split(" ").length > 0
+        && description.split(" ").length <= 30)
+        && orientation == "landscape"){
+        return area; // preferred  area of 1
+    }
+
+    // will this article fit into a 2 x 1?
+    // it will if it has short description and an image for the abstract
+    if(Object.keys(image).length > 0 && description.split(" ").length <= 20 && orientation == "portrait"){
+        return area += 1; // preferred  area of 2
+    }
+
+    // will this article fit into a 2 x 1?
+    // it will if it has mid length description and an image for the abstract
+    // with a portrait orientation
+    if(Object.keys(image).length > 0
+        && description.split(" ").length > 20
+        && orientation == "portrait"){
+        return area += 1; // preferred  area of 2
+    }
+
+    // will this article fit into a 2 x 1?
+    // it will if it has a mid length description and no image for the abstract
+    if(Object.keys(image).length == 0
+        && (description.split(" ").length > 20
+        && description.split(" ").length <= 80)){
+        return area += 1; // preferred  area of 2
+    }
+
+    // will this article fit into a 1 x 2?
+    // it will if it has a description and non-portrait image for the abstract
+    if(Object.keys(image).length > 0
+        && (description.split(" ").length > 0
+        && description.split(" ").length <= 80)
+        && orientation == "landscape"){
+        return area += 2; // preferred  area of 3
+    }
+
+    // will this article fit into a 3 x 1?
+    // it will if it has a long description and no image for the abstract
+    if(Object.keys(image).length == 0 && description.split(" ").length > 80){
+        return area += 3; // preferred  area of 4
+    }
+
+    // will this article fit into a 3 x 1?
+    // it will if it has a long description and smaller image for the abstract
+    if(Object.keys(image).length > 0 && description.split(" ").length > 80 && image.w <= 300){
+        return area += 3; // preferred  area of 4
+    }
+
+    // will this article fit into a 2 x 2?
+    // it will if it has a long description and a larger image for the abstract
+    if(Object.keys(image).length > 0 && description.split(" ").length > 80 && image.w > 300){
+        return area += 4; // preferred  area of 5
+    }
+
+    return area;
+}
+
+export('processUrl', 'iso8601ToDate', 'dateToISO8601', 'preferredArea');
