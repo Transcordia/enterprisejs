@@ -228,8 +228,8 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                                             <div class="article-abstract-image">'+ abstractImage +'\
                                                 <div class="article-abstract-title transparent"></div>\
                                             </div>\
+                                            <p class="description">' + article.description + '</p>\
                                             <div class="article-abstract-meta">\
-                                                <p>' + article.description + '</p>\
                                                 <div class="clearfix">\
                                                     <div class="time-posted"><p><i>'+ date +'</i></p></div>\
                                                     <div class="article-views"><p><img src="/ejs/img/icon_pageViews.png" /> '+ article.views +'</p></div>\
@@ -277,15 +277,25 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                                     $('.article.featured').each(function(){
                                         var offset = $(this).height() - $(this).find('.article-abstract-image').outerHeight();
                                         offset -= $(this).find('.article-abstract-meta p').first().outerHeight();
-                                        offset -= $(this).find('.article-abstract-meta .clearfix').outerHeight() + 10;
+                                        offset -= $(this).find('.article-abstract-meta').outerHeight() + 10;
 
-                                        $(this).find('.article-abstract-meta .clearfix').css('top', offset + 'px');
+                                        $(this).find('.description').css('height', '69px').ellipsis();
 
+                                        //$(this).find('.article-abstract-meta').css('top', '-15px');
                                     });
 
                                     $('.article-content').each(function(index){
                                         $(this).width($(this).parent().width() - 40);
                                         $(this).height($(this).parent().height() - 85);
+
+                                        if($(this).parent().hasClass('size21') ||
+                                            $(this).parent().hasClass('size11')){
+                                            var h1Height = $(this).find('.title-description h1').outerHeight();
+
+                                            $(this).find('.title-description p.description').css('height', (225 - h1Height) + 'px');
+
+                                            $(this).find('.title-description p.description').ellipsis();
+                                        }
 
                                         if($(this).parent().hasClass('portrait size21')){
                                             parentWidth = $(this).parent().width();

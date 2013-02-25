@@ -12,6 +12,10 @@ h1{
     text-transform: uppercase;
 }
 
+.hero-title h1{
+    font-size: 35px;
+}
+
 p{
     font-family: 'allerregular', Arial, sans-serif;
     line-height: 150%;
@@ -53,10 +57,11 @@ p{
     width: 100%;
     height: 180px;
     margin: 0 auto;
+    overflow: hidden;
 }
 
-.ejs-hero div{
-    width: 960px;
+.ejs-hero .abstract-image-container{
+    width: 90%;
     margin: 0 auto;
 }
 
@@ -123,7 +128,7 @@ p{
 
 .article-abstract-image{
     width: 100%;
-    height: 206px;
+    height: 190px;
     background-color: white;
     position: relative;
     overflow: hidden;
@@ -131,7 +136,7 @@ p{
 
 .abstract-title-holder{
     position: absolute;
-    top: 9.85em;
+    top: 7.85em;
     width: 66%;
     z-index: 1;
     overflow: hidden;
@@ -183,13 +188,38 @@ p{
     width: 100%;
 }
 
+.ejs-hero .abstract-image-container{
+    position: relative;
+}
+
 .article-abstract-title{
-    height: 104px;
+    height: 107px;
     width: 70%;
-    top: 10.5em;
+    top: 7.5em;
     background-color: black;
     position: absolute;
     overflow: hidden;
+}
+
+.hero-abstract-title-container{
+    height: 121px;
+    display: block;
+    float: left;
+    padding-right: 20px;
+    width: 77%;
+    position: absolute;
+    top: 59px;
+    background: url('../img/hero-abstract-title-bg-right.png') no-repeat right -10px
+}
+
+.hero-abstract-title-container span{
+    background: url('../img/abstract-title-bg-left.png') no-repeat 0 0;
+    display: block;
+    padding: 7px 0 5px 18px;
+    color: #fff;
+    position: relative;
+    top: -10px;
+    height: 121px;
 }
 
 .transparent {
@@ -199,6 +229,7 @@ p{
 }
 
 .article-abstract-meta{
+    position: relative;
     width: 100%;
 }
 
@@ -223,7 +254,6 @@ p{
 }
 
 .article-abstract-meta .article-views{
-    padding: 1em;
     border-top-left-radius: 5px 2px;
     border-left: 1px solid rgba(211, 211, 211, 0.4);
     border-top: 1px solid rgba(211, 211, 211, 0.4);
@@ -423,7 +453,6 @@ p{
 }
 
 .article.size21.portrait .abstract-image-holder{
-    /*margin: 20px 5px 20px 20px;*/
     overflow: hidden;
     float: left;
 }
@@ -435,18 +464,13 @@ p{
 }
 
 .article.size31.landscape .abstract-image-holder{
-    /*margin: 20px 5px 20px 20px;
-    width: 62%;
-    height: 205px;*/
     overflow: hidden;
     float: right;
 }
 
 .article .article-abstract-meta .article-views p{
     padding: 0.25em 1em;
-    border-top-left-radius: 5px 2px;
-    border-left: 1px solid rgba(211, 211, 211, 0.4);
-    border-top: 1px solid rgba(211, 211, 211, 0.4);
+    font-family: "Squada One";
     float: right;
 }
 
@@ -565,6 +589,33 @@ p{
 .no-image.size11 .article-views p img,
 .no-image.size31 .article-views p img{
     top: 0px;
+}
+
+.article.featured.size21.has-image p.description,
+.article.featured.size11.has-image p.description{
+    padding: 0 1.5em;
+    float: none;
+    width: 90%;
+}
+
+.hero-title-description-container{
+    color: white;
+    background: url('../img/hero-abstract-title-bg-middle.png') repeat-x 0 0;
+    margin-left: 4px;
+    top:-7px;
+    padding: 1.1em 0;
+    position: relative;
+}
+
+.hero-title{
+    float: left;
+    width: 62%
+}
+
+.hero-description{
+    padding-top: 1em;
+    float: right;
+    width: 35%;
 }
 
 /**
