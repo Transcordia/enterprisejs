@@ -53,9 +53,9 @@ p{
 }
 
 .ejs-hero{
-    background: url('../img/hero_bg.jpg') repeat-x;
+    background: url('../img/mechancialStuff.jpg') repeat-x 0 -60px;
     width: 100%;
-    height: 180px;
+    height: 320px;
     margin: 0 auto;
     overflow: hidden;
 }
@@ -136,15 +136,29 @@ p{
 
 .abstract-title-holder{
     position: absolute;
-    top: 7.85em;
+    padding-right: 15px;
+    top: 9.45em;
     width: 66%;
     z-index: 1;
     overflow: hidden;
     height: 96px;
+    background: url('../img/img_heroArticleContainer_right.png') no-repeat right 0px;
 }
 
 .abstract-title-holder h1{
-    padding-left: 1em;
+    padding: 0.5em 0 1em 0.5em;
+    background: url('../img/img_heroArticleContainer_middle.png') repeat-x;
+    margin-left: 22px;
+    position: relative;
+    top: -10px;
+    height: 62px;
+    overflow: hidden;
+}
+
+.abstract-title-holder span{
+    height : 95px;
+    float: right;
+    background: url('../img/img_heroArticleContainer_left.png') no-repeat;
 }
 
 .abstract-image-holder{
@@ -208,7 +222,7 @@ p{
     padding-right: 20px;
     width: 77%;
     position: absolute;
-    top: 59px;
+    top: 199px;
     background: url('../img/hero-abstract-title-bg-right.png') no-repeat right -10px
 }
 
@@ -698,7 +712,11 @@ p{
     );
 }
 
-
+@media (max-width: 1370px){
+    .hero-title h1{
+        font-size: 30px;
+    }
+}
 
 @media (max-width: 1024px) {
     #wrapper{

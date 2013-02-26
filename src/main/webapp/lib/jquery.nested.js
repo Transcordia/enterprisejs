@@ -87,6 +87,9 @@ if (!Object.keys) {
             this._isResizing = false;
             this._update = true;
             this.maxy = new Array();
+            this.prevAppended = 0;
+            this.appended = 0;
+
 
             // add smartresize
             $(window).smartresize(function () {
@@ -398,12 +401,10 @@ if (!Object.keys) {
             var t = 0;
 
             $.each($els, function (index, value) {
-
                 $currLeft = $(value['$el']).offset().left;
                 $currTop = $(value['$el']).offset().top;
                 $currWidth = $(value['$el']).width();
                 $currHeight = $(value['$el']).width();
-
 
                 value['$el'].attr('data-y', $currTop).attr('data-x', $currLeft);
                 //if animate and queue
@@ -418,8 +419,9 @@ if (!Object.keys) {
                             'top': value['y']
                         }, duration);
                         t++;
-                        if (t == $els.length) {
-                            complete.call(undefined, $els)
+
+                        if (t == $els.length || t == 20) {
+                            complete.call(undefined, $els);
                         }
                     }, i * speed);
                     i++;

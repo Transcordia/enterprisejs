@@ -224,10 +224,12 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
 
                     if(i < 4 && !appending){
                         articleHtml += '<div class="article featured' + image + gridCombinations[article.layout].size+'">\
-                                            <div class="abstract-title-holder"><h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1></div>\
-                                            <div class="article-abstract-image">'+ abstractImage +'\
-                                                <div class="article-abstract-title transparent"></div>\
+                                            <div class="abstract-title-holder">\
+                                                <span>\
+                                                    <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>\
+                                                </span>\
                                             </div>\
+                                            <div class="article-abstract-image">'+ abstractImage +'</div>\
                                             <p class="description">' + article.description + '</p>\
                                             <div class="article-abstract-meta">\
                                                 <div class="clearfix">\
@@ -262,6 +264,82 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                     i++;
                 });
 
+                var animationComplete = function(){
+                    var parentWidth = 0;
+                    var totalWidth = 0;
+
+                    $('.article[style*="top: 408px"]').each(function(){
+                        totalWidth += $(this).width();
+                    });
+
+                    //totalWidth += 5;
+                    var wrapperOffset = ($(window).width() - $('#wrapper').width()) / 2;
+                    $('.ejs-hero .abstract-image-container').css({'width': totalWidth + 'px', 'margin': '0 0 0 ' + wrapperOffset + 'px'});
+
+                    $('.article.featured').each(function(){
+                        var offset = $(this).height() - $(this).find('.article-abstract-image').outerHeight();
+                        offset -= $(this).find('.article-abstract-meta p').first().outerHeight();
+                        offset -= $(this).find('.article-abstract-meta').outerHeight() + 10;
+
+                        $(this).find('.description').css('height', '69px').ellipsis();
+                    });
+
+                    $('.article-content').each(function(){
+                        $(this).width($(this).parent().width() - 40);
+                        $(this).height($(this).parent().height() - 85);
+
+                        if($(this).parent().hasClass('size21') ||
+                            $(this).parent().hasClass('size11')){
+                            var h1Height = $(this).find('.title-description h1').outerHeight();
+
+                            $(this).find('.title-description p.description').css('height', (225 - h1Height) + 'px');
+
+                            $(this).find('.title-description p.description').ellipsis();
+                        }
+
+                        if($(this).parent().hasClass('portrait size21')){
+                            parentWidth = $(this).parent().width();
+
+                            var img = $(this).find('.abstract-image-holder img').removeAttr('width').css('height', '280px');
+                            var h1 = $(this).find('h1');
+                            var p = $(this).find('p.description');
+                            var abstractImageHolder = $(this).find('.abstract-image-holder');
+                            abstractImageHolder.css('width', img.css('width'));
+
+                            h1.width(parentWidth - abstractImageHolder.width() - 60);
+                            p.width(parentWidth - abstractImageHolder.width() - 60);
+                        }
+
+                        if($(this).parent().hasClass('landscape size21')){
+                            parentWidth = $(this).parent().width();
+
+                            var img = $(this).find('.abstract-image-holder img').removeAttr('height').css('width', '300px');
+                            var p = $(this).find('p');
+                            var abstractImageHolder = $(this).find('.abstract-image-holder');
+
+                            abstractImageHolder.css('width', img.css('width'));
+                            p.width(parentWidth - abstractImageHolder.width() - 60);
+                            $(this).find('.title-description').css({
+                                '-webkit-column-count': '2',
+                                'column-gap': '40px'
+                            });
+                        }
+
+                        if($(this).parent().hasClass('landscape size12')){
+                            var img = $(this).find('.abstract-image-holder img').removeAttr('height').css('width', '280px');
+                        }
+
+                        if($(this).parent().hasClass('nested-moved')){
+                            $(this).find('img').css('display', 'none');
+                            $(this).find('.title-description').removeAttr('style');
+                            $(this).find('.title-description p.description').css('width', '100%');
+                            $(this).find('.title-description h1').css('width', '100%');
+                        }
+
+                        $('.abstract-title-holder span h1').ellipsis();
+                    });
+                }
+
                 //don't run jquery.nested if the browser size is below 640px. This prevents it from running on mobile, which would cause problems.
                 if (mq.matches) {
                     // viewport width is at least 640px
@@ -272,74 +350,9 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                             minColumns: 2,
                             animate: true,
                             animationOptions: {
-                                complete: function(){
-                                    var parentWidth = 0;
-                                    $('.article.featured').each(function(){
-                                        var offset = $(this).height() - $(this).find('.article-abstract-image').outerHeight();
-                                        offset -= $(this).find('.article-abstract-meta p').first().outerHeight();
-                                        offset -= $(this).find('.article-abstract-meta').outerHeight() + 10;
-
-                                        $(this).find('.description').css('height', '69px').ellipsis();
-
-                                        //$(this).find('.article-abstract-meta').css('top', '-15px');
-                                    });
-
-                                    $('.article-content').each(function(index){
-                                        $(this).width($(this).parent().width() - 40);
-                                        $(this).height($(this).parent().height() - 85);
-
-                                        if($(this).parent().hasClass('size21') ||
-                                            $(this).parent().hasClass('size11')){
-                                            var h1Height = $(this).find('.title-description h1').outerHeight();
-
-                                            $(this).find('.title-description p.description').css('height', (225 - h1Height) + 'px');
-
-                                            $(this).find('.title-description p.description').ellipsis();
-                                        }
-
-                                        if($(this).parent().hasClass('portrait size21')){
-                                            parentWidth = $(this).parent().width();
-
-                                            var img = $(this).find('.abstract-image-holder img').removeAttr('width').css('height', '280px');
-                                            var h1 = $(this).find('h1');
-                                            var p = $(this).find('p.description');
-                                            var abstractImageHolder = $(this).find('.abstract-image-holder');
-                                            abstractImageHolder.css('width', img.css('width'));
-
-                                            h1.width(parentWidth - abstractImageHolder.width() - 60);
-                                            p.width(parentWidth - abstractImageHolder.width() - 60);
-                                        }
-
-                                        if($(this).parent().hasClass('landscape size21')){
-                                            parentWidth = $(this).parent().width();
-
-                                            var img = $(this).find('.abstract-image-holder img').removeAttr('height').css('width', '300px');
-                                            var p = $(this).find('p');
-                                            var abstractImageHolder = $(this).find('.abstract-image-holder');
-
-                                            abstractImageHolder.css('width', img.css('width'));
-                                            p.width(parentWidth - abstractImageHolder.width() - 60);
-                                            //$(this).find('.title-description').css('-webkit-column-count', '2');
-                                            $(this).find('.title-description').css({
-                                                '-webkit-column-count': '2',
-                                                'column-gap': '40px'
-                                            });
-                                        }
-
-                                        if($(this).parent().hasClass('landscape size12')){
-                                            var img = $(this).find('.abstract-image-holder img').removeAttr('height').css('width', '280px');
-                                        }
-
-                                        if($(this).parent().hasClass('nested-moved')){
-                                            $(this).find('img').css('display', 'none');
-                                            $(this).find('.title-description').removeAttr('style');
-                                            $(this).find('.title-description p.description').css('width', '100%');
-                                            $(this).find('.title-description h1').css('width', '100%');
-                                        }
-                                    });
-                                }
+                                queue: true,
+                                complete: animationComplete
                             }
-
                         };
 
                         element.append(articleHtml);
@@ -399,10 +412,10 @@ angular.module('ejs.directives').directive('whenScrolled', function() {
 
         if( (tablet.matches) && (is_touch_device()) )
         {
-            jQuery(element).bind('swiperight', function() {
+            jQuery(elm).bind('swiperight', function() {
                 scope.$apply(attr.whenScrolled);
             });
-            jQuery(element).bind('swipeleft', function() {
+            jQuery(elm).bind('swipeleft', function() {
                 scope.$apply(attr.whenScrolled);
             });
         } else {
