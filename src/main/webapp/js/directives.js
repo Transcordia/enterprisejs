@@ -223,7 +223,7 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                     var lines = getNumLines(40, "Cornua nisi sole orbem naturae carmen nulli postquam peragebant titan distinxit gentes origo moles");
 
                     if(i < 4 && !appending){
-                        articleHtml += '<div class="article featured' + image + gridCombinations[article.layout].size+'">\
+                        articleHtml += '<div class="article featured ' + gridCombinations[article.layout].size+'">\
                                             <div class="abstract-title-holder">\
                                                 <span>\
                                                     <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>\
@@ -234,7 +234,7 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                                             <div class="article-abstract-meta">\
                                                 <div class="clearfix">\
                                                     <div class="time-posted"><p><i>'+ date +'</i></p></div>\
-                                                    <div class="article-views"><p><img src="/ejs/img/icon_pageViews.png" /> '+ article.views +'</p></div>\
+                                                    <div class="article-views"><p><img src="img/icon_pageViews.png" /> '+ article.views +'</p></div>\
                                                 </div>\
                                             </div>\
                                         </div>';
@@ -251,7 +251,7 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                                             <div class="article-abstract-meta">\
                                                 <div class="clearfix">\
                                                     <div class="time-posted"><p><i>'+ date +'</i></p></div>\
-                                                    <div class="article-views"><p><img src="/ejs/img/icon_pageViews.png" /> ' + article.views + '</p></div>\
+                                                    <div class="article-views"><p><img src="img/icon_pageViews.png" /> ' + article.views + '</p></div>\
                                                 </div>\
                                             </div>\
                                         </div>';

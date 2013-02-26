@@ -712,6 +712,10 @@ p{
     );
 }
 
+.article.featured p.description{
+    padding: 0 2em;
+}
+
 @media (max-width: 1370px){
     .hero-title h1{
         font-size: 30px;
