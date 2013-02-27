@@ -754,6 +754,18 @@ p{
     .three-col{
         width: 99%;
     }
+
+    #navigation {
+        display: none;
+    }
+
+    .ejs-hero{
+        display: none;
+    }
+
+    #article-container {
+        padding-bottom: 0;
+    }
 }
 
 @media (max-width: 640px) {

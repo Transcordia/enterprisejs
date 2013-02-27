@@ -4,7 +4,7 @@ var tablet = window.matchMedia( "(max-width: 1024px)" );
 function is_touch_device() {
     return !!('ontouchstart' in window) // works on most browsers
         || !!('onmsgesturechange' in window); // works on ie10
-};
+}
 
 /* Directives */
 angular.module('ejs.directives', []);
@@ -346,7 +346,7 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                     if(!appending){
                         var nestedOptions = {
                             selector: ".article",
-                            minWidth: (tablet.matches) ? 330 : 320,
+                            minWidth: (tablet.matches) ? 320 : 320,
                             minColumns: 2,
                             animate: true,
                             animationOptions: {
@@ -413,10 +413,10 @@ angular.module('ejs.directives').directive('whenScrolled', function() {
 
         if( (tablet.matches) && (is_touch_device()) )
         {
-            jQuery(elm).bind('swiperight', function() {
+            $(elm).hammer().on('swiperight', function() {
                 scope.$apply(attr.whenScrolled);
             });
-            jQuery(elm).bind('swipeleft', function() {
+            $(elm).hammer().on('swipeleft', function() {
                 scope.$apply(attr.whenScrolled);
             });
         } else {
