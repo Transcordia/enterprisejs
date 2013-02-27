@@ -5,10 +5,10 @@
 //
 var tablet = window.matchMedia( "(max-width: 1024px)" );
 var mobile = window.matchMedia( "(max-width: 640px)" );
-function is_touch_device() {
+function is_touch_device() {  return true;
     return !!('ontouchstart' in window) // works on most browsers
         || !!('onmsgesturechange' in window); // works on ie10
-};
+}
 
 function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
     $scope.urlToCheck = '';

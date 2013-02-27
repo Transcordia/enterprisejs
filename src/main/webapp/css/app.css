@@ -739,5 +739,17 @@ p{
     .three-col{
         width: 99%;
     }
+
+    .navbar{
+        display: none;
+    }
+
+    .ejs-hero{
+        display: none;
+    }
+
+    #article-container {
+        padding-bottom: 0;
+    }
 }
 

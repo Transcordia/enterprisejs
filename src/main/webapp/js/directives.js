@@ -1,10 +1,10 @@
 'use strict';
 
 var tablet = window.matchMedia( "(max-width: 1024px)" );
-function is_touch_device() {
+function is_touch_device() {  return true;
     return !!('ontouchstart' in window) // works on most browsers
         || !!('onmsgesturechange' in window); // works on ie10
-};
+}
 
 /* Directives */
 angular.module('ejs.directives', []);
@@ -412,10 +412,10 @@ angular.module('ejs.directives').directive('whenScrolled', function() {
 
         if( (tablet.matches) && (is_touch_device()) )
         {
-            jQuery(elm).bind('swiperight', function() {
+            $(elm).hammer().on('swiperight', function() { alert("swiperight event fired");
                 scope.$apply(attr.whenScrolled);
             });
-            jQuery(elm).bind('swipeleft', function() {
+            $(elm).hammer().on('swipeleft', function() {    alert("swipeleft event fired");
                 scope.$apply(attr.whenScrolled);
             });
         } else {
