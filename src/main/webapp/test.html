@@ -1,0 +1,241 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Testing a complete pack</title>
+<style type="text/css">
+    div.container > div {
+        line-height: 100px;
+        text-align: center;
+        font: 25px sans-serif;
+        position: absolute;
+        -moz-transition: all 1s;
+        -webkit-transition: all 1s;
+        -ms-transition: all 1s;
+        -o-transition: all 1s;
+        transition: all 1s;
+    }
+
+    div.container {
+        position: relative;
+    }
+</style>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+$(function () {
+
+    /**
+     * Implementation of Jim Scott's lightmap packing algorithm (http://www.blackpawn.com/texts/lightmaps/)
+     * with accommodations made for a fixed area and items which can change their area. The grid is
+     * instantiated specifyin the size of individual blocks and the number of blocks wide and tall.
+     *
+     * You clear the grid, by calling grid.clear(), and requesting available areas by repeatably calling
+     * grid.reserve(w, h). If the grid is full, the call to reserve will result in a null response, otherwise
+     * it will return an object containing the position and size information of the reservation:
+     *     { x:2, y:4, w:1, h: 3 }
+     *
+     * The reservation system will attempt to locate available space that fits your requested dimensions,
+     * but in cases when that is not possible, a new size will be returned. The maxW and maxH parameters
+     * are included to keep these new sizes as constrained as possible.
+     *
+     * @param {Number} w
+     * @param {Number} h
+     * @param {Number} maxW
+     * @param {Number} maxH
+     * @constructor
+     */
+    var ReservationGrid = function (w, h, maxW, maxH) {
+        this.init(w, h, maxW, maxH);
+    };
+
+    ReservationGrid.prototype = {
+        init: function (w, h, maxW, maxH) {
+            this.w = w;
+            this.h = h;
+            this.maxW = maxW;
+            this.maxH = maxW;
+
+            // This is the root of our binary tree. It will acquire branches
+            // through properties added to it named 'left' and 'right'. This
+            // creates the tree structure. When a block is associated
+            // with a node, the node gets a 'used' property set to the abstract.
+            this.root = { x: 0, y: 0, w: w, h: h };
+        },
+
+        /**
+         * Clears all of the blocks from the layout.
+         */
+        clear: function () {
+            this.root = { x: 0, y: 0, w: this.w, h: this.h };
+        },
+
+        /**
+         * Adds the abstract to the layout. This routine will find a space for
+         * the abstract, even if it has to change its size.
+         *
+         * abstract.setSize(w, h) will be invoked if the abstract's size has to
+         * be adjusted.
+         *
+         * @param w
+         * @param h
+         * @return {Object} The reserved position and size of the block. ie { x:2, y:1, w:1, h:3 }
+         */
+        reserve: function (w, h) {
+            // Starting with the root, traverse the tree until an unused space that will hold
+            // the block is found.
+            var node = this.findNode(this.root, w, h);
+
+            // If no perfect space is found...
+            if (!node) {
+                // Find the next available spot
+                node = this.findSpace(this.root);
+                // If we have a space, adjust the reservation dimensions to the realities of the space
+                if (node) {
+                    w = Math.min(node.w, this.maxW);
+                    h = Math.min(node.h, this.maxH);
+                }
+            }
+
+            // If we still don't have a node, then we are all full up
+            if (!node) return null;
+
+            // If we have a spot, we need to branch our tree to accommodate for the 0 - 2 additional
+            // spots our new block has created
+            node = this.splitNode(node, w, h);
+
+            // Update the abstract with the new position
+            return { x: node.x, y: node.y, w: node.w, h: node.h };
+        },
+
+        findNode: function (root, w, h) {
+            if (!root) return null;
+            if (root.used) {
+                var right = this.findNode(root.right, w, h);
+                var left = this.findNode(root.left, w, h);
+                return (Math.random() < 0.5) ? right || left : left || right;
+            }
+//                return this.findNode(root.right, w, h) || this.findNode(root.left, w, h);
+            else if ((w <= root.w) && (h <= root.h))
+                return root;
+            else
+                return null;
+        },
+
+        findSpace: function (root) {
+            if (!root) return null;
+            if (root.used)
+                return this.findSpace(root.right) || this.findSpace(root.left) || null;
+            return root;
+        },
+
+        /**
+         * Splitting a node breaks up the remaining space after a node is claimed into
+         * two rectangular regions. If we just break the space into the area below the
+         * node and the area to the right of the node, we will end up with rows of
+         * layout. If we do the opposite, we end up with columns of blocks. We want to
+         * randomize the effect, so this routing will do that.
+         *
+         * @param node
+         * @param w
+         * @param h
+         * @return {*}
+         */
+        splitNode: function (node, w, h) {
+            function splitDownRight() {
+                if (node.h !== h)
+                    node.left = { x: node.x, y: node.y + h, w: node.w, h: node.h - h };
+                if (node.w !== w)
+                    node.right = { x: node.x + w, y: node.y, w: node.w - w, h: h };
+            }
+            function splitRightDown() {
+                if (node.h !== h)
+                    node.left = { x: node.x, y: node.y + h, w: w, h: node.h - h };
+                if (node.w !== w)
+                    node.right = { x: node.x + w, y: node.y, w: node.w - w, h: node.h };
+            }
+            node.used = true;
+            splitDownRight();
+//            if (Math.random() < 0.5) splitRightDown(); else splitDownRight();
+            node.w = w;
+            node.h = h;
+            return node;
+        }
+    };
+
+    /**
+     * An abstract holds an article abstract's content. It has a size comprised of width and
+     * height, but these dimensions are simply factors of a block width and height. For example,
+     * if our block width and height are 100px, the the abstract's width and height may be 3 and
+     * 1, resulting in actual dimensions of 300px x 100px.
+     *
+     * The layout engine will try to respect the height and width our abstract prefers, but in the
+     * end, the abstract may need to conform to dimensions dictated by the layout engine.
+     *
+     * @param {Number} w The width (in blocks) of the abstract
+     * @param {Number} h The height (in blocks) of the abstract
+     * @constructor
+     */
+    var Abstract = function (w, h) {
+        this.init(w, h);
+    };
+
+    Abstract.prototype = {
+        init: function (w, h) {
+            this.w = w;
+            this.h = h;
+        },
+
+        create: function(container, x, y, w, h, bw, bh, content) {
+            this.w = w;
+            this.h = h;
+            this.color = '#' + Math.round(Math.random() * 0xccffff).toString(16);
+            this.ele = $('<div></div>')
+                    .width(w * bw)
+                    .height(h * bh)
+                    .css({
+                        backgroundColor: this.color,
+                        color: '#000000',
+                        left: (x * bw) + 'px',
+                        top: (y * bh) + 'px',
+                        lineHeight: (h * bh) + 'px',
+                        position: 'absolute'
+                    })
+                    .append(content)
+                    .appendTo(container);
+        }
+    };
+
+    var container = $('div.container');
+    var grid = new ReservationGrid(4, 6, 3, 2);
+
+    function layout() {
+        function createAbstract() {
+            var w = Math.floor(Math.random() * 3) + 1;
+            var h = Math.floor(Math.random() * 2) + 1;
+            return new Abstract(w, h);
+        }
+
+        grid.clear();
+        container.empty();
+        var count = 0;
+        do {
+            var $abstract = createAbstract();
+            var rez = grid.reserve($abstract.w, $abstract.h);
+            if (rez) {
+                var content = count++ + '/' + rez.w + 'x' + rez.h;
+                if (rez.w !== $abstract.w || rez.h !== $abstract.h) content = '<u>' + content + '</u>';
+                $abstract.create(container, rez.x, rez.y, rez.w, rez.h, 100, 100, content);
+            }
+        } while (rez);
+    }
+
+    $('button').click(layout);
+    layout();
+});
+</script>
+</head>
+<body>
+<button>Refresh</button>
+<div class="container"></div>
+</body>
+</html>
