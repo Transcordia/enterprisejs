@@ -740,7 +740,7 @@ p{
         width: 99%;
     }
 
-    .navbar{
+    #navigation {
         display: none;
     }
 

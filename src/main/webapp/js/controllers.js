@@ -5,7 +5,7 @@
 //
 var tablet = window.matchMedia( "(max-width: 1024px)" );
 var mobile = window.matchMedia( "(max-width: 640px)" );
-function is_touch_device() {  return true;
+function is_touch_device() {
     return !!('ontouchstart' in window) // works on most browsers
         || !!('onmsgesturechange' in window); // works on ie10
 }
