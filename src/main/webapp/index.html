@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>EnterpriseJS</title>
     <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css"/>
-    <!--<link rel="stylesheet" href="lib/bootstrap/css/bootstrap-responsive.css"/>-->
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap-responsive.css"/>
     <link rel="stylesheet" href="lib/isotope/css/style.css"/>
     <link rel="stylesheet" href="css/aller-webfont/stylesheet.css"/>
     <link rel="stylesheet" href="css/app.css"/>
@@ -32,8 +32,9 @@
     <div class="navbar-inner">
         <!--<h3><a ng-href="#/home">EnterpriseJS</a></h3>-->
         <div>
-            <a ng-href="#/home"><img ng-src="img/img_header_logo.png" alt=""></a>
-            <ul id="navigation">
+            <a class="hidden-phone" ng-href="#/home"><img ng-src="img/img_header_logo.png" alt=""></a>
+            <a class="visible-phone" ng-href="#/home"><img ng-src="img/img_header_logo_mobile.png" alt=""></a>
+            <ul id="navigation" class="hidden-phone">
                <li><p ng-click="showAddUrlModal=true">Add <i class="icon-plus"></i></p></li>
                <!--<li><a ng-href="#/templates">Templates</a></li>
                <li><a ng-href="#/sorttest">Test sorting</a></li>-->

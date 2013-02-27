@@ -518,6 +518,10 @@ p{
     column-count: 3;
 }
 
+.article.size31 .description{
+    margin-top: 15px;
+}
+
 .article.size22.landscape .abstract-image-holder{
     /*margin: 0 auto;
     width: 93%;*/
@@ -607,9 +611,9 @@ p{
 
 .article.featured.size21.has-image p.description,
 .article.featured.size11.has-image p.description{
-    padding: 0 1.5em;
+    /*padding: 0 1.5em;*/
     float: none;
-    width: 90%;
+    /*width: 90%;*/
 }
 
 .hero-title-description-container{
@@ -635,44 +639,55 @@ p{
 /**
   CSS for viewing a single article
 **/
-.row.article {
-    background-color: #e4e4e4;
-    margin-bottom: 20px;
+.container.article-view-container{
+    box-shadow: 0px 7px 24px rgba(34, 25, 25, 0.2);
+    -moz-box-shadow: 0px 7px 24px rgba(34, 25, 25, 0.2);
+    -webkit-box-shadow: 0px 7px 24px rgba(34, 25, 25, 0.2);
 }
 
-.row.article .span8 {
+.article-view-container .span12 {
+    background-color: #e4e4e4;
+}
+
+.article-view-container .article{
+    box-shadow: none;
+    -moz-box-shadow: none;
+}
+
+.row .span8 .article{
     background-color: #e8e8e8;
     margin-left: 0px;
     padding-left: 20px;
+    padding-right: 20px;
     padding-bottom: 20px;
 }
 
-.row.article .content img {
+.row .article .content img {
     float: left;
     padding-right: 20px;
 }
 
-.row.article .content p.description {
+.row .article .content p.description {
     overflow: visible;
 }
 
-.row.article .sidebar {
+.row .sidebar {
     margin: 10px;
 }
 
-.row.article .sidebar .time-posted {
+.row .sidebar .time-posted {
     color: #d3d3d3;
 }
 
-.row.article .sidebar .stats .view-count {
+.row .sidebar .stats .view-count {
     font-family: 'Squada One';
     font-size: 45px;
     padding-left: 30px;
     margin: 10px 0;
-    background: url('../img/icon_pageViews.png') no-repeat 0 3px;
+    background: url('../img/icon_pageViews.png') no-repeat 0 22px;
 }
 
-.row.article .sidebar a.btn {
+.row .sidebar a.btn {
     background-image: linear-gradient(bottom, rgb(185,185,185) 0%, rgb(230,230,230) 100%);
     background-image: -o-linear-gradient(bottom, rgb(185,185,185) 0%, rgb(230,230,230) 100%);
     background-image: -moz-linear-gradient(bottom, rgb(185,185,185) 0%, rgb(230,230,230) 100%);
@@ -696,7 +711,7 @@ p{
     padding: 10px;
 }
 
-.row.article .sidebar a.btn:hover {
+.row .sidebar a.btn:hover {
     background-image: linear-gradient(bottom, rgb(230,230,230) 0%, rgb(185,185,185) 100%);
     background-image: -o-linear-gradient(bottom, rgb(230,230,230) 0%, rgb(185,185,185) 100%);
     background-image: -moz-linear-gradient(bottom, rgb(230,230,230) 0%, rgb(185,185,185) 100%);
@@ -739,5 +754,120 @@ p{
     .three-col{
         width: 99%;
     }
+}
+
+@media (max-width: 640px) {
+    body{
+        padding-right: 0;
+        padding-left: 0;
+    }
+
+    h1{
+        font-size: 18px;
+    }
+
+    .container.article-view-container{
+        box-shadow: none;
+        -moz-box-shadow: none;
+        -webkit-box-shadow: none;
+    }
+
+    .row .article .sidebar a.btn {
+        width: 96%;
+        padding-left: 10px;
+        padding-right: 0;
+    }
+
+    .row .span8 .article {
+        padding-right: 10px;
+        padding-left: 10px;
+        padding-bottom: 10px;
+    }
+
+    .row .article .content img {
+        float: none;
+        padding: 0;
+    }
+
+    .navbar-inner{
+        position: relative;
+        height: 30px;
+        background: url('../img/img_header_bg_mobile.png') repeat-x 0 0;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .navbar-inner a{
+        float: left;
+        position: relative;
+        left: -23px;
+    }
+
+    .navbar-inner a img{
+        height: 38px;
+    }
+
+    .article .title-description.clearfix h1{
+        float: none;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .article.featured h1{
+        width: 85%;
+        padding-right: 0.6em;
+    }
+
+    .article.has-image,
+    .article.featured{
+        height: 250px;
+        overflow: hidden;
+    }
+
+    .article.no-image{
+        height: 125px;
+        overflow: hidden;
+    }
+
+    .article.featured{
+        position: relative;
+    }
+
+    .article.featured .article-abstract-image{
+        height: 106px;
+    }
+
+    .abstract-title-holder{
+        padding-right: 2.2em;
+        height: 67px;
+        position: absolute;
+        top: 50px;
+        overflow: auto;
+        background: url('../img/img_heroArticleContainer_right_mobile.png') no-repeat right 0px;
+    }
+
+    .article.featured p.description{
+        position: relative;
+        padding: 0 10px;
+        height: 85px;
+    }
+    .abstract-title-holder h1 {
+        height: 29px;
+    }
+
+    .abstract-title-holder span {
+        background-position: 0 -29px;
+    }
+
+    .article.size11.portrait img{
+        display: block;
+    }
+
+    .article-content{
+        padding: 0 10px;
+        height: 220px;
+        margin: 10px 0;
+    }
+
 }
 

@@ -350,6 +350,7 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                             minColumns: 2,
                             animate: true,
                             animationOptions: {
+                                //duration: 800,
                                 queue: true,
                                 complete: animationComplete
                             }
