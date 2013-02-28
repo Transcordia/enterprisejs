@@ -34,5 +34,10 @@ angular.module('ejs', ['ejs.filters', 'ejs.services', 'ejs.directives', 'ui']).
             templateUrl: 'partials/sorttest.html'
         });
 
+    $routeProvider.when('/mobile/:page',
+        {
+            controller: MobileCtrl
+        });
+
     $routeProvider.otherwise({redirectTo: '/home'});
   }]);

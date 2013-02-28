@@ -363,6 +363,8 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
                     }
                 }else{
                     element.append(articleHtml);
+
+                    $('.article.featured .description').ellipsis();
                 }
 
                 articleHtml = "";
@@ -418,6 +420,19 @@ angular.module('ejs.directives').directive('whenScrolled', function() {
             });
             $(elm).hammer().on('swipeleft', function() {
                 scope.$apply(attr.whenScrolled);
+            });
+
+            $(window).on('touchend', function(){
+                var rectObject = raw.getBoundingClientRect();
+                $(window).on('scroll', function(){
+                    console.log('#article-container bottom is ' + rectObject.bottom);
+                    var x = $(window).height() - 0 - offset;
+                    console.log('window height and offset ' + x);
+
+                    if(Math.floor(rectObject.bottom) === $(window).height() - 0 - offset){
+                        scope.$apply(attr.whenScrolled);
+                    }
+                });
             });
         } else {
             angular.element(window).bind('scroll', function() {

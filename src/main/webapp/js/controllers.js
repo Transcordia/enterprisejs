@@ -422,3 +422,8 @@ function SortTest($rootScope, $scope, $timeout, $http)
             });
     };
 }
+
+function MobileCtrl($scope, $http, $log, $routeParams){
+    alert('page number ' + $routeParams.page);
+}
+MobileCtrl.$inject = ["$scope", "$http", "$log", "$routeParams"];
