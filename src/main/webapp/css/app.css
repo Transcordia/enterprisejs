@@ -76,9 +76,12 @@ p{
 }
 
 #article-container{
-    position: relative;
     margin: 0 auto;
     padding-bottom: 50px;
+}
+
+.article-page {
+    position: relative;
 }
 
 #article-container .article {

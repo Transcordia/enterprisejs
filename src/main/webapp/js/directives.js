@@ -381,11 +381,47 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
     };
 }]);
 
+//this keeps track of our article pages, by dividing them up into an array of objects, each of which simply contains a property "articles"
+//it's worth pointing out that the article array gets split based on the index of the last article shown, and not loaded.
+//because of this, there's probably going to have to be some changes in how the paging system on the backend works once zocia is implemented.
+angular.module('ejs.directives').directive('grid', function(){
+    return {
+        restrict: 'A',
+        scope: {
+            articles: '=',
+            pageSize: '='
+        },
+        template: '<div id="article-container"><div ng-repeat="page in pages"><div class="article-page" grid-page articles="page.articles" page="$index"></div></div></div>',
+        replace: true,
+        link: function(scope, elem, attr) {
+            scope.pages = [];
+            var pageStart = 0;
 
-angular.module('ejs.directives').directive('grid', ['truncate', '$timeout', '$log', 'TimeAgo', function (truncate, $timeout, $log, TimeAgo) {
+            //we watch the article scope property because the array is loaded in with AJAX, and we can't do any rendering until it's loaded from the server
+            //because of this, we want to make sure array of articles is at least 0 before rendering, otherwise there's nothing to render and we'd get an error message
+            scope.$watch('articles', function (newValue, oldValue) {
+                if(newValue.length > 0)
+                {
+                    scope.pages.push({"articles": newValue.slice(pageStart)});
+                }
+            });
+
+            scope.$on('event:nextPageStart', function(event, nextStart) {
+                pageStart += nextStart;
+            });
+        }
+    };
+});
+
+//this creates a single page of a grid based layout, using reservations.grid to handle the decision of where to place various abstracts in the layout.
+//overall, this code isn't that much different from the nested directive, though a few bits have been moved around for speed and
+//the actual process of attaching the html element to the DOM is here, instead of in the nested code
+//this directive is used in conjunction with the more generic 'grid' directive, and probably never needs to be used in an actual template outside of that
+angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', '$log', 'TimeAgo', function (truncate, $timeout, $log, TimeAgo) {
     return {
         scope: {
-            articles: '='
+            articles: '=',
+            page: '='
         },
         link:  function(scope, element, attrs) {
             //this is for converting our single digit layout property on the article to a width and height value when using the grid
@@ -430,27 +466,11 @@ angular.module('ejs.directives').directive('grid', ['truncate', '$timeout', '$lo
             };
 
             //the function that runs after all the articles are in place
+            //this is still rather slow, and cause take upwards of 800-1000 ms to run
             var animationComplete = function(){
                 var parentWidth = 0;
-                var totalWidth = 0;
 
-                $('.article[style*="top: 0px"]').each(function(){
-                    totalWidth += $(this).width();
-                });
-
-                //totalWidth += 5;
-                var wrapperOffset = ($(window).width() - $('#wrapper').width()) / 2;
-                $('.ejs-hero .abstract-image-container').css({'width': totalWidth + 'px', 'margin': '0 0 0 ' + wrapperOffset + 'px'});
-
-                $('.article.featured').each(function(){
-                    var offset = $(this).height() - $(this).find('.article-abstract-image').outerHeight();
-                    offset -= $(this).find('.article-abstract-meta p').first().outerHeight();
-                    offset -= $(this).find('.article-abstract-meta').outerHeight() + 10;
-
-                    $(this).find('.description').css('height', '69px').ellipsis();
-                });
-
-                $('.article-content').each(function(){
+                container.find('.article-content').each(function(){
                     $(this).width($(this).parent().width() - 40);
                     $(this).height($(this).parent().height() - 85);
 
@@ -495,15 +515,18 @@ angular.module('ejs.directives').directive('grid', ['truncate', '$timeout', '$lo
                         var img = $(this).find('.abstract-image-holder img').removeAttr('height').css('width', '280px');
                     }
 
+                    /*
+                    nested-moved is not being added/used in this, and it's possible/likely that this code will need to change as a result of that
                     if($(this).parent().hasClass('nested-moved')){
                         $(this).find('img').css('display', 'none');
                         $(this).find('.title-description').removeAttr('style');
                         $(this).find('.title-description p.description').css('width', '100%');
                         $(this).find('.title-description h1').css('width', '100%');
-                    }
+                    } */
 
                     $('.abstract-title-holder span h1').ellipsis();
                 });
+
             };
 
             //this goes through all the articles, and renders them.
@@ -528,7 +551,8 @@ angular.module('ejs.directives').directive('grid', ['truncate', '$timeout', '$lo
                         imageOrientation = " " + article.abstractImageOrientation + " ";
                     }
 
-                    if(y === 0){
+                    //feature the first row of articles, but only on the first page
+                    if( (y === 0) && (scope.page === 0) ) {
                         articleHtml = '<div class="article featured ' + size+'">\
                                         <div class="abstract-title-holder">\
                                             <span>\
@@ -582,7 +606,7 @@ angular.module('ejs.directives').directive('grid', ['truncate', '$timeout', '$lo
 
                 var count = 0;
                 grid.clear();
-                //we need to eventually create a new grid or something and so on and so forth
+
                 container.empty();
                 //exit the loop if there's no more space or no more articles to place. this ensures that all articles are placed if there's room in the grid but not enough articles, while preventing hanging chads otherwise
                 do {
@@ -593,7 +617,31 @@ angular.module('ejs.directives').directive('grid', ['truncate', '$timeout', '$lo
                     count++;
                 } while ( (rez) && (count < articles.length) );
 
+                //lets other directives/controllers know how many articles we successfully used on this page
+                scope.$emit('event:nextPageStart', count);
+
+                //changes the container height. this is important because otherwise our infinite scroll won't work since the container height will be 0 (everything inside it is absolutely positioned)
                 container.height(gridSize.rows * blockSize.h);
+
+                //if it's the first page, then we set stuff like the hero and the featured articles. we don't have these for every page, so doing them more than once would be pointless
+                if(scope.page === 0) {
+                    var totalWidth = 0;
+
+                    $('.article[style*="top: 0px"]').each(function(){
+                        totalWidth += $(this).width();
+                    });
+
+                    var wrapperOffset = ($(window).width() - $('#wrapper').width()) / 2;
+                    $('.ejs-hero .abstract-image-container').css({'width': totalWidth + 'px', 'margin': '0 0 0 ' + wrapperOffset + 'px'});
+
+                    $('.article.featured').each(function(){
+                        var offset = $(this).height() - $(this).find('.article-abstract-image').outerHeight();
+                        offset -= $(this).find('.article-abstract-meta p').first().outerHeight();
+                        offset -= $(this).find('.article-abstract-meta').outerHeight() + 10;
+
+                        $(this).find('.description').css('height', '69px').ellipsis();
+                    });
+                }
 
                 complete();
             }
@@ -609,14 +657,7 @@ angular.module('ejs.directives').directive('grid', ['truncate', '$timeout', '$lo
                 }
             });
 
-            //we watch the article scope property because the array is loaded in with AJAX, and we can't do any rendering until it's loaded from the server
-            //because of this, we want to make sure array of articles is at least 0 before rendering, otherwise there's nothing to render and we'd get an error message
-            scope.$watch('articles', function (newValue, oldValue) {
-                if(newValue.length > 0)
-                {
-                    render(scope.articles, animationComplete);
-                }
-            });
+            render(scope.articles, animationComplete);
         }
     }
 }]);
