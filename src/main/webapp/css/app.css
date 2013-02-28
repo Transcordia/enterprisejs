@@ -80,6 +80,14 @@ p{
     padding-bottom: 50px;
 }
 
+.article-page {
+    position: relative;
+}
+
+#article-container .article {
+    position: absolute;
+}
+
 .article{
     overflow: hidden;
     font-size: 11px;
@@ -527,7 +535,7 @@ p{
     width: 93%;*/
 }
 
-.article.size22.landscape img{
+.article.size22.landscape .abstract-image-holder img{
     width: 100%;
 }
 
@@ -543,11 +551,11 @@ p{
     display: none;
 }
 
-.article.size11.portrait img{
+.article.size11.portrait .abstract-image-holder img{
     display: none;
 }
 
-.article.size12.landscape img{
+.article.size12.landscape .abstract-image-holder img{
     width: 100%
 }
 

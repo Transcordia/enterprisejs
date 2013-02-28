@@ -48,6 +48,15 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
                 $log.info(data);
             })
     };
+    //note: we should probably eventually switch to using start/size arguments for paging.
+    //this will likely happen as a result of switching to Zocia
+    //once this happens, we will need to listen to events to catch how many articles successfully get added to the grid
+    //example code follows
+    /*
+     scope.$on('event:nextPageStart', function(event, nextStart) {
+     pageStart += nextStart;
+     });
+     */
 
     $scope.loadMore = function() {
         page++;
