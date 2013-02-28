@@ -381,6 +381,246 @@ angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$
     };
 }]);
 
+
+angular.module('ejs.directives').directive('grid', ['truncate', '$timeout', '$log', 'TimeAgo', function (truncate, $timeout, $log, TimeAgo) {
+    return {
+        scope: {
+            articles: '='
+        },
+        link:  function(scope, element, attrs) {
+            //this is for converting our single digit layout property on the article to a width and height value when using the grid
+            var gridCombinations = {
+                "1": {
+                    "w": 1,
+                    "h": 1
+                },
+                "2": {
+                    "w": 1,
+                    "h": 2
+                },
+                "8": {
+                    "w": 2,
+                    "h": 1
+                },
+                "4": {
+                    "w": 3,
+                    "h": 1
+                },
+                "5": {
+                    "w": 2,
+                    "h": 2
+                }
+            };
+
+            var container = $(element);
+
+            //the size of a single block (1x1) in pixels
+            var blockSize = {
+                "w": 320,
+                "h": 320
+            };
+
+            //these are the various properties that are passed into the grid object upon creation. Change these values when doing stuff like paging to dynamically resize the grid
+            //max block width/height are for the maximum possible size of any single abstract in the grid
+            var gridSize = {
+                "columns": Math.floor(container.width()/blockSize.w),
+                "rows": 6,
+                "maxBlockWidth": 3,
+                "maxBlockHeight": 2
+            };
+
+            //the function that runs after all the articles are in place
+            var animationComplete = function(){
+                var parentWidth = 0;
+                var totalWidth = 0;
+
+                $('.article[style*="top: 0px"]').each(function(){
+                    totalWidth += $(this).width();
+                });
+
+                //totalWidth += 5;
+                var wrapperOffset = ($(window).width() - $('#wrapper').width()) / 2;
+                $('.ejs-hero .abstract-image-container').css({'width': totalWidth + 'px', 'margin': '0 0 0 ' + wrapperOffset + 'px'});
+
+                $('.article.featured').each(function(){
+                    var offset = $(this).height() - $(this).find('.article-abstract-image').outerHeight();
+                    offset -= $(this).find('.article-abstract-meta p').first().outerHeight();
+                    offset -= $(this).find('.article-abstract-meta').outerHeight() + 10;
+
+                    $(this).find('.description').css('height', '69px').ellipsis();
+                });
+
+                $('.article-content').each(function(){
+                    $(this).width($(this).parent().width() - 40);
+                    $(this).height($(this).parent().height() - 85);
+
+                    if($(this).parent().hasClass('size21') ||
+                        $(this).parent().hasClass('size11')){
+                        var h1Height = $(this).find('.title-description h1').outerHeight();
+
+                        $(this).find('.title-description p.description').css('height', (225 - h1Height) + 'px');
+
+                        $(this).find('.title-description p.description').ellipsis();
+                    }
+
+                    if($(this).parent().hasClass('portrait size21')){
+                        parentWidth = $(this).parent().width();
+
+                        var img = $(this).find('.abstract-image-holder img').removeAttr('width').css('height', '280px');
+                        var h1 = $(this).find('h1');
+                        var p = $(this).find('p.description');
+                        var abstractImageHolder = $(this).find('.abstract-image-holder');
+                        abstractImageHolder.css('width', img.css('width'));
+
+                        h1.width(parentWidth - abstractImageHolder.width() - 60);
+                        p.width(parentWidth - abstractImageHolder.width() - 60);
+                    }
+
+                    if($(this).parent().hasClass('landscape size21')){
+                        parentWidth = $(this).parent().width();
+
+                        var img = $(this).find('.abstract-image-holder img').removeAttr('height').css('width', '300px');
+                        var p = $(this).find('p');
+                        var abstractImageHolder = $(this).find('.abstract-image-holder');
+
+                        abstractImageHolder.css('width', img.css('width'));
+                        p.width(parentWidth - abstractImageHolder.width() - 60);
+                        $(this).find('.title-description').css({
+                            '-webkit-column-count': '2',
+                            'column-gap': '40px'
+                        });
+                    }
+
+                    if($(this).parent().hasClass('landscape size12')){
+                        var img = $(this).find('.abstract-image-holder img').removeAttr('height').css('width', '280px');
+                    }
+
+                    if($(this).parent().hasClass('nested-moved')){
+                        $(this).find('img').css('display', 'none');
+                        $(this).find('.title-description').removeAttr('style');
+                        $(this).find('.title-description p.description').css('width', '100%');
+                        $(this).find('.title-description h1').css('width', '100%');
+                    }
+
+                    $('.abstract-title-holder span h1').ellipsis();
+                });
+            };
+
+            //this goes through all the articles, and renders them.
+            function render(articles, complete) {
+
+                //generates HTML of an article, and then appends it to the container div
+                //NOTE: the x, y, w, h arguments are all in column and row positions, and NOT in pixels. these values are multiplied by the blockSize height and width to get the CSS values needed
+                function create(x, y, w, h, article) {
+                    var articleHtml;
+                    var abstractImage = "";
+                    var image = " ";
+                    var imageOrientation = " ";
+                    var date = TimeAgo(article.date);
+                    var size = "size" + w + h;
+
+                    if(Object.keys(article.abstractImage).length > 0){
+                        var imageWidth = article.abstractImage.w;
+                        var imageHeight = article.abstractImage.h;
+                        var src = article.abstractImage.src;
+                        abstractImage = '<div class="abstract-image-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
+                        image = " has-image ";
+                        imageOrientation = " " + article.abstractImageOrientation + " ";
+                    }
+
+                    if(y === 0){
+                        articleHtml = '<div class="article featured ' + size+'">\
+                                        <div class="abstract-title-holder">\
+                                            <span>\
+                                                <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>\
+                                            </span>\
+                                        </div>\
+                                        <div class="article-abstract-image">'+ abstractImage +'</div>\
+                                        <p class="description">' + article.description + '</p>\
+                                        <div class="article-abstract-meta">\
+                                            <div class="clearfix">\
+                                                <div class="time-posted"><p><i>'+ date +'</i></p></div>\
+                                                <div class="article-views"><p><img src="img/icon_pageViews.png" /> '+ article.views +'</p></div>\
+                                            </div>\
+                                        </div>\
+                                    </div>';
+
+                        image = " ";
+                    }else{
+                        articleHtml = '<div class="article' + image + imageOrientation + size +'">\
+                                        <div class="article-content">\
+                                            <div class="title-description clearfix">\
+                                                <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>'+ abstractImage +'\
+                                                <p class="description">' + article.description + '</p>\
+                                            </div>\
+                                        </div>\
+                                        <div class="article-abstract-meta">\
+                                            <div class="clearfix">\
+                                                <div class="time-posted"><p><i>'+ date +'</i></p></div>\
+                                                <div class="article-views"><p><img src="img/icon_pageViews.png" /> ' + article.views + '</p></div>\
+                                            </div>\
+                                        </div>\
+                                    </div>';
+
+                        image = " no-image";
+                    }
+
+                    $(articleHtml)
+                        .width(w * blockSize.w)
+                        .height(h * blockSize.h)
+                        .css({
+                            left: (x * blockSize.w) + 'px',
+                            top: (y * blockSize.h) + 'px'
+                        })
+                        .appendTo(container);
+                }
+
+                //grid rows is overwritten, which gives us a nice page style and prevents "hanging chads"
+                gridSize.rows = Math.ceil(articles.length/gridSize.columns);
+
+                var grid = new ReservationGrid(gridSize.columns, gridSize.rows, gridSize.maxBlockWidth, gridSize.maxBlockHeight);
+
+                var count = 0;
+                grid.clear();
+                //we need to eventually create a new grid or something and so on and so forth
+                container.empty();
+                //exit the loop if there's no more space or no more articles to place. this ensures that all articles are placed if there's room in the grid but not enough articles, while preventing hanging chads otherwise
+                do {
+                    var rez = grid.reserve(gridCombinations[articles[count].layout].w, gridCombinations[articles[count].layout].h);
+                    if (rez) {
+                        create(rez.x, rez.y, rez.w, rez.h, articles[count]);
+                    }
+                    count++;
+                } while ( (rez) && (count < articles.length) );
+
+                container.height(gridSize.rows * blockSize.h);
+
+                complete();
+            }
+
+            //re-renders the layout on window resize, but because some browsers will call this event DURING a resize,
+            //we only want to render the page when the number of possible columns has changed
+            $(window).resize(function() {
+                var newColumns = Math.floor(container.width()/blockSize.w);
+                if(newColumns !== gridSize.columns)
+                {
+                    gridSize.columns = newColumns;
+                    render(scope.articles, animationComplete);
+                }
+            });
+
+            //we watch the article scope property because the array is loaded in with AJAX, and we can't do any rendering until it's loaded from the server
+            //because of this, we want to make sure array of articles is at least 0 before rendering, otherwise there's nothing to render and we'd get an error message
+            scope.$watch('articles', function (newValue, oldValue) {
+                if(newValue.length > 0)
+                {
+                    render(scope.articles, animationComplete);
+                }
+            });
+        }
+    }
+}]);
+
 /**
  * Loads an image, passing in the height and width to the provided scope, and emits an event that can be listened for
  * The sibling or parent scope can then decide what to do with that image, based on the size (since we don't know what size the image is until it's loaded)
@@ -429,6 +669,7 @@ angular.module('ejs.directives').directive('whenScrolled', function() {
                 if (Math.floor(rectObject.bottom) === $(window).height() - 0 - offset) {
                     scope.$apply(attr.whenScrolled);
                 }
+                //console.log("compare: "+(Math.floor(rectObject.bottom) + " = " + ($(window).height() - 0 - offset)));  //if there's any problems with this whenScrolled method, uncomment this to debug
             });
         }
     };

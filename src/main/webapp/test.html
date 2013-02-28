@@ -154,8 +154,8 @@ $(function () {
                     node.right = { x: node.x + w, y: node.y, w: node.w - w, h: node.h };
             }
             node.used = true;
-            splitDownRight();
-//            if (Math.random() < 0.5) splitRightDown(); else splitDownRight();
+            //splitDownRight();
+            if (Math.random() < 0.5) splitRightDown(); else splitDownRight();
             node.w = w;
             node.h = h;
             return node;
