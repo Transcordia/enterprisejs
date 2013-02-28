@@ -869,6 +869,7 @@ p{
         display: block;
     }
 
+    .article-view-container .article p.description,
     .article.no-image p.description{
         display: block;
     }
