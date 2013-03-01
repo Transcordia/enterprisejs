@@ -529,17 +529,26 @@ angular.module('ejs.directives').directive('whenScrolled', function() {
                 scope.$apply(attr.whenScrolled);
             });
 
-            $(window).on('touchend', function(){
-                var rectObject = raw.getBoundingClientRect();
-                $(window).on('scroll', function(){
-                    console.log('#article-container bottom is ' + rectObject.bottom);
-                    var x = $(window).height() - 0 - offset;
-                    console.log('window height and offset ' + x);
+            var rectObject = raw.getBoundingClientRect();
+            var rectTouchStart = 0;
+            var rectTouchend = 0;
 
-                    if(Math.floor(rectObject.bottom) === $(window).height() - 0 - offset){
-                        scope.$apply(attr.whenScrolled);
-                    }
-                });
+            $(window).on('touchstart', function(){
+                console.log('touchstart event firing');
+                rectObject = raw.getBoundingClientRect();
+                rectTouchStart = rectObject.bottom;
+
+                console.log('#article-container bottom during touchstart ' + rectObject.bottom);
+            });
+
+            $(window).on('touchend', function(){
+                console.log('touchend event firing');
+                rectObject = raw.getBoundingClientRect();
+                rectTouchend = rectObject.bottom;
+                console.log('#article-container bottom during touchend ' + rectObject.bottom);
+                if(rectTouchStart == 316 && rectTouchStart > rectTouchend){
+                    scope.$apply(attr.whenScrolled);
+                }
             });
         } else {
             angular.element(window).bind('scroll', function() {
