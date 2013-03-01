@@ -288,7 +288,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 var image = " no-image";
                 var imageOrientation = " ";
 
-                for(var i = 1; i <= articles.length; i++){
+                for(var i = 1; i < articles.length; i++){
                     var article = articles[i];
                     var date = TimeAgo(article.date);
 
@@ -317,8 +317,6 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                                                 </div>\
                                             </div>\
                                         </div>';
-
-                        image = " no-image";
                     }else{
                         articleHtml = '<div class="article' + image + imageOrientation +'">\
                                         <div class="article-content">\
@@ -335,8 +333,9 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                                         </div>\
                                     </div>';
 
-                        image = " no-image";
                     }
+
+                    image = " no-image";
                 }
 
                 $(articleHtml).appendTo(container);
