@@ -229,6 +229,8 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
 
             //the function that runs after all the articles are in place
             //this is still rather slow, and cause take upwards of 800-1000 ms to run
+            // could not recreate the conditions that caused > 800 ms of runtime for this callback,
+            // but removing the ellipsis plugin decrease the runtime by a factor of 10
             var animationComplete = function(){
                 var parentWidth = 0;
 
@@ -277,7 +279,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                         var img = $(this).find('.abstract-image-holder img').removeAttr('height').css('width', '280px');
                     }
 
-                    $('.abstract-title-holder span h1').ellipsis();
+                    //$('.abstract-title-holder span h1').ellipsis();
                 });
 
             };
@@ -298,11 +300,11 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                         var src = article.abstractImage.src;
                         abstractImage = '<div class="abstract-image-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
                         image = " has-image ";
-                        imageOrientation = " " + article.abstractImageOrientation + " ";
+                        imageOrientation = article.abstractImageOrientation;
                     }
 
                     if(i < 4){
-                        articleHtml = '<div class="article featured">\
+                        articleHtml += '<div class="article featured">\
                                             <div class="abstract-title-holder">\
                                                 <span>\
                                                     <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>\
@@ -318,7 +320,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                                             </div>\
                                         </div>';
                     }else{
-                        articleHtml = '<div class="article' + image + imageOrientation +'">\
+                        articleHtml += '<div class="article' + image + imageOrientation +'">\
                                         <div class="article-content">\
                                             <div class="title-description clearfix">\
                                                 <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>'+ abstractImage +'\
@@ -341,6 +343,8 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 $(articleHtml).appendTo(container);
 
                 complete();
+
+                $('.article-content').css('width', 'auto');
 
             }
 

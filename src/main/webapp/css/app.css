@@ -828,6 +828,13 @@ p{
         height: 38px;
     }
 
+    #article-container .article{
+        position: relative;
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+    }
+
     .article .title-description.clearfix h1{
         float: none;
         width: 100%;
