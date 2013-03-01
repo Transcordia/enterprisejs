@@ -229,6 +229,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
 
             //the function that runs after all the articles are in place
             //this is still rather slow, and cause take upwards of 800-1000 ms to run
+
             // could not recreate the conditions that caused > 800 ms of runtime for this callback,
             // but removing the ellipsis plugin decrease the runtime by a factor of 10
             var animationComplete = function(){
@@ -303,7 +304,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                         imageOrientation = article.abstractImageOrientation;
                     }
 
-                    if(i < 4){
+                    if(i < 4 && scope.page == 0){
                         articleHtml += '<div class="article featured">\
                                             <div class="abstract-title-holder">\
                                                 <span>\
@@ -338,13 +339,22 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                     }
 
                     image = " no-image";
+                    imageOrientation = " "
                 }
 
                 $(articleHtml).appendTo(container);
 
                 complete();
 
-                $('.article-content').css('width', 'auto');
+                $('.has-image .article-content').css({
+                    'width': 'auto',
+                    'height': '185px'
+                });
+
+                $('.no-image .article-content').css({
+                    'width': 'auto',
+                    'height': '110px'
+                });
 
             }
 
