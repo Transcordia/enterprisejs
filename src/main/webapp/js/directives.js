@@ -292,6 +292,15 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                     var article = articles[i];
                     var date = TimeAgo(article.date);
 
+                    if(Object.keys(article.abstractImage).length > 0){
+                        var imageWidth = article.abstractImage.w;
+                        var imageHeight = article.abstractImage.h;
+                        var src = article.abstractImage.src;
+                        abstractImage = '<div class="abstract-image-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
+                        image = " has-image ";
+                        imageOrientation = " " + article.abstractImageOrientation + " ";
+                    }
+
                     if(i < 4){
                         articleHtml = '<div class="article featured">\
                                             <div class="abstract-title-holder">\
@@ -309,7 +318,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                                             </div>\
                                         </div>';
 
-                        image = " ";
+                        image = " no-image";
                     }else{
                         articleHtml = '<div class="article' + image + imageOrientation +'">\
                                         <div class="article-content">\
@@ -325,10 +334,14 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                                             </div>\
                                         </div>\
                                     </div>';
+
+                        image = " no-image";
                     }
                 }
 
                 $(articleHtml).appendTo(container);
+
+                complete();
 
             }
 
@@ -371,8 +384,6 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                                             </div>\
                                         </div>\
                                     </div>';
-
-                        image = " ";
                     }else{
                         articleHtml = '<div class="article' + image + imageOrientation + size +'">\
                                         <div class="article-content">\
