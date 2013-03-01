@@ -1,6 +1,8 @@
 'use strict';
 
 var tablet = window.matchMedia( "(max-width: 1024px)" );
+var phone = window.matchMedia( "(max-width: 640px)" );
+
 function is_touch_device() {
     return !!('ontouchstart' in window) // works on most browsers
         || !!('onmsgesturechange' in window); // works on ie10
@@ -141,247 +143,6 @@ function tabletLayout(articles, scope)
     return articles;
 }
 
-angular.module('ejs.directives').directive('nested', ['truncate', '$timeout', '$log', 'TimeAgo', function (truncate, $timeout, $log, TimeAgo) {
-    return {
-        scope: {
-            articles: '=',
-            newArticles: '='
-        },
-        link: function (scope, element, attrs) {
-            var gridCombinations = {
-                "1": {
-                    "size": "size11"
-                }, //1x1
-                "2": {
-                    "size": "size12"
-                }, //1x2
-                "8": {
-                    "size": "size21"
-                }, //2x1
-                "4": {
-                    "size": "size31"
-                }, //3x1
-                "5": {
-                    "size": "size22"
-                } //2x2
-            };
-
-            var articleHtml = '';
-
-            function getNumLines(charsInLine, string){
-                var lines = 1;
-
-                var words = string.split(" ");
-
-                while(words.join(" ").length > charsInLine){
-                    var count = 0;
-
-                    for(var i = 0; i < words.length; i++){
-                        count += words[i].length + 1;
-
-                        if(count > charsInLine){
-                            lines++;
-
-                            words = words.slice(i);
-
-                            break;
-                        }
-                    }
-                }
-
-                return lines;
-            }
-
-            var renderArticles = function (articles, appending) {
-                //tests to see if the browser window is ABOVE 640px
-                var mq = window.matchMedia( "(min-width: 640px)" );
-
-                if( (tablet.matches) && (mq.matches) && (is_touch_device()) )
-                {
-                    articles = tabletLayout(articles, scope);
-                    element.html('');
-                }
-
-                var imageWidth = "", imageHeight = "", src = "";
-                var abstractImage = "";
-                var image = " ";
-                var imageOrientation = " ";
-                var i = 1;
-                var date = "";
-
-                articles.forEach(function (article) {
-                    date = TimeAgo(article.date);
-                    if(Object.keys(article.abstractImage).length > 0){
-                        imageWidth = article.abstractImage.w;
-                        imageHeight = article.abstractImage.h;
-                        src = article.abstractImage.src;
-                        abstractImage = '<div class="abstract-image-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
-                        image = " has-image ";
-                        imageOrientation = " " + article.abstractImageOrientation + " ";
-                    }
-
-                    var lines = getNumLines(40, "Cornua nisi sole orbem naturae carmen nulli postquam peragebant titan distinxit gentes origo moles");
-
-                    if(i < 4 && !appending){
-                        articleHtml += '<div class="article featured ' + gridCombinations[article.layout].size+'">\
-                                            <div class="abstract-title-holder">\
-                                                <span>\
-                                                    <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>\
-                                                </span>\
-                                            </div>\
-                                            <div class="article-abstract-image">'+ abstractImage +'</div>\
-                                            <p class="description">' + article.description + '</p>\
-                                            <div class="article-abstract-meta">\
-                                                <div class="clearfix">\
-                                                    <div class="time-posted"><p><i>'+ date +'</i></p></div>\
-                                                    <div class="article-views"><p><img src="img/icon_pageViews.png" /> '+ article.views +'</p></div>\
-                                                </div>\
-                                            </div>\
-                                        </div>';
-
-                        image = " ";
-                    }else{
-                        articleHtml += '<div class="article' + image + imageOrientation + gridCombinations[article.layout].size +'">\
-                                            <div class="article-content">\
-                                                <div class="title-description clearfix">\
-                                                    <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>'+ abstractImage +'\
-                                                    <p class="description">' + article.description + '</p>\
-                                                </div>\
-                                            </div>\
-                                            <div class="article-abstract-meta">\
-                                                <div class="clearfix">\
-                                                    <div class="time-posted"><p><i>'+ date +'</i></p></div>\
-                                                    <div class="article-views"><p><img src="img/icon_pageViews.png" /> ' + article.views + '</p></div>\
-                                                </div>\
-                                            </div>\
-                                        </div>';
-
-                        abstractImage = "";
-                        image = " no-image";
-                        imageOrientation = " ";
-                    }
-
-                    i++;
-                });
-
-                var animationComplete = function(){
-                    var parentWidth = 0;
-                    var totalWidth = 0;
-
-                    $('.article[style*="top: 408px"]').each(function(){
-                        totalWidth += $(this).width();
-                    });
-
-                    //totalWidth += 5;
-                    var wrapperOffset = ($(window).width() - $('#wrapper').width()) / 2;
-                    $('.ejs-hero .abstract-image-container').css({'width': totalWidth + 'px', 'margin': '0 0 0 ' + wrapperOffset + 'px'});
-
-                    $('.article.featured').each(function(){
-                        var offset = $(this).height() - $(this).find('.article-abstract-image').outerHeight();
-                        offset -= $(this).find('.article-abstract-meta p').first().outerHeight();
-                        offset -= $(this).find('.article-abstract-meta').outerHeight() + 10;
-
-                        $(this).find('.description').css('height', '69px').ellipsis();
-                    });
-
-                    $('.article-content').each(function(){
-                        $(this).width($(this).parent().width() - 40);
-                        $(this).height($(this).parent().height() - 85);
-
-                        if($(this).parent().hasClass('size21') ||
-                            $(this).parent().hasClass('size11')){
-                            var h1Height = $(this).find('.title-description h1').outerHeight();
-
-                            $(this).find('.title-description p.description').css('height', (225 - h1Height) + 'px');
-
-                            $(this).find('.title-description p.description').ellipsis();
-                        }
-
-                        if($(this).parent().hasClass('portrait size21')){
-                            parentWidth = $(this).parent().width();
-
-                            var img = $(this).find('.abstract-image-holder img').removeAttr('width').css('height', '280px');
-                            var h1 = $(this).find('h1');
-                            var p = $(this).find('p.description');
-                            var abstractImageHolder = $(this).find('.abstract-image-holder');
-                            abstractImageHolder.css('width', img.css('width'));
-
-                            h1.width(parentWidth - abstractImageHolder.width() - 60);
-                            p.width(parentWidth - abstractImageHolder.width() - 60);
-                        }
-
-                        if($(this).parent().hasClass('landscape size21')){
-                            parentWidth = $(this).parent().width();
-
-                            var img = $(this).find('.abstract-image-holder img').removeAttr('height').css('width', '300px');
-                            var p = $(this).find('p');
-                            var abstractImageHolder = $(this).find('.abstract-image-holder');
-
-                            abstractImageHolder.css('width', img.css('width'));
-                            p.width(parentWidth - abstractImageHolder.width() - 60);
-                            $(this).find('.title-description').css({
-                                '-webkit-column-count': '2',
-                                'column-gap': '40px'
-                            });
-                        }
-
-                        if($(this).parent().hasClass('landscape size12')){
-                            var img = $(this).find('.abstract-image-holder img').removeAttr('height').css('width', '280px');
-                        }
-
-                        if($(this).parent().hasClass('nested-moved')){
-                            $(this).find('img').css('display', 'none');
-                            $(this).find('.title-description').removeAttr('style');
-                            $(this).find('.title-description p.description').css('width', '100%');
-                            $(this).find('.title-description h1').css('width', '100%');
-                        }
-
-                        $('.abstract-title-holder span h1').ellipsis();
-                    });
-                }
-
-                //don't run jquery.nested if the browser size is below 640px. This prevents it from running on mobile, which would cause problems.
-                if (mq.matches) {
-                    // viewport width is at least 640px
-                    if(!appending){
-                        var nestedOptions = {
-                            selector: ".article",
-                            minWidth: (tablet.matches) ? 320 : 320,
-                            minColumns: 2,
-                            animate: true,
-                            animationOptions: {
-                                //duration: 800,
-                                queue: true,
-                                complete: animationComplete
-                            }
-                        };
-
-                        element.append(articleHtml);
-                        element.nested(nestedOptions);
-                    }else{
-                        element.append(articleHtml).nested('append', articleHtml);
-                    }
-                }else{
-                    element.append(articleHtml);
-                }
-
-                articleHtml = "";
-            };
-
-            scope.$watch('articles', function (newValue, oldValue) {
-                if( (tablet.matches) && (is_touch_device()) ) {
-                    oldValue.length = 0;
-                }
-                if (newValue.length > 0 && oldValue.length == 0){
-                    renderArticles(scope.articles, false);
-                }else if(newValue.length > 0 && oldValue.length > 0){
-                    renderArticles(scope.$parent.newArticles, true);
-                }
-            });
-        }
-    };
-}]);
-
 //this keeps track of our article pages, by dividing them up into an array of objects, each of which simply contains a property "articles"
 //it's worth pointing out that the article array gets split based on the index of the last article shown, and not loaded.
 //because of this, there's probably going to have to be some changes in how the paging system on the backend works once zocia is implemented.
@@ -468,6 +229,9 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
 
             //the function that runs after all the articles are in place
             //this is still rather slow, and cause take upwards of 800-1000 ms to run
+
+            // could not recreate the conditions that caused > 800 ms of runtime for this callback,
+            // but removing the ellipsis plugin decrease the runtime by a factor of 10
             var animationComplete = function(){
                 var parentWidth = 0;
 
@@ -516,19 +280,90 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                         var img = $(this).find('.abstract-image-holder img').removeAttr('height').css('width', '280px');
                     }
 
-                    /*
-                    nested-moved is not being added/used in this, and it's possible/likely that this code will need to change as a result of that
-                    if($(this).parent().hasClass('nested-moved')){
-                        $(this).find('img').css('display', 'none');
-                        $(this).find('.title-description').removeAttr('style');
-                        $(this).find('.title-description p.description').css('width', '100%');
-                        $(this).find('.title-description h1').css('width', '100%');
-                    } */
-
-                    $('.abstract-title-holder span h1').ellipsis();
+                    //$('.abstract-title-holder span h1').ellipsis();
                 });
 
             };
+
+            function renderForPhones(articles, complete){
+                var articleHtml;
+                var abstractImage = "";
+                var image = " no-image";
+                var imageOrientation = " ";
+
+                for(var i = 1; i < articles.length; i++){
+                    var article = articles[i];
+                    var date = TimeAgo(article.date);
+
+                    if(Object.keys(article.abstractImage).length > 0){
+                        var imageWidth = article.abstractImage.w;
+                        var imageHeight = article.abstractImage.h;
+                        var src = article.abstractImage.src;
+                        abstractImage = '<div class="abstract-image-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
+                        image = " has-image ";
+                        imageOrientation = article.abstractImageOrientation;
+                    }
+
+                    if(i < 4 && scope.page == 0){
+                        articleHtml += '<div class="article featured">\
+                                            <div class="abstract-title-holder">\
+                                                <span>\
+                                                    <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>\
+                                                </span>\
+                                            </div>\
+                                            <div class="article-abstract-image">'+ abstractImage +'</div>\
+                                            <p class="description">' + article.description + '</p>\
+                                            <div class="article-abstract-meta">\
+                                                <div class="clearfix">\
+                                                    <div class="time-posted"><p><i>'+ date +'</i></p></div>\
+                                                    <div class="article-views"><p><img src="img/icon_pageViews.png" /> '+ article.views +'</p></div>\
+                                                </div>\
+                                            </div>\
+                                        </div>';
+                    }else{
+                        articleHtml += '<div class="article' + image + imageOrientation +'">\
+                                        <div class="article-content">\
+                                            <div class="title-description clearfix">\
+                                                <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>'+ abstractImage +'\
+                                                <p class="description">' + article.description + '</p>\
+                                            </div>\
+                                        </div>\
+                                        <div class="article-abstract-meta">\
+                                            <div class="clearfix">\
+                                                <div class="time-posted"><p><i>'+ date +'</i></p></div>\
+                                                <div class="article-views"><p><img src="img/icon_pageViews.png" /> ' + article.views + '</p></div>\
+                                            </div>\
+                                        </div>\
+                                    </div>';
+
+                    }
+
+                    image = " no-image";
+                    imageOrientation = " "
+                }
+
+                $(articleHtml).appendTo(container);
+
+                $('#article-container').infiniteScroll({
+                    threshold: 50,
+                    onBottom: function(){
+                        scope.$emit('LOAD_MORE');
+                    }
+                });
+
+                complete();
+
+                $('.has-image .article-content').css({
+                    'width': 'auto',
+                    'height': '185px'
+                });
+
+                $('.no-image .article-content').css({
+                    'width': 'auto',
+                    'height': '110px'
+                });
+
+            }
 
             //this goes through all the articles, and renders them.
             function render(articles, complete) {
@@ -538,7 +373,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 function create(x, y, w, h, article) {
                     var articleHtml;
                     var abstractImage = "";
-                    var image = " ";
+                    var image = " no-image";
                     var imageOrientation = " ";
                     var date = TimeAgo(article.date);
                     var size = "size" + w + h;
@@ -569,8 +404,6 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                                             </div>\
                                         </div>\
                                     </div>';
-
-                        image = " ";
                     }else{
                         articleHtml = '<div class="article' + image + imageOrientation + size +'">\
                                         <div class="article-content">\
@@ -586,8 +419,6 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                                             </div>\
                                         </div>\
                                     </div>';
-
-                        image = " no-image";
                     }
 
                     $(articleHtml)
@@ -658,7 +489,11 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 }
             });
 
-            render(scope.articles, animationComplete);
+            if(!phone.matches){
+                render(scope.articles, animationComplete);
+            }else{
+                renderForPhones(scope.articles, animationComplete);
+            }
         }
     }
 }]);
@@ -700,6 +535,28 @@ angular.module('ejs.directives').directive('whenScrolled', function() {
             $(elm).hammer().on('swipeleft', function() {
                 scope.$apply(attr.whenScrolled);
             });
+
+            /*var rectObject = raw.getBoundingClientRect();
+            var rectTouchStart = 0;
+            var rectTouchend = 0;
+
+            $(window).on('touchstart', function(){
+                console.log('touchstart event firing');
+                rectObject = raw.getBoundingClientRect();
+                rectTouchStart = rectObject.bottom;
+
+                console.log('#article-container bottom during touchstart ' + rectObject.bottom);
+            });
+
+            $(window).on('touchend', function(){
+                console.log('touchend event firing');
+                rectObject = raw.getBoundingClientRect();
+                rectTouchend = rectObject.bottom;
+                console.log('#article-container bottom during touchend ' + rectObject.bottom);
+                if(rectTouchStart == 316 && rectTouchStart > rectTouchend){
+                    scope.$apply(attr.whenScrolled);
+                }
+            });*/
         } else {
             angular.element(window).bind('scroll', function() {
                 var rectObject = raw.getBoundingClientRect();

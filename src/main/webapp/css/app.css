@@ -76,7 +76,7 @@ p{
 }
 
 #article-container{
-    margin: 0 auto;
+    margin: 0 auto 100px;
     padding-bottom: 50px;
 }
 
@@ -92,9 +92,10 @@ p{
     overflow: hidden;
     font-size: 11px;
     background-color: #f5f5f5;
-    box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
+    border: solid 1px #d3d3d3;
+    /*box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
     -moz-box-shadow: 0 1px 2px rgba(34,25,25,0.4);
-    -webkit-box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
+    -webkit-box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);*/
 }
 
 /*.article div{
@@ -827,6 +828,13 @@ p{
         height: 38px;
     }
 
+    #article-container .article{
+        position: relative;
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+    }
+
     .article .title-description.clearfix h1{
         float: none;
         width: 100%;
@@ -835,7 +843,7 @@ p{
 
     .article.featured h1{
         width: 85%;
-        padding-right: 0.6em;
+        padding-right: 10px;
     }
 
     .article.has-image,
@@ -866,8 +874,8 @@ p{
         height: 67px;
         position: absolute;
         top: 50px;
-        overflow: auto;
         background: url('../img/img_heroArticleContainer_right_mobile.png') no-repeat right 0px;
+        width: 211px;
     }
 
     .article.featured p.description{
@@ -924,6 +932,12 @@ p{
     .article.size21.landscape .article-content img {
         float: none;
         width: 100%;
+    }
+
+    .article.size31.no-image .title-description {
+        -moz-column-count: 0;
+        -webkit-column-count: 0;
+        column-count: 0;
     }
 }
 
