@@ -1,6 +1,8 @@
 'use strict';
 
 var tablet = window.matchMedia( "(max-width: 1024px)" );
+var phone = window.matchMedia( "(max-width: 640px)" );
+
 function is_touch_device() {
     return !!('ontouchstart' in window) // works on most browsers
         || !!('onmsgesturechange' in window); // works on ie10
@@ -275,19 +277,60 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                         var img = $(this).find('.abstract-image-holder img').removeAttr('height').css('width', '280px');
                     }
 
-                    /*
-                    nested-moved is not being added/used in this, and it's possible/likely that this code will need to change as a result of that
-                    if($(this).parent().hasClass('nested-moved')){
-                        $(this).find('img').css('display', 'none');
-                        $(this).find('.title-description').removeAttr('style');
-                        $(this).find('.title-description p.description').css('width', '100%');
-                        $(this).find('.title-description h1').css('width', '100%');
-                    } */
-
                     $('.abstract-title-holder span h1').ellipsis();
                 });
 
             };
+
+            function renderForPhones(articles, complete){
+                var articleHtml;
+                var abstractImage = "";
+                var image = " no-image";
+                var imageOrientation = " ";
+
+                for(var i = 1; i <= articles.length; i++){
+                    var article = articles[i];
+                    var date = TimeAgo(article.date);
+
+                    if(i < 4){
+                        articleHtml = '<div class="article featured">\
+                                            <div class="abstract-title-holder">\
+                                                <span>\
+                                                    <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>\
+                                                </span>\
+                                            </div>\
+                                            <div class="article-abstract-image">'+ abstractImage +'</div>\
+                                            <p class="description">' + article.description + '</p>\
+                                            <div class="article-abstract-meta">\
+                                                <div class="clearfix">\
+                                                    <div class="time-posted"><p><i>'+ date +'</i></p></div>\
+                                                    <div class="article-views"><p><img src="img/icon_pageViews.png" /> '+ article.views +'</p></div>\
+                                                </div>\
+                                            </div>\
+                                        </div>';
+
+                        image = " ";
+                    }else{
+                        articleHtml = '<div class="article' + image + imageOrientation +'">\
+                                        <div class="article-content">\
+                                            <div class="title-description clearfix">\
+                                                <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>'+ abstractImage +'\
+                                                <p class="description">' + article.description + '</p>\
+                                            </div>\
+                                        </div>\
+                                        <div class="article-abstract-meta">\
+                                            <div class="clearfix">\
+                                                <div class="time-posted"><p><i>'+ date +'</i></p></div>\
+                                                <div class="article-views"><p><img src="img/icon_pageViews.png" /> ' + article.views + '</p></div>\
+                                            </div>\
+                                        </div>\
+                                    </div>';
+                    }
+                }
+
+                $(articleHtml).appendTo(container);
+
+            }
 
             //this goes through all the articles, and renders them.
             function render(articles, complete) {
@@ -297,7 +340,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 function create(x, y, w, h, article) {
                     var articleHtml;
                     var abstractImage = "";
-                    var image = " ";
+                    var image = " no-image";
                     var imageOrientation = " ";
                     var date = TimeAgo(article.date);
                     var size = "size" + w + h;
@@ -345,8 +388,6 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                                             </div>\
                                         </div>\
                                     </div>';
-
-                        image = " no-image";
                     }
 
                     $(articleHtml)
@@ -417,7 +458,11 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 }
             });
 
-            render(scope.articles, animationComplete);
+            if(!phone.matches){
+                render(scope.articles, animationComplete);
+            }else{
+                renderForPhones(scope.articles, animationComplete);
+            }
         }
     }
 }]);
