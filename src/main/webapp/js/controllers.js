@@ -58,7 +58,15 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
      });
      */
 
+    $scope.$on('LOAD_MORE', function(){
+        loadMoreArticles();
+    });
+
     $scope.loadMore = function() {
+        loadMoreArticles();
+    };
+
+    function loadMoreArticles(){
         page++;
 
         if(page * numArticles <= totalArticles){
@@ -78,7 +86,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
                     $log.info($scope.articles);
                 });
         }
-    };
+    }
 
     $scope.$on('extraArticles', function(event, extras) {
         $scope.extraTabletArticles = extras;

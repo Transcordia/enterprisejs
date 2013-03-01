@@ -344,6 +344,13 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
 
                 $(articleHtml).appendTo(container);
 
+                $('#article-container').infiniteScroll({
+                    threshold: 50,
+                    onBottom: function(){
+                        scope.$emit('LOAD_MORE');
+                    }
+                });
+
                 complete();
 
                 $('.has-image .article-content').css({
@@ -529,7 +536,7 @@ angular.module('ejs.directives').directive('whenScrolled', function() {
                 scope.$apply(attr.whenScrolled);
             });
 
-            var rectObject = raw.getBoundingClientRect();
+            /*var rectObject = raw.getBoundingClientRect();
             var rectTouchStart = 0;
             var rectTouchend = 0;
 
@@ -549,7 +556,7 @@ angular.module('ejs.directives').directive('whenScrolled', function() {
                 if(rectTouchStart == 316 && rectTouchStart > rectTouchend){
                     scope.$apply(attr.whenScrolled);
                 }
-            });
+            });*/
         } else {
             angular.element(window).bind('scroll', function() {
                 var rectObject = raw.getBoundingClientRect();
