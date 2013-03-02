@@ -433,6 +433,31 @@ function abstractImageOrientation(image){
     }
 }
 
+function getAbstractImage(images){
+    if(images.length > 0){
+        var largestImage = {};
+        var largestImageArea = 0, imageArea = 0;
+
+        // we'll use the image with the largest area as the abstract image
+        for(var i = 0; i < images.length; i++){
+            imageArea = images[i].w * images[i].h;
+
+            if(imageArea > largestImageArea){
+                largestImageArea = imageArea;
+                largestImage = {
+                    "src": images[i].src,
+                    "w": images[i].w,
+                    "h": images[i].h
+                };
+            }
+        }
+
+        return largestImage;
+    }else{
+        return {}
+    }
+}
+
 
 function preferredArea(title, description, image){
     // area represents the square area of space an article occupies in the layout
@@ -514,4 +539,4 @@ function preferredArea(title, description, image){
     return area;
 }
 
-export('processUrl', 'iso8601ToDate', 'dateToISO8601', 'preferredArea');
+export('processUrl', 'iso8601ToDate', 'dateToISO8601', 'preferredArea', 'getAbstractImage');

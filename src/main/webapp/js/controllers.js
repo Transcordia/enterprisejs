@@ -84,6 +84,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
                         window.scrollTo(0, 0);
                     }
                     $log.info($scope.articles);
+                    $scope.$emit('LOAD_MORE_COMPLETE');
                 });
         }
     }

@@ -345,10 +345,44 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 $(articleHtml).appendTo(container);
 
                 $('#article-container').infiniteScroll({
-                    threshold: 50,
+                    threshold: 40,
                     onBottom: function(){
-                        scope.$emit('LOAD_MORE');
+                        var div = $(document.createElement('div'));
+                        div.attr({
+                            'class': 'gear-holder'
+                        }).css({
+                            'height': '70px',
+                            'width': '140px',
+                            'position': 'absolute',
+                            'left': '50%',
+                            'display': 'none',
+                            'margin-left': '-70px',
+                            'overflow': 'hidden'
+                        });
+
+                        var gear = $(document.createElement('img'));
+
+                        gear.attr({
+                            'src': 'img/EJS_loadingAnimation.gif',
+                            'class': 'loading-gear'
+                        }).css({
+                            'position': 'absolute',
+                            'margin-left': '-64px',
+                            'left': '50%',
+                            'width': '100%'
+                        });
+
+                        gear.appendTo(div);
+                        div.appendTo('#article-container').fadeIn('slow');
+
+                        window.setTimeout(function(){
+                            scope.$emit('LOAD_MORE');
+                        }, 1000);
                     }
+                });
+
+                scope.$on('LOAD_MORE_COMPLETE', function(){
+                    $('.gear-holder').fadeOut();
                 });
 
                 complete();

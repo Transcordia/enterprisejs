@@ -7,7 +7,7 @@ var {json} = require('ringo/jsgi/response');
 
 var {Application} = require("stick");
 
-var {processUrl, iso8601ToDate, dateToISO8601, preferredArea} = require('utility/parse');
+var {processUrl, iso8601ToDate, dateToISO8601, preferredArea, getAbstractImage} = require('utility/parse');
 
 var store = require('store-js');
 
@@ -27,7 +27,8 @@ app.post('/articles', function(req){
     if(article.layout === undefined) {
         // assign this article a layout based on its content
         //it's probably easier to do this once on article creation
-        article.layout = preferredArea(article.title, article.description, article.abstractImage);
+        log.info('Article : {}', JSON.stringify(article, null, 4));
+        article.layout = preferredArea(article.title, article.description, article.images);
         log.info('This article was assigned a layout of ' + article.layout);
     }
 
