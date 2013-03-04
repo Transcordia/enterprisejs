@@ -280,7 +280,9 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                         var img = $(this).find('.abstract-image-holder img').removeAttr('height').css('width', '280px');
                     }
 
-                    //$('.abstract-title-holder span h1').ellipsis();
+                    if(!phone.matches){
+                        $('.abstract-title-holder span h1').ellipsis();
+                    }
                 });
 
             };
@@ -345,45 +347,50 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 $(articleHtml).appendTo(container);
 
                 $('#article-container').infiniteScroll({
-                    threshold: 40,
+                    threshold: 60,
                     onBottom: function(){
-                        var div = $(document.createElement('div'));
-                        div.attr({
-                            'class': 'gear-holder'
-                        }).css({
-                            'height': '70px',
-                            'width': '140px',
-                            'position': 'absolute',
-                            'left': '50%',
-                            'display': 'none',
-                            'margin-left': '-70px',
-                            'overflow': 'hidden'
-                        });
+                        if($('.gears').length == 0){
+                            var div = $(document.createElement('div'));
+                            div.attr({
+                                'class': 'gears'
+                            }).css({
+                                    'height': '70px',
+                                    'width': '140px',
+                                    'position': 'absolute',
+                                    'left': '50%',
+                                    'margin-left': '-70px',
+                                    'overflow': 'hidden'
+                                });
 
-                        var gear = $(document.createElement('img'));
+                            var bigGear = $(document.createElement('img'));
+                            var smallGear = $(document.createElement('img'));
 
-                        gear.attr({
-                            'src': 'img/EJS_loadingAnimation.gif',
-                            'class': 'loading-gear'
-                        }).css({
-                            'position': 'absolute',
-                            'margin-left': '-64px',
-                            'left': '50%',
-                            'width': '100%'
-                        });
+                            bigGear.attr({
+                                'src': 'img/EJS_loadingAnimation_GearLrg.png',
+                                'class': 'small-gear'
+                            }).css({
+                                    'position': 'absolute'
+                                });
 
-                        gear.appendTo(div);
-                        div.appendTo('#article-container').fadeIn('slow');
+                            smallGear.attr({
+                                'src': 'img/EJS_loadingAnimation_GearSml.png',
+                                'class': 'big-gear'
+                            }).css({
+                                    'position': 'absolute'
+                                });
 
-                        window.setTimeout(function(){
-                            scope.$emit('LOAD_MORE');
-                        }, 1000);
+                            bigGear.appendTo(div);
+                            smallGear.appendTo(div);
+                            div.appendTo('#article-container');
+                        }
+
+                        scope.$emit('LOAD_MORE');
                     }
                 });
 
-                scope.$on('LOAD_MORE_COMPLETE', function(){
-                    $('.gear-holder').fadeOut();
-                });
+                /*scope.$on('LOAD_MORE_COMPLETE', function(){
+                    $('.gears').remove();
+                });*/
 
                 complete();
 
