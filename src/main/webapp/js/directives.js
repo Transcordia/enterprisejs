@@ -1,7 +1,10 @@
 'use strict';
 
-var tablet = window.matchMedia( "(max-width: 1024px)" );
-var phone = window.matchMedia( "(max-width: 640px)" );
+/*var tablet = window.matchMedia( "(max-width: 1024px)" );
+var mobile = window.matchMedia( "(max-width: 640px)" );*/
+
+var tablet = Modernizr.mq( "only screen and (max-width: 1024px)" );
+var mobile = Modernizr.mq( "only screen and (max-width: 640px)" );
 
 function is_touch_device() {
     return !!('ontouchstart' in window) // works on most browsers
@@ -280,14 +283,14 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                         var img = $(this).find('.abstract-image-holder img').removeAttr('height').css('width', '280px');
                     }
 
-                    if(!phone.matches){
+                    if(!mobile){
                         $('.abstract-title-holder span h1').ellipsis();
                     }
                 });
 
             };
 
-            function renderForPhones(articles, complete){
+            function renderFormobiles(articles, complete){
                 var articleHtml;
                 var abstractImage = "";
                 var image = " no-image";
@@ -530,10 +533,10 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 }
             });
 
-            if(!phone.matches){
+            if(!mobile){
                 render(scope.articles, animationComplete);
             }else{
-                renderForPhones(scope.articles, animationComplete);
+                renderFormobiles(scope.articles, animationComplete);
             }
         }
     }
@@ -568,7 +571,7 @@ angular.module('ejs.directives').directive('whenScrolled', function() {
         var raw = elm[0];
         var offset = attr.offset || 0;
 
-        if( (tablet.matches) && (is_touch_device()) )
+        if( (tablet) && (is_touch_device()) )
         {
             $(elm).hammer().on('swiperight', function() {
                 scope.$apply(attr.whenScrolled);
@@ -576,28 +579,6 @@ angular.module('ejs.directives').directive('whenScrolled', function() {
             $(elm).hammer().on('swipeleft', function() {
                 scope.$apply(attr.whenScrolled);
             });
-
-            /*var rectObject = raw.getBoundingClientRect();
-            var rectTouchStart = 0;
-            var rectTouchend = 0;
-
-            $(window).on('touchstart', function(){
-                console.log('touchstart event firing');
-                rectObject = raw.getBoundingClientRect();
-                rectTouchStart = rectObject.bottom;
-
-                console.log('#article-container bottom during touchstart ' + rectObject.bottom);
-            });
-
-            $(window).on('touchend', function(){
-                console.log('touchend event firing');
-                rectObject = raw.getBoundingClientRect();
-                rectTouchend = rectObject.bottom;
-                console.log('#article-container bottom during touchend ' + rectObject.bottom);
-                if(rectTouchStart == 316 && rectTouchStart > rectTouchend){
-                    scope.$apply(attr.whenScrolled);
-                }
-            });*/
         } else {
             angular.element(window).bind('scroll', function() {
                 var rectObject = raw.getBoundingClientRect();

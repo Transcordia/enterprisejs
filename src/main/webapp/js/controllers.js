@@ -3,8 +3,12 @@
 /* Controllers */
 
 //
-var tablet = window.matchMedia( "(max-width: 1024px)" );
-var mobile = window.matchMedia( "(max-width: 640px)" );
+/*var tablet = window.matchMedia( "(max-width: 1024px)" );
+var mobile = window.matchMedia( "(max-width: 640px)" );*/
+
+var tablet = Modernizr.mq( "only screen and (max-width: 1024px)" );
+var mobile = Modernizr.mq( "only screen and (max-width: 640px)" );
+
 function is_touch_device() {
     return !!('ontouchstart' in window) // works on most browsers
         || !!('onmsgesturechange' in window); // works on ie10
@@ -17,7 +21,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
     var page = 1;
     var numArticles = 20;
     var totalArticles = 102;
-    var tabletMode = ((tablet.matches) && !(mobile.matches)) && (is_touch_device());
+    var tabletMode = ((tablet) && !(mobile)) && (is_touch_device());
 
     if (tabletMode)
     {
