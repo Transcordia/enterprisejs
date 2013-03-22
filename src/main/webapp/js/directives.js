@@ -297,7 +297,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                     var article = articles[i];
                     var date = TimeAgo(article.date);
 
-                    if(Object.keys(article.abstractImage).length > 0){
+                    if(_.isObject(article.abstractImage)){
                         var imageWidth = article.abstractImage.w;
                         var imageHeight = article.abstractImage.h;
                         var src = article.abstractImage.src;
@@ -419,7 +419,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                     var date = TimeAgo(article.date);
                     var size = "size" + w + h;
 
-                    if(Object.keys(article.abstractImage).length > 0){
+                    if(_.isObject(article.abstractImage).length > 0){
                         var imageWidth = article.abstractImage.w;
                         var imageHeight = article.abstractImage.h;
                         var src = article.abstractImage.src;
