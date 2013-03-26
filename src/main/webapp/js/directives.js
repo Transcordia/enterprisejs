@@ -4,7 +4,7 @@
 var mobile = window.matchMedia( "(max-width: 640px)" );*/
 
 var tablet = Modernizr.mq( "only screen and (max-width: 1024px)" );
-var mobile = Modernizr.mq( "only screen and (max-width: 640px)" );
+var phone = Modernizr.mq( "only screen and (max-width: 640px)" );
 
 function is_touch_device() {
     return !!('ontouchstart' in window) // works on most browsers
@@ -283,14 +283,14 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                         var img = $(this).find('.abstract-image-holder img').removeAttr('height').css('width', '280px');
                     }
 
-                    if(!mobile){
+                    if(!phone){
                         $('.abstract-title-holder span h1').ellipsis();
                     }
                 });
 
             };
 
-            function renderFormobiles(articles, complete){
+            function renderForPhones(articles, complete){
                 var articleHtml;
                 var abstractImage = "";
                 var image = " no-image";
@@ -503,7 +503,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 if(scope.page === 0) {
                     var totalWidth = 0;
 
-                    $('.article[style*="top: 0px"]').each(function(){
+                    $(".article[style*='top: 0px']").each(function(){
                         totalWidth += $(this).width();
                     });
 
@@ -533,10 +533,10 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 }
             });
 
-            if(!mobile){
+            if(!phone){
                 render(scope.articles, animationComplete);
             }else{
-                renderFormobiles(scope.articles, animationComplete);
+                renderForPhones(scope.articles, animationComplete);
             }
         }
     }
