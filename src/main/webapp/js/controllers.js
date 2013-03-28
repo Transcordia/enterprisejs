@@ -33,7 +33,9 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
         .success(function(data, status, headers){
             page = 1;
 
-            if(data.articles.length == 0){
+            $scope.articles = data.articles;
+
+            /*if(data.articles.length == 0){
                 generateRandomArticles(totalArticles, function(data) {
                     $http.post('api/articles', data)
                         .success(function(data, status, headers){
@@ -43,7 +45,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
                 });
             }else{
                 $scope.articles = data.articles;
-            }
+            }*/
         });
 
     $rootScope.doLogin = function(){
