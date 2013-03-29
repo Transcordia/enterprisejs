@@ -50,6 +50,8 @@ function getRequest() {
 var app = exports.app = Application();
 app.configure('notfound', 'params', 'mount', 'route');
 
+app.mount('/user', require('./user'));
+
 app.get('/', function (req) {
 	return json({
 		api: true,
