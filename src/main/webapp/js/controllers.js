@@ -40,7 +40,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
                             $log.info(data.articles);
                             $http.get('api/articles/score');
                         });
-                }, $http);
+                });
             }else{
                 $scope.articles = data.content;
             }
