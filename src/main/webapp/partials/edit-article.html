@@ -1,40 +1,26 @@
 <div class="container">
     <div class="row">
-        <div class="article {{articleLayout}}">
-            <h2>{{article.title}}</h2>
+        <div class="span12">
+            <div class="article {{articleLayout}}">
+                <h2>{{article.title}}</h2>
 
-            <div class="article-holder new-article">
-                <img ng-src="{{article.images[0].src}}" alt="">
+                <div class="article-holder new-article">
+                    <img ng-src="{{article.images[0].src}}" alt="">
+                </div>
+                <p class="description"><textarea ng-model="article.description"></textarea></p>
+                <p class="content"><textarea ng-model="article.content"></textarea></p>
+                <p class="stats clearfix">
+                    <span class="likes-count">0 likes</span>
+                    <span class="comment-count">0 comments</span>
+                    <span class="reblog-count">0 reblogs</span>
+                </p>
+                <div class="convo clearfix">
+                    <a href=""><div class="image-placeholder"></div></a>
+                    <p></p>
+                </div>
             </div>
-            <p class="description"><textarea ng-model="article.description"></textarea></p>
-            <p class="content"><textarea ng-model="article.content"></textarea></p>
-            <p class="stats clearfix">
-                <span class="likes-count">0 likes</span>
-                <span class="comment-count">0 comments</span>
-                <span class="reblog-count">0 reblogs</span>
-            </p>
-            <div class="convo clearfix">
-                <a href=""><div class="image-placeholder"></div></a>
-                <p></p>
-            </div>
-        </div>
 
-        <button ng-click="save()">Save</button>
-    </div>
-
-    <div class="row">
-        <div class="span4">
-            <h4>Layout</h4>
-            <div class="btn-group" data-toggle="buttons-radio">
-                <button ng-click="toggleLayout(1)" class="btn btn-primary">1</button>
-                <button ng-click="toggleLayout(2)" class="btn btn-primary">2</button>
-                <button ng-click="toggleLayout(3)" class="btn btn-primary">3</button>
-                <button ng-click="toggleLayout(4)" class="btn btn-primary">4</button>
-                <button ng-click="toggleLayout(5)" class="btn btn-primary">5</button>
-                <button ng-click="toggleLayout(6)" class="btn btn-primary">6</button>
-                <button ng-click="toggleLayout(7)" class="btn btn-primary">7</button>
-                <button ng-click="toggleLayout(8)" class="btn btn-primary">8</button>
-            </div>
+            <button ng-click="save()">Save</button>
         </div>
     </div>
 </div>

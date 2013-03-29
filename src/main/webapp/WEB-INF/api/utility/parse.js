@@ -111,19 +111,18 @@ function parseStructuredData(url){
     var ogMeta = jsoupDocument.select('meta[property^=og:]');
     if(!ogMeta.isEmpty()){
         var structuredData = {
-            "title": jsoupDocument.select('meta[property=og:title]').attr('content'),
-            "description": jsoupDocument.select('meta[property=og:description]').attr('content'),
-            "content": jsoupDocument.select('meta[property=og:description]').attr('content'),
-            "images": [
+            title: jsoupDocument.select('meta[property=og:title]').attr('content'),
+            author: "admin",
+            description: jsoupDocument.select('meta[property=og:description]').attr('content'),
+            content: jsoupDocument.select('meta[property=og:description]').attr('content'),
+            images: [
                 {
                     "src": jsoupDocument.select('meta[property=og:image]').attr('content'),
                     "w": "",
                     "h": ""
                 }
             ],
-            "url": url,
-            "date": standardizedNow(),
-            "likes": 0
+            uri: url
         };
 
         log.info('Structured data parsed by Jsoup: {}', JSON.stringify(structuredData, null, 4));
@@ -158,13 +157,12 @@ function parseStructuredData(url){
     }
 
     return {
-        "title": jsoupDocument.title(),
-        "description": description,
-        "content": content,
-        "images": images,
-        "url": url,
-        "date": standardizedNow(),
-        "likes": 0
+        title: jsoupDocument.title(),
+        author: "admin",
+        description: description,
+        content: content,
+        images: images,
+        uri: url
     }
 }
 
@@ -258,13 +256,12 @@ function parseRSSFeed(xmlDoc, title, url){
             }
 
             feed = {
-                "title": item.select('title').text(),
-                "description": item.select('description').text(),
-                "content": item.select('content|encoded').text(),
-                "images": feedImages,
-                "url": url,
-                "date": standardizedNow(),
-                "likes": 0
+                title: item.select('title').text(),
+                author: "admin",
+                description: item.select('description').text(),
+                content: item.select('content|encoded').text(),
+                images: feedImages,
+                uri: url
             }
 
             log.info('RSS feed data parsed by Jsoup: {}', JSON.stringify(feed, null, 4));
@@ -311,13 +308,12 @@ function parseAtomFeed(xmlDoc, title, url){
             }
 
             feed = {
-                "title": entry.select('title').text(),
-                "description": entry.select('content').text(),
-                "content": entry.select('content').text(),
-                "images": feedImages,
-                "url": url,
-                "date": standardizedNow(),
-                "likes": 0
+                title: entry.select('title').text(),
+                author: "admin",
+                description: entry.select('content').text(),
+                content: entry.select('content').text(),
+                images: feedImages,
+                uri: url
             }
 
             log.info('Atom feed data parsed by Jsoup: {}', JSON.stringify(feed, null, 4));

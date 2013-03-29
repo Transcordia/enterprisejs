@@ -276,7 +276,7 @@
                             <maxIdleTime>60000</maxIdleTime>
                         </connector>
                     </connectors>
-                    <stopPort>9301</stopPort>
+                    <stopPort>8081</stopPort>
                     <stopKey>bar</stopKey>
                 </configuration>
                 <executions>

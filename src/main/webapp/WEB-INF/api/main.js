@@ -5,11 +5,46 @@ var httpclient = require('ringo/httpclient');
 var log = require('ringo/logging').getLogger(module.id);
 var {json} = require('ringo/jsgi/response');
 
+var fileUpload = require('ringo/utils/http');
+var {Headers} = fileUpload;
+
 var {Application} = require("stick");
+var {trimpath, trimpathResponse, registerHelper} = require( 'trimpath' );
 
 var {processUrl, iso8601ToDate, dateToISO8601, preferredArea, getAbstractImage} = require('utility/parse');
+var {getZociaUrl} = require('utility/getUrls');
 
 var store = require('store-js');
+
+registerHelper( {
+    include: function ( path, context ) {
+        return trimpath( path );
+    },
+    ctx: function ( url ) {
+        return ctx( url );
+    }
+} );
+
+function ctx( url ) {
+    // Only prepend the context path if the URL is a relative
+    if ( /^\//.test( url ) ) {
+        var req = getRequest();
+        if ( !req ) {
+            throw 'Function ctx requires a request object to be known to the application.';
+        }
+
+        // Get the servlet's context path
+        var contextPath = req.env.servletRequest.contextPath;
+        url = contextPath + url;
+    }
+    return url;
+}
+
+function getRequest() {
+    var app = require( module.resolve( 'main' ) ).app;
+    if ( app ) return app.request;
+    return null;
+}
 
 var app = exports.app = Application();
 app.configure('notfound', 'params', 'mount', 'route');
@@ -24,19 +59,35 @@ app.get('/', function (req) {
 app.post('/articles', function(req){
     var article = req.postParams.article;
 
-    if(article.layout === undefined) {
-        // assign this article a layout based on its content
-        //it's probably easier to do this once on article creation
-        log.info('Article : {}', JSON.stringify(article, null, 4));
-        article.layout = preferredArea(article.title, article.description, article.images);
-        log.info('This article was assigned a layout of ' + article.layout);
-    }
+    log.info('Article object to be persisted : {}', JSON.stringify(article, null, 4));
 
-    var map = store.getMap('ejs', 'articles');
+    delete article.images;
+    delete article.layout;
 
-    map.put(article);
-    return json(article, 201);
+    var opts = {
+        url: getZociaUrl(req) + '/resources/',
+        method: 'POST',
+        data: JSON.stringify(article),
+        headers: Headers({ 'x-rt-index': 'ejs', 'Content-Type': 'application/json' }),
+        async: false
+    };
+
+    return _simpleHTTPRequest(opts);
 });
+
+app.post('articles/image', function(req){
+    var image = req.postParams.image;
+
+    var opts = {
+        url: getZociaUrl(req) + '/resources/',
+        method: 'POST',
+        data: JSON.stringify(image),
+        headers: Headers({ 'x-rt-index': 'ejs', 'Content-Type': 'application/json' }),
+        async: false
+    };
+
+    return _simpleHTTPRequest(opts);
+})
 
 //editing an article
 app.put('/articles', function(req){
@@ -49,45 +100,26 @@ app.put('/articles', function(req){
 });
 
 app.get('/articles/:id', function(req, id){
-    var map = store.getMap('ejs', 'articles');
+    var opts = {
+        url: getZociaUrl(req) + '/resources/' + id,
+        method: 'GET',
+        headers: Headers({ 'x-rt-index': 'ejs', 'Content-Type': 'application/json' }),
+        async: false
+    };
 
-    var article = map.get(id);
-
-    return json(article);
+    return _simpleHTTPRequest(opts);
 });
 
 //gets a list of articles
 app.get('/articles', function(req){
-    var map = store.getMap('ejs', 'articles');
-    var articles = [];
+    var opts = {
+        url: getZociaUrl(req) + '/resources/articles',
+        method: 'GET',
+        headers: Headers({ 'x-rt-index': 'ejs', 'Content-Type': 'application/json' }),
+        async: false
+    };
 
-    var keySet = map.keySet();
-
-    var keySetArray = keySet.toArray();
-
-    var numArticles = parseInt(req.params.numArticles);
-    var page = parseInt(req.params.page);
-
-    for(var article in keySetArray){
-        articles.push(map.get(keySetArray[article]));
-    }
-
-    sortArticles(articles);
-
-    var start = (page - 1) * numArticles;
-    var end = 0;
-
-    if(page * numArticles < articles.length){
-        end = page * numArticles;
-    }else{
-        end = articles.length;
-    }
-
-    log.info('Starting index {} Ending index {}', start, end);
-
-    articles = articles.slice(start, end);
-
-    return json({"articles": articles, "totalArticles": keySetArray.length});
+    return _simpleHTTPRequest(opts);
 });
 
 //processing articles is in utility/parse.js
@@ -167,6 +199,19 @@ app.get('/articles/score', function(req) {
     log.info("Article score calculated. "+keySet.size()+" articles updated.");
     return json(true);
 });
+
+function _simpleHTTPRequest(opts) {
+    var exchange = httpclient.request(opts);
+
+    log.info('EXCHANGE STATUS!!! ', exchange.status);
+
+    return json({
+        'status': exchange.status,
+        'content': JSON.parse(exchange.content),
+        'headers': exchange.headers,
+        'success': Math.floor(exchange.status / 100) === 2
+    });
+}
 /*
     Liking commented out because it relies on zocia at the moment.
 //likes a specific object. todo: can anonymous users like something?

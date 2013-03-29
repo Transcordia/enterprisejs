@@ -20,7 +20,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
 
     var page = 1;
     var numArticles = 20;
-    var totalArticles = 102;
+    var totalArticles = 10;
     var tabletMode = ((tablet) && !(mobile)) && (is_touch_device());
 
     if (tabletMode)
@@ -29,23 +29,21 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
         numArticles = 6;
     }
 
-    $http.get('api/articles/?page=' + page +'&numArticles='+ numArticles)
+    $http.get('api/articles')
         .success(function(data, status, headers){
             page = 1;
 
-            $scope.articles = data.articles;
-
-            /*if(data.articles.length == 0){
+            if(data.content.length == 0){
                 generateRandomArticles(totalArticles, function(data) {
                     $http.post('api/articles', data)
                         .success(function(data, status, headers){
                             $log.info(data.articles);
                             $http.get('api/articles/score');
                         });
-                });
+                }, $http);
             }else{
-                $scope.articles = data.articles;
-            }*/
+                $scope.articles = data.content;
+            }
         });
 
     $rootScope.doLogin = function(){
@@ -227,7 +225,7 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
             .success(function(data, status, headers){
                 $log.info(data);
 
-                $location.path('/article/edit/' + data._id);
+                $location.path('/article/edit/' + data.content._id);
             });
     };
 
@@ -251,7 +249,7 @@ function EditArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParam
     $timeout(function(){
         $http.get('api/articles/' + $routeParams.id)
             .success(function(data, status, headers){
-                $scope.article = data;
+                $scope.article = data.content;
             });
     }, 1000);
 

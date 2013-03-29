@@ -120,44 +120,36 @@ function rand(max, min)
 }
 
 function generateRandomArticles(total, save){
+    var min = 50, max = 600;
+
     save = save || false;
     var articles = [];
     var article = {};
     var content = "", description = "", title = "";
-    var images = [];
-    var abstractImage;
+
+    var width = rand(max, min);
+    var height = rand(max, min);
 
     for(var i = 1; i <= total; i++){
         title = generateTitle();
         content = generateContent();
         description = generateDescription(content);
-        images = generateImages();
-        abstractImage = getAbstractImage(images);
 
         article = {
-            "id": i,
-            "title": title,
-            "content": content,
-            "date": generateDate(),
-            "description": description,
-            "likes": Math.floor(Math.random() * 100),
-            "images": images,
-            "abstractImage": abstractImage,
-            "abstractImageOrientation": abstractImageOrientation(abstractImage),
-            "preferredArea": preferredArea(title, description, abstractImage),
-            "url": "http://example.com",
-            "score": 0,
-            "views": Math.floor(Math.random() * 200)
-        }
-
-        article.layout = article.preferredArea.toString();
-
-        if(article.preferredArea == 3){
-            article.layout = "2"; // one cols two rows
-        }
-
-        if(article.preferredArea == 2){
-            article.layout = "8"; // one cols two rows
+            key: 'article-key-' + new Date().getTime(),
+            thumbnail: generateThumbnail(width, height),
+            author: 'admin',
+            title: title,
+            format: 'article',
+            locale: 'en',
+            mimetype: 'image/gif',
+            content: content,
+            description: description,
+            imageHeight: height.toString(),
+            imageWidth: width.toString(),
+            likes: Math.floor(Math.random() * 100),
+            uri: "http://example.com",
+            views: Math.floor(Math.random() * 200)
         }
 
         var data = {
@@ -182,31 +174,6 @@ function generateTitle(){
     title = toTitleCase(loremIpsumSentence(numWords));
 
     return title;
-}
-
-function getAbstractImage(images){
-    if(images.length > 0){
-        var largestImage = {};
-        var largestImageArea = 0, imageArea = 0;
-
-        // we'll use the image with the largest area as the abstract image
-        for(var i = 0; i < images.length; i++){
-            imageArea = images[i].w * images[i].h;
-
-            if(imageArea > largestImageArea){
-                largestImageArea = imageArea;
-                largestImage = {
-                    "src": images[i].src,
-                    "w": images[i].w,
-                    "h": images[i].h
-                };
-            }
-        }
-
-        return largestImage;
-    }else{
-        return {}
-    }
 }
 
 function toTitleCase(str){
@@ -236,30 +203,8 @@ function generateDescription(content){
     return description;
 }
 
-function generateImages(){
-    var numImages = Math.floor(Math.random() * 5);
-    var images = [];
-    var image = {};
-    var width = 0, height = 0;
-
-    if(numImages == 0){
-        return images;
-    }else{
-        for(var i = 1; i <= numImages; i++){
-            var min = 50, max = 600;
-            width = rand(max, min);
-            height = rand(max, min);
-
-            image = {
-                "src": "http://placehold.it/" + width + "x" + height,
-                "w": width,
-                "h": height
-            }
-            images.push(image);
-        }
-
-        return images;
-    }
+function generateThumbnail(width, height){
+    return "http://placehold.it/" + width + "x" + height;
 }
 
 function abstractImageOrientation(image){
