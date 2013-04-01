@@ -51,6 +51,23 @@
     </div>
 </div>
 
+<div  ng-controller="addArticleCtrl">
+    <div ui-modal class="modal fade" ng-model="$parent.showAddUrlModal">
+        <div class="modal-header">
+            <button type="button" ng-click="$parent.showAddUrlModal=false" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3>Add An Article</h3>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="input-append">
+                    <input class="span5" type="url" ng-model="urlToCheck">
+                    <button ng-click="addArticle(urlToCheck)" class="btn" type="button">Add It!</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div ng-view></div>
 
 <!-- In production use:
