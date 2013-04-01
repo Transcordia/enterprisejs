@@ -38,13 +38,14 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
                     $http.post('api/articles', data)
                         .success(function(data, status, headers){
                             $log.info(data.articles);
-                            $http.get('api/articles/score');
                         });
                 });
             }else{
                 $scope.articles = data.content;
                 numArticlesInLastResponse = data.content.length;
             }
+
+            $http.get('api/articles/score');
         });
 
     $rootScope.doLogin = function(){

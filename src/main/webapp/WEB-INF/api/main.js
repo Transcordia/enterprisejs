@@ -13,6 +13,7 @@ var {trimpath, trimpathResponse, registerHelper} = require( 'trimpath' );
 
 var {processUrl, iso8601ToDate, dateToISO8601, preferredArea, getAbstractImage, abstractImageOrientation} = require('utility/parse');
 var {getZociaUrl} = require('utility/getUrls');
+var {encode} = require('ringo/base64');
 
 var store = require('store-js');
 
@@ -108,10 +109,10 @@ app.get('/articles/:id', function(req, id){
     return _simpleHTTPRequest(opts);
 });
 
-//gets a list of articles
+//gets a list of articles sorted by rating
 app.get('/articles', function(req){
     var opts = {
-        url: getZociaUrl(req) + '/resources/articles/?from=' + req.params.from + '&size=' + req.params.size,
+        url: getZociaUrl(req) + '/resources/articles/rating/?from=' + req.params.from + '&size=' + req.params.size,
         method: 'GET',
         headers: Headers({ 'x-rt-index': 'ejs', 'Content-Type': 'application/json' }),
         async: false
@@ -122,10 +123,16 @@ app.get('/articles', function(req){
     var articles = JSON.parse(exchange.content);
 
     articles.forEach(function(article){
-        var image = {
-            h: article.imageHeight,
-            w: article.imageWidth
-        };
+        var image;
+
+        if(article.thumbnail != ""){
+            image = {
+                h: article.imageHeight,
+                w: article.imageWidth
+            };
+        }else{
+            image = false;
+        }
 
         article.layout = preferredArea(article.title, article.description, image);
         article.thumbnailOrientation = abstractImageOrientation(image);
@@ -146,7 +153,7 @@ app.post('/processurl', function(req){
 
 //increases the view count of an article
 app.get('/article/view/:id', function(req, id){
-    var map = store.getMap('ejs', 'articles');
+    /*var map = store.getMap('ejs', 'articles');
 
     var article = map.get(id);
 
@@ -154,7 +161,19 @@ app.get('/article/view/:id', function(req, id){
 
     map.put(article);
 
-    return json({ "views": article.views });
+    return json({ "views": article.views });*/
+
+    var opts = {
+        url: getZociaUrl(req) + '/resources/' + id,
+        method: 'PUT',
+        data: JSON.stringify(article),
+        headers: Headers({ 'x-rt-index': 'ejs',
+            'Content-Type': 'application/json',
+            'Authorization': _generateBasicAuthorization('backdoor', 'Backd00r')}),
+        async: false
+    };
+
+    var exchange = httpclient.request(opts);
 });
 
 /**
@@ -165,11 +184,11 @@ function sortArticles(articles)
 {
     articles.sort(function(a, b) {
         //we actually want higher scores to move to the top, so this is the reverse the comparison on mdn
-        if(a.score > b.score)
+        if(a.rating > b.rating)
         {
             return -1;
         }
-        if(a.score < b.score)
+        if(a.rating < b.rating)
         {
             return 1;
         }
@@ -189,10 +208,10 @@ function sortArticles(articles)
 function calculateScore(article)
 {
     var MILLISECONDS_PER_HOUR = 3600000;
-    var age = Math.floor((Date.now() - iso8601ToDate(article.date).getTime())/MILLISECONDS_PER_HOUR);
+    var age = Math.floor((Date.now() - iso8601ToDate(article.dateCreated).getTime())/MILLISECONDS_PER_HOUR);
     var gravity = 2.2;
-    article.score = (article.views) / (Math.pow(age + 2, gravity));
-    article.age = age;
+    article.rating = (article.views) / (Math.pow(age + 2, gravity));
+    //article.age = age;
 }
 
 /**
@@ -200,20 +219,42 @@ function calculateScore(article)
  * This is run as part of a cron job, and likely doesn't need to be called outside of that, or when seeding the data
  */
 app.get('/articles/score', function(req) {
-    var map = store.getMap('ejs', 'articles');
-    var articles = [];
+    var opts = {
+        url: getZociaUrl(req) + '/resources/articles/',
+        method: 'GET',
+        headers: Headers({ 'x-rt-index': 'ejs', 'Content-Type': 'application/json' }),
+        async: false
+    };
 
-    var keySet = map.keySet();
+    var exchange = httpclient.request(opts);
 
-    var iterator = keySet.iterator();
-    while(iterator.hasNext()){
-        var article = map.get(iterator.next());
+    var articles = JSON.parse(exchange.content);
+
+    articles.forEach(function(article){
+        log.info('Article rating before calculateScore() {}', article.rating);
 
         calculateScore(article);
 
-        map.put(article);
-    }
-    log.info("Article score calculated. "+keySet.size()+" articles updated.");
+        log.info('Article rating after calculateScore() {}', article.rating);
+
+        delete article._type;
+        delete article._version;
+        delete article._index;
+        delete article._score;
+
+        var scoreOpts = {
+            url: getZociaUrl(req) + '/resources/' + article._id,
+            method: 'PUT',
+            data: JSON.stringify(article),
+            headers: Headers({ 'x-rt-index': 'ejs',
+                'Content-Type': 'application/json',
+                'Authorization': _generateBasicAuthorization('backdoor', 'Backd00r')}),
+            async: false
+        };
+
+        var scoreExchange = httpclient.request(scoreOpts);
+    });
+
     return json(true);
 });
 
@@ -226,6 +267,12 @@ function _simpleHTTPRequest(opts) {
         'headers': exchange.headers,
         'success': Math.floor(exchange.status / 100) === 2
     });
+}
+
+function _generateBasicAuthorization(username, password) {
+    var header = username + ":" + password;
+    var base64 = encode(header);
+    return 'Basic ' + base64;
 }
 /*
     Liking commented out because it relies on zocia at the moment.

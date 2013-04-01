@@ -8,7 +8,7 @@ h1, h2, h3, h4, h4{
 }
 
 h1{
-    font-size: 24.5px;
+    font-size: 19.5px;
     text-transform: uppercase;
 }
 
@@ -147,7 +147,7 @@ p{
     position: absolute;
     padding-right: 15px;
     top: 9.45em;
-    width: 66%;
+    width: 90%;
     z-index: 1;
     overflow: hidden;
     height: 96px;
@@ -160,7 +160,7 @@ p{
     margin-left: 22px;
     position: relative;
     top: -10px;
-    height: 62px;
+    height: 56px;
     overflow: hidden;
 }
 
@@ -560,7 +560,9 @@ p{
     width: 100%
 }
 
-.article.size12.landscape h1{
+.article.size12.landscape h1,
+.article.size12.portrait h1,
+.article.size13.landscape h1{
     margin-bottom: 0.5em;
 }
 
@@ -607,9 +609,9 @@ p{
     top: -1px;
 }
 
-.article-views p img{
+/*.article-views p img{
     top: 9px;
-}
+}*/
 
 .landscape .article-views p img,
 .no-image.size21 .article-views p img,

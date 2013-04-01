@@ -126,17 +126,24 @@ function generateRandomArticles(total, save){
     var content = "", description = "", title = "";
 
     for(var i = 1; i <= total; i++){
-        var min = 50, max = 600;
-        var width = rand(max, min);
-        var height = rand(max, min);
-
         title = generateTitle();
         content = generateContent();
         description = generateDescription(content);
 
+        var thumbnail = "", width = 0, height = 0;
+        var number = Math.floor(Math.random() * 12) + 1;
+
+        if(number > 7){
+            var min = 50, max = 600;
+            width = rand(max, min);
+            height = rand(max, min);
+
+            thumbnail = generateThumbnail(width, height);
+        }
+
         article = {
             key: 'article-key-' + new Date().getTime(),
-            thumbnail: generateThumbnail(width, height),
+            thumbnail: thumbnail,
             author: 'admin',
             title: title,
             format: 'article',
@@ -168,7 +175,7 @@ function generateRandomArticles(total, save){
 
 function generateTitle(){
     var title = "";
-    var min = 5, max = 20;
+    var min = 5, max = 15;
     var numWords = rand(max, min);
     title = toTitleCase(loremIpsumSentence(numWords));
 
@@ -230,6 +237,7 @@ function abstractImageOrientation(image){
 function preferredArea(title, description, image){
     // area represents the square area of space an article occupies in the layout
     // values can be 1, 2, 3, 4
+
     var area = 1; // start with an area of 1
     var orientation = abstractImageOrientation(image);
 
