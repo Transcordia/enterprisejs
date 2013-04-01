@@ -11,7 +11,7 @@ var {Headers} = fileUpload;
 var {Application} = require("stick");
 var {trimpath, trimpathResponse, registerHelper} = require( 'trimpath' );
 
-var {processUrl, iso8601ToDate, dateToISO8601, preferredArea, getAbstractImage} = require('utility/parse');
+var {processUrl, iso8601ToDate, dateToISO8601, preferredArea, getAbstractImage, abstractImageOrientation} = require('utility/parse');
 var {getZociaUrl} = require('utility/getUrls');
 
 var store = require('store-js');
@@ -58,8 +58,6 @@ app.get('/', function (req) {
 
 app.post('/articles', function(req){
     var article = req.postParams.article;
-
-    log.info('Article object to be persisted : {}', JSON.stringify(article, null, 4));
 
     delete article.images;
     delete article.layout;
@@ -113,13 +111,32 @@ app.get('/articles/:id', function(req, id){
 //gets a list of articles
 app.get('/articles', function(req){
     var opts = {
-        url: getZociaUrl(req) + '/resources/articles',
+        url: getZociaUrl(req) + '/resources/articles/?from=' + req.params.from + '&size=' + req.params.size,
         method: 'GET',
         headers: Headers({ 'x-rt-index': 'ejs', 'Content-Type': 'application/json' }),
         async: false
     };
 
-    return _simpleHTTPRequest(opts);
+    var exchange = httpclient.request(opts);
+
+    var articles = JSON.parse(exchange.content);
+
+    articles.forEach(function(article){
+        var image = {
+            h: article.imageHeight,
+            w: article.imageWidth
+        };
+
+        article.layout = preferredArea(article.title, article.description, image);
+        article.thumbnailOrientation = abstractImageOrientation(image);
+    });
+
+    return json({
+        'status': exchange.status,
+        'content': articles,
+        'headers': exchange.headers,
+        'success': Math.floor(exchange.status / 100) === 2
+    });
 });
 
 //processing articles is in utility/parse.js
@@ -202,8 +219,6 @@ app.get('/articles/score', function(req) {
 
 function _simpleHTTPRequest(opts) {
     var exchange = httpclient.request(opts);
-
-    log.info('EXCHANGE STATUS!!! ', exchange.status);
 
     return json({
         'status': exchange.status,

@@ -120,17 +120,16 @@ function rand(max, min)
 }
 
 function generateRandomArticles(total, save){
-    var min = 50, max = 600;
-
     save = save || false;
     var articles = [];
     var article = {};
     var content = "", description = "", title = "";
 
-    var width = rand(max, min);
-    var height = rand(max, min);
-
     for(var i = 1; i <= total; i++){
+        var min = 50, max = 600;
+        var width = rand(max, min);
+        var height = rand(max, min);
+
         title = generateTitle();
         content = generateContent();
         description = generateDescription(content);

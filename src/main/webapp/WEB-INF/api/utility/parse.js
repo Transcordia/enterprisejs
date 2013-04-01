@@ -535,4 +535,4 @@ function preferredArea(title, description, image){
     return area;
 }
 
-export('processUrl', 'iso8601ToDate', 'dateToISO8601', 'preferredArea', 'getAbstractImage');
+export('processUrl', 'iso8601ToDate', 'dateToISO8601', 'preferredArea', 'getAbstractImage', 'abstractImageOrientation');

@@ -18,21 +18,21 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
     $scope.urlToCheck = '';
     $scope.articles = [];
 
-    var page = 1;
-    var numArticles = 20;
-    var totalArticles = 10;
+    var from = 0;
+    var size = 20;
+    var totalArticles = 100;
+    var numArticlesInLastResponse;
+    var lastPage = false;
     var tabletMode = ((tablet) && !(mobile)) && (is_touch_device());
 
     if (tabletMode)
     {
         // viewport is tablet
-        numArticles = 6;
+        size = 6;
     }
 
-    $http.get('api/articles')
+    $http.get('api/articles/?from=' + from + '&size=' + size)
         .success(function(data, status, headers){
-            page = 1;
-
             if(data.content.length == 0){
                 generateRandomArticles(totalArticles, function(data) {
                     $http.post('api/articles', data)
@@ -43,6 +43,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
                 });
             }else{
                 $scope.articles = data.content;
+                numArticlesInLastResponse = data.content.length;
             }
         });
 
@@ -56,14 +57,10 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
     //this will likely happen as a result of switching to Zocia
     //once this happens, we will need to listen to events to catch how many articles successfully get added to the grid
     //example code follows
-    /*
-     scope.$on('event:nextPageStart', function(event, nextStart) {
-     pageStart += nextStart;
-     });
-     */
-
-    $scope.$on('LOAD_MORE', function(){
-        loadMoreArticles();
+    
+    $scope.$on('event:nextPageStart', function(event, nextStart) {
+        from += nextStart;
+        $log.info('number of articles passed into event listener ' + nextStart);
     });
 
     $scope.loadMore = function() {
@@ -71,25 +68,29 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
     };
 
     function loadMoreArticles(){
-        page++;
+        if(!lastPage){
+            $log.info('Loading from ' + from);
 
-        if(page * numArticles <= totalArticles){
-            $log.info('Loading page ' + page);
-
-            $http.get('api/articles/?page='+ page +'&numArticles='+ numArticles)
+            $http.get('api/articles/?from='+ from +'&size='+ size)
                 .success(function(data){
+                    numArticlesInLastResponse = data.content.length;
+
                     if(!tabletMode)
                     {
-                        $scope.newArticles = data.articles;
+                        $scope.newArticles = data.content;
 
-                        $scope.articles = $scope.articles.concat(data.articles);
-                    } else { //if the user is on a tablet, then we want to replace the article list with the old articles + the new page of articles
-                        $scope.articles = $scope.extraTabletArticles.concat(data.articles);
+                        $scope.articles = $scope.articles.concat(data.content);
+                    } else { //if the user is on a tablet, then we want to replace the article list with the old articles + the new from of articles
+                        $scope.articles = $scope.extraTabletArticles.concat(data.content);
                         window.scrollTo(0, 0);
                     }
-                    $log.info($scope.articles);
+
                     $scope.$emit('LOAD_MORE_COMPLETE');
                 });
+        }
+
+        if(numArticlesInLastResponse < size){
+            lastPage = true;
         }
     }
 
@@ -446,6 +447,6 @@ function SortTest($rootScope, $scope, $timeout, $http)
 }
 
 function MobileCtrl($scope, $http, $log, $routeParams){
-    alert('page number ' + $routeParams.page);
+    alert('from number ' + $routeParams.from);
 }
 MobileCtrl.$inject = ["$scope", "$http", "$log", "$routeParams"];

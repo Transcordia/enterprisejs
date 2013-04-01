@@ -2,7 +2,6 @@
 
 /*var tablet = window.matchMedia( "(max-width: 1024px)" );
 var mobile = window.matchMedia( "(max-width: 640px)" );*/
-
 var tablet = Modernizr.mq( "only screen and (max-width: 1024px)" );
 var phone = Modernizr.mq( "only screen and (max-width: 640px)" );
 
@@ -160,19 +159,19 @@ angular.module('ejs.directives').directive('grid', function(){
         replace: true,
         link: function(scope, elem, attr) {
             scope.pages = [];
-            var pageStart = 0;
+            var from = 0;
 
             //we watch the article scope property because the array is loaded in with AJAX, and we can't do any rendering until it's loaded from the server
             //because of this, we want to make sure array of articles is at least 0 before rendering, otherwise there's nothing to render and we'd get an error message
             scope.$watch('articles', function (newValue, oldValue) {
                 if(newValue.length > 0)
                 {
-                    scope.pages.push({"articles": newValue.slice(pageStart)});
+                    scope.pages.push({"articles": newValue.slice(from)});
                 }
             });
 
             scope.$on('event:nextPageStart', function(event, nextStart) {
-                pageStart += nextStart;
+                from += nextStart;
             });
         }
     };
@@ -199,7 +198,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                     "w": 1,
                     "h": 2
                 },
-                "8": {
+                "3": {
                     "w": 2,
                     "h": 1
                 },
@@ -257,11 +256,11 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                         var img = $(this).find('.abstract-image-holder img').removeAttr('width').css('height', '280px');
                         var h1 = $(this).find('h1');
                         var p = $(this).find('p.description');
-                        var abstractImageHolder = $(this).find('.abstract-image-holder');
-                        abstractImageHolder.css('width', img.css('width'));
+                        var thumbnailHolder = $(this).find('.abstract-image-holder');
+                        thumbnailHolder.css('width', img.css('width'));
 
-                        h1.width(parentWidth - abstractImageHolder.width() - 60);
-                        p.width(parentWidth - abstractImageHolder.width() - 60);
+                        h1.width(parentWidth - thumbnailHolder.width() - 60);
+                        p.width(parentWidth - thumbnailHolder.width() - 60);
                     }
 
                     if($(this).parent().hasClass('landscape size21')){
@@ -269,10 +268,10 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
 
                         var img = $(this).find('.abstract-image-holder img').removeAttr('height').css('width', '300px');
                         var p = $(this).find('p');
-                        var abstractImageHolder = $(this).find('.abstract-image-holder');
+                        var thumbnailHolder = $(this).find('.abstract-image-holder');
 
-                        abstractImageHolder.css('width', img.css('width'));
-                        p.width(parentWidth - abstractImageHolder.width() - 60);
+                        thumbnailHolder.css('width', img.css('width'));
+                        p.width(parentWidth - thumbnailHolder.width() - 60);
                         $(this).find('.title-description').css({
                             '-webkit-column-count': '2',
                             'column-gap': '40px'
@@ -284,7 +283,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                     }
 
                     if(!phone){
-                        $('.abstract-title-holder span h1').ellipsis();
+                        //$('.abstract-title-holder span h1').ellipsis();
                     }
                 });
 
@@ -292,31 +291,31 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
 
             function renderForPhones(articles, complete){
                 var articleHtml;
-                var abstractImage = "";
+                var thumbnail = "";
                 var image = " no-image";
                 var imageOrientation = " ";
 
                 for(var i = 1; i < articles.length; i++){
                     var article = articles[i];
-                    var date = TimeAgo(article.date);
+                    var date = TimeAgo(article.dateCreated);
 
-                    if(_.isObject(article.abstractImage)){
-                        var imageWidth = article.abstractImage.w;
-                        var imageHeight = article.abstractImage.h;
-                        var src = article.abstractImage.src;
-                        abstractImage = '<div class="abstract-image-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
+                    if(article.thumbnail != ""){
+                        var imageWidth = article.imageWidth;
+                        var imageHeight = article.imageHeight;
+                        var src = article.thumbnail;
+                        thumbnail = '<div class="abstract-image-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
                         image = " has-image ";
-                        imageOrientation = article.abstractImageOrientation;
+                        imageOrientation = article.thumbnailOrientation;
                     }
 
-                    if(i < 4 && scope.page == 0){
+                    if(i < 4 && scope.from == 0){
                         articleHtml += '<div class="article featured">\
                                             <div class="abstract-title-holder">\
                                                 <span>\
                                                     <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>\
                                                 </span>\
                                             </div>\
-                                            <div class="article-abstract-image">'+ abstractImage +'</div>\
+                                            <div class="article-abstract-image">'+ thumbnail +'</div>\
                                             <p class="description">' + article.description + '</p>\
                                             <div class="article-abstract-meta">\
                                                 <div class="clearfix">\
@@ -329,7 +328,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                         articleHtml += '<div class="article' + image + imageOrientation +'">\
                                         <div class="article-content">\
                                             <div class="title-description clearfix">\
-                                                <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>'+ abstractImage +'\
+                                                <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>'+ thumbnail +'\
                                                 <p class="description">' + article.description + '</p>\
                                             </div>\
                                         </div>\
@@ -387,7 +386,8 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                             div.appendTo('#article-container');
                         }
 
-                        scope.$emit('LOAD_MORE');
+                        //scope.$emit('LOAD_MORE');
+                        scope.$emit('event:nextPageStart', count);
                     }
                 });
 
@@ -416,19 +416,19 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 //NOTE: the x, y, w, h arguments are all in column and row positions, and NOT in pixels. these values are multiplied by the blockSize height and width to get the CSS values needed
                 function create(x, y, w, h, article) {
                     var articleHtml;
-                    var abstractImage = "";
+                    var thumbnail = "";
                     var image = " no-image";
                     var imageOrientation = " ";
-                    var date = TimeAgo(article.date);
+                    var date = TimeAgo(article.dateCreated);
                     var size = "size" + w + h;
 
-                    if(_.isObject(article.abstractImage).length > 0){
-                        var imageWidth = article.abstractImage.w;
-                        var imageHeight = article.abstractImage.h;
-                        var src = article.abstractImage.src;
-                        abstractImage = '<div class="abstract-image-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
+                    if(article.thumbnail != ""){
+                        var imageWidth = article.imageWidth;
+                        var imageHeight = article.imageHeight;
+                        var src = article.thumbnail;
+                        thumbnail = '<div class="abstract-image-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
                         image = " has-image ";
-                        imageOrientation = " " + article.abstractImageOrientation + " ";
+                        imageOrientation = " " + article.thumbnailOrientation + " ";
                     }
 
                     //feature the first row of articles, but only on the first page
@@ -439,7 +439,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                                                 <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>\
                                             </span>\
                                         </div>\
-                                        <div class="article-abstract-image">'+ abstractImage +'</div>\
+                                        <div class="article-abstract-image">'+ thumbnail +'</div>\
                                         <p class="description">' + article.description + '</p>\
                                         <div class="article-abstract-meta">\
                                             <div class="clearfix">\
@@ -452,7 +452,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                         articleHtml = '<div class="article' + image + imageOrientation + size +'">\
                                         <div class="article-content">\
                                             <div class="title-description clearfix">\
-                                                <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>'+ abstractImage +'\
+                                                <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>'+ thumbnail +'\
                                                 <p class="description">' + article.description + '</p>\
                                             </div>\
                                         </div>\
@@ -515,7 +515,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                         offset -= $(this).find('.article-abstract-meta p').first().outerHeight();
                         offset -= $(this).find('.article-abstract-meta').outerHeight() + 10;
 
-                        $(this).find('.description').css('height', '69px').ellipsis();
+                        //$(this).find('.description').css('height', '69px').ellipsis();
                     });
                 }
 
