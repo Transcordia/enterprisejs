@@ -33,8 +33,8 @@ angular.module('ejs.filters').filter('shorten', function(){
     }
 });
 
-angular.module('ejs.filters').filter('timeage', function(){
+angular.module('ejs.filters').filter('timeago', function(){
     return function(time){
-        return moment(time, 'YYYYMMDD').fromNow();
+        return moment(time, 'YYYY-MM-DD HH:mm Z').fromNow();
     }
 });

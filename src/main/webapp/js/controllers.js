@@ -286,6 +286,7 @@ function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams){
     $http.get('api/articles/' + id)
         .success(function(data, status, headers){
             $scope.article = data.content;
+            $scope.article
 
             $http.put('api/articles/views/'+ id, data.content)
                 .success(function(data) {
@@ -295,7 +296,7 @@ function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams){
 
     $scope.articleLayout = "one-col three-row";
 }
-ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams"];
+ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "TimeAgo"];
 
 
 

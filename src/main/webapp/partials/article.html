@@ -17,7 +17,7 @@
                         <h2>{{article.title}}</h2>
 
                         <div class="content">
-                            <img ng-src="{{article.images[0].src}}" alt="">
+                            <img ng-src="{{article.thumbnail}}" alt="">
                             <p class="description">{{article.content}}</p>
                         </div>
                     </div>
@@ -26,7 +26,7 @@
                 <div class="span4">
                     <div class="sidebar">
                         <div class="clearfix">
-                            <div class="time-posted"><p><i>1 hour ago</i></p></div>
+                            <div class="time-posted"><p><i>{{article.dateCreated | timeago}}</i></p></div>
                         </div>
 
                         <p class="stats clearfix">

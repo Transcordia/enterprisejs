@@ -507,6 +507,10 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                         totalWidth += $(this).width();
                     });
 
+                    if(tablet){
+                        $('#article-container').css({'width': totalWidth + 'px'});
+                    }
+
                     var wrapperOffset = ($(window).width() - $('#wrapper').width()) / 2;
                     $('.ejs-hero .abstract-image-container').css({'width': totalWidth + 'px', 'margin': '0 0 0 ' + wrapperOffset + 'px'});
 
@@ -574,10 +578,12 @@ angular.module('ejs.directives').directive('whenScrolled', function() {
         if( (tablet) && (is_touch_device()) )
         {
             $(elm).hammer().on('swiperight', function() {
-                scope.$apply(attr.whenScrolled);
+                //scope.$apply(attr.whenScrolled);
+                alert('Swiped right!!!');
             });
             $(elm).hammer().on('swipeleft', function() {
-                scope.$apply(attr.whenScrolled);
+                //scope.$apply(attr.whenScrolled);
+                alert('Swiped left!!!');
             });
         } else {
             angular.element(window).bind('scroll', function() {

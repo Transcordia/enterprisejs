@@ -21,6 +21,6 @@ angular.module('ejs.services').
 
 angular.module('ejs.services').factory('TimeAgo', function(){
     return function(time){
-        return moment(time, 'YYYYMMDD').fromNow();
+        return moment(time, 'YYYY-MM-DD HH:mm Z').fromNow();
     }
 });

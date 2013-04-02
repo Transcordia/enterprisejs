@@ -106,7 +106,16 @@ app.get('/articles/:id', function(req, id){
         async: false
     };
 
-    return _simpleHTTPRequest(opts);
+    var exchange = httpclient.request(opts);
+    var article = JSON.parse(exchange.content);
+    article.dateCreated = iso8601ToDate(article.dateCreated);
+
+    return json({
+        'status': exchange.status,
+        'content': article,
+        'headers': exchange.headers,
+        'success': Math.floor(exchange.status / 100) === 2
+    });
 });
 
 //gets a list of articles sorted by rating
@@ -136,6 +145,7 @@ app.get('/articles', function(req){
 
         article.layout = preferredArea(article.title, article.description, image);
         article.thumbnailOrientation = abstractImageOrientation(image);
+        article.dateCreated = iso8601ToDate(article.dateCreated);
     });
 
     return json({
