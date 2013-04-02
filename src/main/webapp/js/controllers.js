@@ -109,21 +109,28 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
 }
 AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout"];
 
-//Controller for adding articles. This is mostly for the pop-up modal windows when adding an article.
-//the template for this is located in add-article.html
-function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
+//Controller for the modal that shows up when adding a new article. All this really does is send the URL off to the full add article controller
+function addArticleModal($rootScope, $scope, $location) {
     $rootScope.showAddUrlModal = false;
-    $scope.showAddArticleModal = false;
 
     //processes an URL that the user inputs, returning the result to us as a "proto-article" such that we can eventually add it to the database
     $scope.addArticle = function(url){
+        $rootScope.showAddUrlModal = false;
+        $rootScope.url = url;
+        $location.path('/article/add');
+    };
+}
+addArticleCtrl.$inject = ["$rootScope","$scope", "$location"];
+
+//Controller for adding articles. This is mostly for the pop-up modal windows when adding an article.
+//the template for this is located in add-article.html
+function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
+    if($rootScope.url !== undefined) {
+        //processes an URL that the user inputs, returning the result to us as a "proto-article" such that we can eventually add it to the database
         $http.post('api/processurl', {
-            url: url
+            url: $rootScope.url
         })
             .success(function(data, status, headers){
-                $log.info(data);
-                $rootScope.showAddUrlModal = false;
-                $scope.showAddArticleModal = true;
                 $scope.article = data.response;
                 if($scope.article.images.length === 0)
                 {
@@ -131,8 +138,12 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
                 }
 
                 $log.info($('.slides_container img'));
+            }).error(function(data, status) {
+                alert("Error loading article. Something went wrong. Status: "+status);
             });
-    };
+    } else {
+        $scope.hideImages = true;
+    }
 
     var imagesLoaded = 0;
     var activeImage = 0;
@@ -158,9 +169,13 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
         $scope.article.images = largeImages;
         if($scope.article.images.length > 0)
         {
+            $scope.article.images[activeImage].show = false;
             showActiveImage();
+            $scope.hideImages = false;
+            $scope.$apply();
         } else {
             activeImage = -1;
+            $scope.hideImages = true;
         }
     }
 
@@ -197,6 +212,7 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
     $scope.noImage = function() {
         $scope.article.images[activeImage].show = false;
         activeImage = -1;
+        $scope.hideImages = true;
     };
 
     //Once the user is OK with the parsed article, and has decided on an image to use, this does all the further processing needed to save said article.
@@ -220,9 +236,13 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
 
         if(activeImage >= 0)
         {
-            article.images = $scope.article.images[activeImage];
+            article.thumbnail = $scope.article.images[activeImage].src;
+            article.imageHeight = $scope.article.images[activeImage].h.toString();
+            article.imageWidth = $scope.article.images[activeImage].w.toString();
         } else {
-            article.images = [];
+            article.thumbnail = '';
+            article.imageHeight = "0";
+            article.imageWidth = "0";
         }
 
         article.description = stripped;
@@ -233,9 +253,8 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
 
         $http.post('api/articles', data)
             .success(function(data, status, headers){
-                $log.info(data);
-
-                $location.path('/article/edit/' + data.content._id);
+                $rootScope.url = '';
+                $location.path('/article/' + data.content._id);
             });
     };
 
@@ -254,16 +273,11 @@ addArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "
  * For editing an article (mostly choosing layout after the article gets imported. This might not be needed, depending on how things go)
  */
 function EditArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout){
-    //timeout added because there's a slight delay between initially saving an article and being able to load it from the server.
-    //there's likely a few solutions for improving this issue, but for now, we'll leave it in
-    $timeout(function(){
-        $http.get('api/articles/' + $routeParams.id)
-            .success(function(data, status, headers){
-                $scope.article = data.content;
-            });
-    }, 1000);
 
-    $scope.articleLayout = "one-col three-row";
+    $http.get('api/articles/' + $routeParams.id)
+        .success(function(data, status, headers){
+            $scope.article = data.content;
+        });
 
     $scope.save = function() {
         $http.put('api/articles', { "article": $scope.article })

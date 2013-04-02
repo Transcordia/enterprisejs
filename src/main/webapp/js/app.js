@@ -16,6 +16,12 @@ angular.module('ejs', ['ejs.filters', 'ejs.services', 'ejs.directives', 'ui']).
             controller: EditArticleCtrl
         });
 
+    $routeProvider.when('/article/add',
+        {
+            templateUrl: 'partials/add-article.html',
+            controller: addArticleCtrl
+        });
+
     $routeProvider.when('/article/:id',
         {
             templateUrl: 'partials/article.html',
