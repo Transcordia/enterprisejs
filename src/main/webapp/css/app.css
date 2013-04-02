@@ -229,7 +229,7 @@ p{
     display: block;
     float: left;
     padding-right: 20px;
-    width: 77%;
+    width: 90%;
     position: absolute;
     top: 199px;
     background: url('../img/hero-abstract-title-bg-right.png') no-repeat right -10px
@@ -480,10 +480,18 @@ p{
     float: left;
 }
 
+.article.size21.featured .abstract-title-holder{
+    left: -61px;
+}
+
 .article.size31.landscape h1{
     width: 62.5%;
     float: left;
     margin-bottom: 0.5em;
+}
+
+.article.size31.featured .abstract-title-holder{
+    left: -95px;
 }
 
 .article.size31.landscape .abstract-image-holder{
@@ -632,13 +640,13 @@ p{
     background: url('../img/hero-abstract-title-bg-middle.png') repeat-x 0 0;
     margin-left: 4px;
     top:-7px;
-    padding: 1.1em 0;
+    padding: 2.1em 0;
     position: relative;
 }
 
 .hero-title{
     float: left;
-    width: 62%
+    width: 64%
 }
 
 .hero-description{
