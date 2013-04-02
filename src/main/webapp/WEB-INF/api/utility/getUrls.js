@@ -9,6 +9,11 @@ var getZociaBase = exports.getZociaBase = function(request) {
     return getConfigParam(request, 'zociaBase');
 };
 
+//gets the base URL for elasticsearch. For instance: http://localhost:9311/
+var getElasticBase = exports.getElasticBase = function(request) {
+    return getConfigParam(request, 'elasticBase');
+};
+
 /**
  * Returns the URL of the current server the website is hosted on. This is going to need to be
  * passed up to the main website for calling the backend javascript stuff.

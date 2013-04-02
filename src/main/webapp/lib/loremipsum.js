@@ -153,9 +153,9 @@ function generateRandomArticles(total, save){
             description: description,
             imageHeight: height.toString(),
             imageWidth: width.toString(),
-            likes: Math.floor(Math.random() * 100),
+            likes: Math.floor(Math.random() * 1000),
             uri: "http://example.com",
-            views: Math.floor(Math.random() * 200)
+            views: Math.floor(Math.random() * 1000)
         }
 
         var data = {

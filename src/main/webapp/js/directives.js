@@ -433,7 +433,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
 
                     //feature the first row of articles, but only on the first page
                     if( (y === 0) && (scope.page === 0) ) {
-                        articleHtml = '<div class="article featured ' + size+'">\
+                        articleHtml = '<div class="article featured first-row ' + size+'">\
                                         <div class="abstract-title-holder">\
                                             <span>\
                                                 <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>\
@@ -503,7 +503,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 if(scope.page === 0) {
                     var totalWidth = 0;
 
-                    $(".article[style*='top: 0px']").each(function(){
+                    $(".first-row").each(function(){
                         totalWidth += $(this).width();
                     });
 

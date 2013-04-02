@@ -12,7 +12,7 @@ var {Application} = require("stick");
 var {trimpath, trimpathResponse, registerHelper} = require( 'trimpath' );
 
 var {processUrl, iso8601ToDate, dateToISO8601, preferredArea, getAbstractImage, abstractImageOrientation} = require('utility/parse');
-var {getZociaUrl} = require('utility/getUrls');
+var {getZociaUrl, getZociaBase, getElasticBase} = require('utility/getUrls');
 var {encode} = require('ringo/base64');
 
 var store = require('store-js');
@@ -152,16 +152,10 @@ app.post('/processurl', function(req){
 });
 
 //increases the view count of an article
-app.get('/article/view/:id', function(req, id){
-    /*var map = store.getMap('ejs', 'articles');
+app.put('/articles/views/:id', function(req, id){
+    var article = req.postParams;
 
-    var article = map.get(id);
-
-    article.views++;
-
-    map.put(article);
-
-    return json({ "views": article.views });*/
+    article.views ++;
 
     var opts = {
         url: getZociaUrl(req) + '/resources/' + id,
@@ -173,7 +167,7 @@ app.get('/article/view/:id', function(req, id){
         async: false
     };
 
-    var exchange = httpclient.request(opts);
+    return _simpleHTTPRequest(opts);
 });
 
 /**
@@ -220,7 +214,7 @@ function calculateScore(article)
  */
 app.get('/articles/score', function(req) {
     var opts = {
-        url: getZociaUrl(req) + '/resources/articles/',
+        url:getElasticBase(req) + '/ejs/resources/_search?search_type=scan&scroll=1m&size=100',
         method: 'GET',
         headers: Headers({ 'x-rt-index': 'ejs', 'Content-Type': 'application/json' }),
         async: false
@@ -228,32 +222,51 @@ app.get('/articles/score', function(req) {
 
     var exchange = httpclient.request(opts);
 
-    var articles = JSON.parse(exchange.content);
+    var content = JSON.parse(exchange.content);
+    var scrollId = content._scroll_id;
 
-    articles.forEach(function(article){
-        log.info('Article rating before calculateScore() {}', article.rating);
+    opts = {
+        url:getElasticBase(req) + '/_search/scroll?scroll=1m&scroll_id=' + scrollId,
+        method: 'GET',
+        headers: Headers({ 'x-rt-index': 'ejs', 'Content-Type': 'application/json' }),
+        async: false
+    };
 
-        calculateScore(article);
+    exchange = httpclient.request(opts);
+    content = JSON.parse(exchange.content);
 
-        log.info('Article rating after calculateScore() {}', article.rating);
+    var articles = content.hits.hits;
 
-        delete article._type;
-        delete article._version;
-        delete article._index;
-        delete article._score;
+    while(articles.length > 0){
+        articles.forEach(function(obj){
+            var article = obj._source;
 
-        var scoreOpts = {
-            url: getZociaUrl(req) + '/resources/' + article._id,
-            method: 'PUT',
-            data: JSON.stringify(article),
-            headers: Headers({ 'x-rt-index': 'ejs',
-                'Content-Type': 'application/json',
-                'Authorization': _generateBasicAuthorization('backdoor', 'Backd00r')}),
+            calculateScore(article);
+
+            var scoreOpts = {
+                url:getZociaUrl(req) + '/resources/' + article._id,
+                method:'PUT',
+                data:JSON.stringify(article),
+                headers:Headers({ 'x-rt-index':'ejs',
+                    'Content-Type':'application/json',
+                    'Authorization':_generateBasicAuthorization('backdoor', 'Backd00r')}),
+                async:false
+            };
+
+            var scoreExchange = httpclient.request(scoreOpts);
+        });
+
+        opts = {
+            url:getElasticBase(req) + '/_search/scroll?scroll=1m&scroll_id=' + scrollId,
+            method: 'GET',
+            headers: Headers({ 'x-rt-index': 'ejs', 'Content-Type': 'application/json' }),
             async: false
         };
 
-        var scoreExchange = httpclient.request(scoreOpts);
-    });
+        exchange = httpclient.request(opts);
+        content = JSON.parse(exchange.content);
+        articles = content.hits.hits;
+    }
 
     return json(true);
 });

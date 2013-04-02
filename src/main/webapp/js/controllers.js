@@ -14,13 +14,13 @@ function is_touch_device() {
         || !!('onmsgesturechange' in window); // works on ie10
 }
 
-function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
+function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout) {
     $scope.urlToCheck = '';
     $scope.articles = [];
 
     var from = 0;
     var size = 20;
-    var totalArticles = 100;
+    var totalArticles = 500;
     var numArticlesInLastResponse;
     var lastPage = false;
     var tabletMode = ((tablet) && !(mobile)) && (is_touch_device());
@@ -30,6 +30,12 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
         // viewport is tablet
         size = 6;
     }
+
+    /**
+     * If you need to generate random articles in order to seed elasticsearch, run this xhr AFTER all articles have
+     * been generated and indexed
+     * $http.get('api/articles/score');
+     */
 
     $http.get('api/articles/?from=' + from + '&size=' + size)
         .success(function(data, status, headers){
@@ -44,8 +50,6 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
                 $scope.articles = data.content;
                 numArticlesInLastResponse = data.content.length;
             }
-
-            $http.get('api/articles/score');
         });
 
     $rootScope.doLogin = function(){
@@ -99,7 +103,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams) {
         $scope.extraTabletArticles = extras;
     });
 }
-AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams"];
+AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout"];
 
 //Controller for adding articles. This is mostly for the pop-up modal windows when adding an article.
 //the template for this is located in add-article.html
@@ -280,11 +284,12 @@ EditArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", 
 function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams){
     var id = $routeParams.id;
     $http.get('api/articles/' + id)
-        .success(function(data, status, headers){    console.log("RESULT: ",data);
-            $scope.article = data;
-            $http.get('api/article/view/'+ id)
+        .success(function(data, status, headers){
+            $scope.article = data.content;
+
+            $http.put('api/articles/views/'+ id, data.content)
                 .success(function(data) {
-                    $scope.article.views = data.views;
+                    $log.info(data);
                 });
         });
 

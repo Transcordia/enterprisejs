@@ -370,6 +370,8 @@
 
                 <!-- The URL to access web services from the gc platform. -->
                 <zociaUrl>http://localhost:9300/myapp/api</zociaUrl>
+                <zociaBase>http://localhost:9300</zociaBase>
+                <elasticBase>http://localhost:9311</elasticBase>
                 <localUrl>http://localhost:8080/ejs/api</localUrl>
 
                 <!-- Hazelcast configuration
