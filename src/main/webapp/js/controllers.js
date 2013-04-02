@@ -130,7 +130,6 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
             url: $rootScope.url
         })
             .success(function(data, status, headers){
-                $log.info(data);
                 $scope.article = data.response;
                 if($scope.article.images.length === 0)
                 {
@@ -253,9 +252,7 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
 
         $http.post('api/articles', data)
             .success(function(data, status, headers){
-                $log.info(data);
                 $rootScope.url = '';
-
                 $location.path('/article/' + data.content._id);
             });
     };
