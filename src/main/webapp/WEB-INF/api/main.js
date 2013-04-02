@@ -63,6 +63,8 @@ app.post('/articles', function(req){
     delete article.images;
     delete article.layout;
 
+    article.key = article.title.replace(/ /g, '+');
+
     var opts = {
         url: getZociaUrl(req) + '/resources/',
         method: 'POST',

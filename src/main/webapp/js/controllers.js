@@ -236,9 +236,13 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
 
         if(activeImage >= 0)
         {
-            article.images = $scope.article.images[activeImage];
+            article.thumbnail = $scope.article.images[activeImage].src;
+            article.imageHeight = $scope.article.images[activeImage].h.toString();
+            article.imageWidth = $scope.article.images[activeImage].w.toString();
         } else {
-            article.images = [];
+            article.thumbnail = '';
+            article.imageHeight = "0";
+            article.imageWidth = "0";
         }
 
         article.description = stripped;
