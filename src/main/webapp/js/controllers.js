@@ -39,7 +39,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
 
     $http.get('api/articles/?from=' + from + '&size=' + size)
         .success(function(data, status, headers){
-            /*if(data.content.length == 0){
+            if(data.content.length == 0){
                 generateRandomArticles(totalArticles, function(data) {
                     $http.post('api/articles', data)
                         .success(function(data, status, headers){
@@ -49,10 +49,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
             }else{
                 $scope.articles = data.content;
                 numArticlesInLastResponse = data.content.length;
-            }*/
-
-            $scope.articles = data.content;
-            numArticlesInLastResponse = data.content.length;
+            }
         });
 
     $rootScope.doLogin = function(){
