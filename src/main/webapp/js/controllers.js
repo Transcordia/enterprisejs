@@ -230,8 +230,8 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
          }*/
 
         // truncate long descriptions
-        if(stripped.split(" ").length > 100){
-            article.description = truncate(stripped, 100);
+        if(stripped.split(" ").length > 50){
+            article.description = truncate(stripped, 50);
         }
 
         if(activeImage >= 0)
