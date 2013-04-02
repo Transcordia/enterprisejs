@@ -386,8 +386,8 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                             div.appendTo('#article-container');
                         }
 
-                        //scope.$emit('LOAD_MORE');
-                        scope.$emit('event:nextPageStart', count);
+                        //scope.loadMore();
+                        scope.$emit('event:loadMoreArticles');
                     }
                 });
 

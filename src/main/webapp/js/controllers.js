@@ -68,6 +68,10 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
         $log.info('number of articles passed into event listener ' + nextStart);
     });
 
+    $scope.$on('event:loadMoreArticles', function(){
+        loadMoreArticles();
+    })
+
     $scope.loadMore = function() {
         loadMoreArticles();
     };
@@ -90,7 +94,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
                         window.scrollTo(0, 0);
                     }
 
-                    $scope.$emit('LOAD_MORE_COMPLETE');
+                    //$scope.$emit('LOAD_MORE_COMPLETE');
                 });
         }
 
