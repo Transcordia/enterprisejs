@@ -1,27 +1,31 @@
 <div class="container">
     <div class="row">
         <div class="article">
-            <div class="leftside">
-                <div id="feed-images" class="feed-image-slider">
+            <div class="span5">
+                <div id="feed-images" class="feed-image-slider" ng-show="!hideImages">
+                    <h4>Article Image</h4>
                     <div class="slides_container">
                         <a ng-click="previousImage()">Previous</a> | <a ng-click="nextImage()">Next</a> | <a ng-click="noImage()">None</a>
                         <div ng-repeat="image in article.images">
-                            <img ng-class="{ true: 'show', false: 'hide' }[image.show]" ng-src="{{image.src}}" check-size>
+                            <img ng-class="{ 'hide': !image.show }" ng-src="{{image.src}}" check-size>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="rightside">
                 <h4>Article Title</h4>
                 <p>{{article.title}}</p>
                 <h4>Article Description</h4>
                 <p class="description"><textarea ng-model="article.description"></textarea></p>
                 <h4>Article Content</h4>
                 <p class="content"><textarea ng-model="article.content"></textarea></p>
+
+                <button ng-click="saveArticle(article)" class="btn btn-warning">Save Article</button>
             </div>
 
-            <button ng-click="saveArticle(article)" class="btn btn-warning">Save Article</button>
+            <div class="span6">
+                <iframe src="{{article.uri}}" width="98%" height="800"></iframe><br>
+            </div>
         </div>
+
     </div>
 </div>
