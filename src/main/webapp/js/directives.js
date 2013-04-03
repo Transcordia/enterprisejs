@@ -4,6 +4,26 @@
 var mobile = window.matchMedia( "(max-width: 640px)" );*/
 var tablet = Modernizr.mq( "only screen and (max-width: 1024px)" );
 var phone = Modernizr.mq( "only screen and (max-width: 640px)" );
+var template = '<div id="article-container"><div ng-repeat="page in pages"><div class="article-page" grid-page articles="page.articles" page="$index"></div></div></div>';
+
+if(tablet){
+    template = '<div id="article-container">' +
+                '<div class="sliderContainer">' +
+                    '<div class="iosSlider">' +
+                        '<div class="slider">' +
+                            /*'<div class="slide item1">slide 1</div>' +
+                            '<div class="slide item2">slide 2</div>' +
+                            '<div class ="slide item3">slide 3</div>' +
+                            '<div class ="slide item4">slide 4</div>' +
+                            '<div class ="slide item5">slide 5</div>' +*/
+                            '<div class="slide" ng-repeat="page in pages">' +
+                                '<div class="article-page" grid-page articles="page.articles" page="$index"></div>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+               '</div>';
+}
 
 function is_touch_device() {
     return !!('ontouchstart' in window) // works on most browsers
@@ -155,25 +175,49 @@ angular.module('ejs.directives').directive('grid', function(){
             articles: '=',
             pageSize: '='
         },
-        template: '<div id="article-container"><div ng-repeat="page in pages"><div class="article-page" grid-page articles="page.articles" page="$index"></div></div></div>',
+        template: template,
         replace: true,
-        link: function(scope, elem, attr) {
-            scope.pages = [];
-            var from = 0;
+        compile: function(element, attrs){
+            if(tablet){
+                $('.iosSlider').iosSlider({
+                    snapToChildren: true,
+                    desktopClickDrag: true,
+                    onSlideComplete: slideComplete
+                });
+            }
 
-            //we watch the article scope property because the array is loaded in with AJAX, and we can't do any rendering until it's loaded from the server
-            //because of this, we want to make sure array of articles is at least 0 before rendering, otherwise there's nothing to render and we'd get an error message
-            scope.$watch('articles', function (newValue, oldValue) {
-                if(newValue.length > 0)
-                {
-                    scope.pages.push({"articles": newValue.slice(from)});
+            function slideComplete(args){
+                if((args.data.numberOfSlides) == args.currentSlideNumber){
+                    $('.iosSlider').iosSlider('addSlide', "<div class = 'slide item5'>slide "+ (args.data.numberOfSlides + 1) +"</div>", args.data.numberOfSlides + 1)
                 }
-            });
+            }
 
-            scope.$on('event:nextPageStart', function(event, nextStart) {
-                from += nextStart;
-            });
+            return function(scope, elem, attr) {
+                scope.pages = [];
+                var from = 0;
+
+                //we watch the article scope property because the array is loaded in with AJAX, and we can't do any rendering until it's loaded from the server
+                //because of this, we want to make sure array of articles is at least 0 before rendering, otherwise there's nothing to render and we'd get an error message
+                scope.$watch('articles', function (newValue, oldValue) {
+                    if(newValue.length > 0)
+                    {
+                        var page = newValue.slice(0,5);
+                        scope.pages.push({"articles": page});
+
+                        page = newValue.slice(6,12);
+                        scope.pages.push({"articles": page});
+
+                        page = newValue.slice(13,19)
+                        scope.pages.push({"articles": page});
+                    }
+                });
+
+                scope.$on('event:nextPageStart', function(event, nextStart) {
+                    from += nextStart;
+                });
+            }
         }
+        //link:
     };
 });
 
@@ -296,6 +340,9 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                     }
                 });
 
+                if(tablet){
+                    $('.iosSlider').iosSlider('update');
+                }
             };
 
             function renderForPhones(articles, complete){
@@ -590,14 +637,14 @@ angular.module('ejs.directives').directive('whenScrolled', function() {
 
         if( (tablet) && (is_touch_device()) )
         {
-            $(elm).hammer().on('swiperight', function() {
+            /*$(elm).hammer().on('swiperight', function() {
                 //scope.$apply(attr.whenScrolled);
                 alert('Swiped right!!!');
             });
             $(elm).hammer().on('swipeleft', function() {
                 //scope.$apply(attr.whenScrolled);
                 alert('Swiped left!!!');
-            });
+            });*/
         } else {
             angular.element(window).bind('scroll', function() {
                 var rectObject = raw.getBoundingClientRect();
