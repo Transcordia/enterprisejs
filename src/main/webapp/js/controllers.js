@@ -84,19 +84,21 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
 
             $http.get('api/articles/?from='+ from +'&size='+ size)
                 .success(function(data){
-                    numArticlesInLastResponse = data.content.length;
+                    if(data.content.length > 0) {
+                        numArticlesInLastResponse = data.content.length;
 
-                    if(!tabletMode)
-                    {
-                        $scope.newArticles = data.content;
+                        if(!tabletMode)
+                        {
+                            $scope.newArticles = data.content;
 
-                        $scope.articles = $scope.articles.concat(data.content);
-                    } else { //if the user is on a tablet, then we want to replace the article list with the old articles + the new from of articles
-                        $scope.articles = $scope.extraTabletArticles.concat(data.content);
-                        window.scrollTo(0, 0);
+                            $scope.articles = $scope.articles.concat(data.content);
+                        } else { //if the user is on a tablet, then we want to replace the article list with the old articles + the new from of articles
+                            $scope.articles = $scope.extraTabletArticles.concat(data.content);
+                            window.scrollTo(0, 0);
+                        }
+
+                        //$scope.$emit('LOAD_MORE_COMPLETE');
                     }
-
-                    //$scope.$emit('LOAD_MORE_COMPLETE');
                 });
         }
 
@@ -306,11 +308,10 @@ function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams){
     $http.get('api/articles/' + id)
         .success(function(data, status, headers){
             $scope.article = data.content;
-            $scope.article
 
-            $http.put('api/articles/views/'+ id, data.content)
+            $http.post('api/articles/views/'+ id)
                 .success(function(data) {
-                    $log.info(data);
+                    $scope.article.views = data.content.views;
                 });
         });
 
