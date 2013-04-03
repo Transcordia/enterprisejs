@@ -14,7 +14,7 @@ function is_touch_device() {
         || !!('onmsgesturechange' in window); // works on ie10
 }
 
-function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout) {
+function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout, $window) {
     $scope.urlToCheck = '';
     $scope.articles = [];
 
@@ -107,7 +107,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
         $scope.extraTabletArticles = extras;
     });
 }
-AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout"];
+AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout", "$window"];
 
 //Controller for the modal that shows up when adding a new article. All this really does is send the URL off to the full add article controller
 function addArticleModal($rootScope, $scope, $location) {

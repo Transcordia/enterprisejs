@@ -811,8 +811,27 @@ p{
         display: none;
     }
 
+    .navbar-inner{
+        position: relative;
+        height: 30px;
+        background: url('../img/img_header_bg_mobile.png') repeat-x 0 0;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .navbar-inner a{
+        float: left;
+        position: relative;
+        left: -23px;
+    }
+
+    .navbar-inner a img{
+        height: 38px;
+    }
+
     #article-container {
         padding-bottom: 0;
+        margin-bottom: 0;
     }
 }
 
@@ -847,24 +866,6 @@ p{
     .row .article .content img {
         float: none;
         padding: 0;
-    }
-
-    .navbar-inner{
-        position: relative;
-        height: 30px;
-        background: url('../img/img_header_bg_mobile.png') repeat-x 0 0;
-        padding-left: 0;
-        padding-right: 0;
-    }
-
-    .navbar-inner a{
-        float: left;
-        position: relative;
-        left: -23px;
-    }
-
-    .navbar-inner a img{
-        height: 38px;
     }
 
     #article-container .article{
