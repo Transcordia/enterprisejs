@@ -113,6 +113,10 @@ app.get('/articles/:id', function(req, id){
     var exchange = httpclient.request(opts);
     var article = JSON.parse(exchange.content);
     article.dateCreated = iso8601ToDate(article.dateCreated);
+    if(article.content === "")
+    {
+        article.content = article.description;
+    }
 
     return json({
         'status': exchange.status,
