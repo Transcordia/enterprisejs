@@ -170,15 +170,10 @@ app.post('/processurl', function(req){
 });
 
 //increases the view count of an article
-app.put('/articles/views/:id', function(req, id){
-    var article = req.postParams;
-
-    article.views ++;
-
+app.post('/articles/views/:id', function(req, id){
     var opts = {
-        url: getZociaUrl(req) + '/resources/' + id,
-        method: 'PUT',
-        data: JSON.stringify(article),
+        url: getZociaUrl(req) + '/views/' + id,
+        method: 'POST',
         headers: Headers({ 'x-rt-index': 'ejs',
             'Content-Type': 'application/json',
             'Authorization': _generateBasicAuthorization('backdoor', 'Backd00r')}),
