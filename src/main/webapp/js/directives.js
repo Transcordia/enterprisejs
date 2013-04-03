@@ -220,6 +220,11 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 "h": 320
             };
 
+            if(tablet){
+                blockSize.w = 340;
+                blockSize.h = 300;
+            }
+
             //these are the various properties that are passed into the grid object upon creation. Change these values when doing stuff like paging to dynamically resize the grid
             //max block width/height are for the maximum possible size of any single abstract in the grid
             var gridSize = {
@@ -228,6 +233,10 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 "maxBlockWidth": 3,
                 "maxBlockHeight": 2
             };
+
+            if(tablet){
+                gridSize.maxBlockWidth = 2;
+            }
 
             //the function that runs after all the articles are in place
             //this is still rather slow, and cause take upwards of 800-1000 ms to run
@@ -411,7 +420,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
 
             //this goes through all the articles, and renders them.
             function render(articles, complete) {
-
+                $log.info('In render()');
                 //generates HTML of an article, and then appends it to the container div
                 //NOTE: the x, y, w, h arguments are all in column and row positions, and NOT in pixels. these values are multiplied by the blockSize height and width to get the CSS values needed
                 function create(x, y, w, h, article) {
@@ -478,6 +487,10 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 //grid rows is overwritten, which gives us a nice page style and prevents "hanging chads"
                 gridSize.rows = Math.ceil(articles.length/gridSize.columns);
 
+                if(tablet){
+                    gridSize.rows = 2;
+                }
+
                 var grid = new ReservationGrid(gridSize.columns, gridSize.rows, gridSize.maxBlockWidth, gridSize.maxBlockHeight);
 
                 var count = 0;
@@ -508,7 +521,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                     });
 
                     if(tablet){
-                        $('#article-container').css({'width': totalWidth + 'px'});
+                        $('#article-container').css({'width': '100%'});
                     }
 
                     var wrapperOffset = ($(window).width() - $('#wrapper').width()) / 2;

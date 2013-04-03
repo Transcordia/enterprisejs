@@ -14,7 +14,7 @@ function is_touch_device() {
         || !!('onmsgesturechange' in window); // works on ie10
 }
 
-function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout) {
+function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout, $window) {
     $scope.urlToCheck = '';
     $scope.articles = [];
 
@@ -107,7 +107,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
         $scope.extraTabletArticles = extras;
     });
 }
-AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout"];
+AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout", "$window"];
 
 //Controller for adding articles. This is mostly for the pop-up modal windows when adding an article.
 //the template for this is located in add-article.html
