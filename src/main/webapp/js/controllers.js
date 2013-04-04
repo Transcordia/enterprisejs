@@ -198,11 +198,19 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
     };
 
     //setting activeImage to -1 will let the "saveArticle" bit know not to include an image.
-    //todo: this does not hide the next/previous image buttons, and can cause an out of bounds error if those are used after the image is hidden
     $scope.noImage = function() {
         $scope.article.images[activeImage].show = false;
         activeImage = -1;
         $scope.hideImages = true;
+    };
+
+    $scope.showImage = function() {
+        if($scope.article.images.length > 0)
+        {
+            activeImage = 0;
+            $scope.hideImages = false;
+            showActiveImage();
+        }
     };
 
     //Once the user is OK with the parsed article, and has decided on an image to use, this does all the further processing needed to save said article.
@@ -305,6 +313,8 @@ function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $
 
     $scope.articleLayout = "one-col three-row";
     $scope.marginLeft = marginLeft;
+    //we need to know the full URL for twitter/facebook sharing, and when we get it, we need to url encode the # so it doesn't break things
+    $scope.fullUrl = $location.absUrl().replace('#', '%23');
 }
 ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$window"];
 

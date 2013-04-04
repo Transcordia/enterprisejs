@@ -11,6 +11,10 @@
                         </div>
                     </div>
                 </div>
+                <div ng-show="hideImages && article.images.length > 0">
+                    <h4>No Image Selected</h4>
+                    <a ng-click="showImage()">Select an image</a>
+                </div>
 
                 <h4>Article Title</h4>
                 <p>{{article.title}}</p>
