@@ -305,6 +305,8 @@ function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $
 
     $scope.articleLayout = "one-col three-row";
     $scope.marginLeft = marginLeft;
+    //we need to know the full URL for twitter/facebook sharing, and when we get it, we need to url encode the # so it doesn't break things
+    $scope.fullUrl = $location.absUrl().replace('#', '%23');
 }
 ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$window"];
 
