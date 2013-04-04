@@ -197,9 +197,14 @@ p{
     transition: color .2s linear;
 }
 
-.article h1 a:hover{
+.article h1 a:hover,
+.modal-header h3 a{
     color: #fcd404;
     text-decoration: none;
+}
+
+.modal-header h3 a{
+    color: #000;
 }
 
 .article .title-description h1{
@@ -825,6 +830,41 @@ p{
 
 .iosSlider .slider .item5 {
     background: #777;
+}
+
+.modal.full-article{
+    border-radius: 0;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+}
+
+.modal.fade.in.full-article{
+    top: 2%;
+    left: 50%;
+}
+
+.modal.fade.full-article{
+    top: 2%;
+    left: -25%;
+    -webkit-transition: opacity 0.3s linear, left 0.3s ease-out;
+    -moz-transition: opacity 0.3s linear, left 0.3s ease-out;
+    -o-transition: opacity 0.3s linear, left 0.3s ease-out;
+    transition: opacity 0.3s linear, left 0.3s ease-out;
+}
+
+.modal.fade.full-article .modal-body{
+    padding: 0;
+    overflow: hidden;
+    max-height: none;
+}
+
+.modal-body iframe{
+    border: none;
+    height: 98%;
+}
+
+.modal.fade.full-article .modal-header{
+    border-bottom: none;
 }
 
 @media (max-width: 1370px){

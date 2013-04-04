@@ -289,7 +289,7 @@ EditArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", 
  * @param $location
  * @param $routeParams
  */
-function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams){
+function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $window){
     var id = $routeParams.id;
     $http.get('api/articles/' + id)
         .success(function(data, status, headers){
@@ -301,9 +301,12 @@ function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams){
                 });
         });
 
+    var marginLeft = 'margin-left:-' + (($window.innerWidth * 0.96) / 2) + 'px';
+
     $scope.articleLayout = "one-col three-row";
+    $scope.marginLeft = marginLeft;
 }
-ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "TimeAgo"];
+ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$window"];
 
 
 
