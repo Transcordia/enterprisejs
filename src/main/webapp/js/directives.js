@@ -1,8 +1,6 @@
 'use strict';
 
-/*var tablet = window.matchMedia( "(max-width: 1024px)" );
-var mobile = window.matchMedia( "(max-width: 640px)" );*/
-var tablet = Modernizr.mq( "only screen and (max-width: 1024px)" );
+var tablet = Modernizr.mq( "only screen and (max-width: 1024px) and (min-width: 641px)" );
 var phone = Modernizr.mq( "only screen and (max-width: 640px)" );
 
 var template = '<div id="article-container"><div ng-repeat="page in pages"><div class="article-page" grid-page articles="page.articles" page="$index"></div></div></div>';
@@ -278,7 +276,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
             //this is still rather slow, and cause take upwards of 800-1000 ms to run
 
             // could not recreate the conditions that caused > 800 ms of runtime for this callback,
-            // but removing the ellipsis plugin decrease the runtime by a factor of 10
+            // but removing the ellipsis plugin decreases the runtime by a factor of 10
             var animationComplete = function(){
                 var parentWidth = 0;
 
@@ -356,7 +354,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                         imageOrientation = article.thumbnailOrientation;
                     }
 
-                    if(i < 4 && scope.from == 0){
+                    if(i < 4 && scope.page == 0){
                         articleHtml += '<div class="article featured">\
                                             <div class="abstract-title-holder">\
                                                 <span>\

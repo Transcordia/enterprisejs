@@ -916,6 +916,10 @@ p{
         padding: 0;
     }
 
+    #article-container {
+        margin-bottom: 60px;
+    }
+
     #article-container .article{
         position: relative;
         border-left: none;
@@ -929,9 +933,10 @@ p{
         margin-bottom: 10px;
     }
 
-    .article.featured h1{
+    .article.featured h1 a{
         width: auto;
         padding-right: 10px;
+        color: #dcdcdc;
     }
 
     .article.has-image,

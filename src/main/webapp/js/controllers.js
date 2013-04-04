@@ -3,10 +3,7 @@
 /* Controllers */
 
 //
-/*var tablet = window.matchMedia( "(max-width: 1024px)" );
-var mobile = window.matchMedia( "(max-width: 640px)" );*/
-
-var tablet = Modernizr.mq( "only screen and (max-width: 1024px)" );
+var tablet = Modernizr.mq( "only screen and (max-width: 1024px) and (min-width: 641px)" );
 var mobile = Modernizr.mq( "only screen and (max-width: 640px)" );
 
 function is_touch_device() {
@@ -25,7 +22,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
     var lastPage = false;
     var tabletMode = ((tablet) && !(mobile)) && (is_touch_device());
 
-    if (tabletMode)
+    if (tablet)
     {
         // viewport is tablet
         size = 6;
@@ -72,11 +69,11 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
 
     $scope.$on('event:loadMoreArticles', function(){
         loadMoreArticles();
-    })
+    });
 
-    $scope.loadMore = function() {
+    /*$scope.loadMore = function() {
         loadMoreArticles();
-    };
+    };*/
 
     function loadMoreArticles(){
         if(!lastPage){
@@ -86,17 +83,6 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
                         numArticlesInLastResponse = data.content.length;
 
                         $scope.articles = $scope.articles.concat(data.content);
-                        /*if(!tabletMode)
-                        {
-                            $scope.newArticles = data.content;
-
-                            $scope.articles = $scope.articles.concat(data.content);
-                        } else { //if the user is on a tablet, then we want to replace the article list with the old articles + the new from of articles
-                            $scope.articles = $scope.extraTabletArticles.concat(data.content);
-                            window.scrollTo(0, 0);
-                        }*/
-
-                        //$scope.$emit('LOAD_MORE_COMPLETE');
                     }
                 });
         }
@@ -106,9 +92,9 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
         }
     }
 
-    $scope.$on('extraArticles', function(event, extras) {
+    /*$scope.$on('extraArticles', function(event, extras) {
         $scope.extraTabletArticles = extras;
-    });
+    });*/
 }
 AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout", "$window"];
 
