@@ -168,7 +168,7 @@ function tabletLayout(articles, scope)
 //this keeps track of our article pages, by dividing them up into an array of objects, each of which simply contains a property "articles"
 //it's worth pointing out that the article array gets split based on the index of the last article shown, and not loaded.
 //because of this, there's probably going to have to be some changes in how the paging system on the backend works once zocia is implemented.
-angular.module('ejs.directives').directive('grid', function(){
+angular.module('ejs.directives').directive('grid', ["$log", function($log){
     return {
         restrict: 'A',
         scope: {
@@ -178,6 +178,8 @@ angular.module('ejs.directives').directive('grid', function(){
         template: template,
         replace: true,
         compile: function(element, attrs){
+            var directiveScope;
+
             if(tablet){
                 $('.iosSlider').iosSlider({
                     snapToChildren: true,
@@ -188,11 +190,14 @@ angular.module('ejs.directives').directive('grid', function(){
 
             function slideComplete(args){
                 if((args.data.numberOfSlides) == args.currentSlideNumber){
-                    $('.iosSlider').iosSlider('addSlide', "<div class = 'slide item5'>slide "+ (args.data.numberOfSlides + 1) +"</div>", args.data.numberOfSlides + 1)
+                    //$('.iosSlider').iosSlider('addSlide', "<div class = 'slide item5'>slide "+ (args.data.numberOfSlides + 1) +"</div>", args.data.numberOfSlides + 1)
+                    directiveScope.$emit('event:loadMoreArticles');
                 }
             }
 
             return function(scope, elem, attr) {
+                directiveScope = scope;
+
                 scope.pages = [];
                 var from = 0;
 
@@ -201,14 +206,7 @@ angular.module('ejs.directives').directive('grid', function(){
                 scope.$watch('articles', function (newValue, oldValue) {
                     if(newValue.length > 0)
                     {
-                        var page = newValue.slice(0,5);
-                        scope.pages.push({"articles": page});
-
-                        page = newValue.slice(6,12);
-                        scope.pages.push({"articles": page});
-
-                        page = newValue.slice(13,19)
-                        scope.pages.push({"articles": page});
+                        scope.pages.push({"articles": newValue.slice(from)});
                     }
                 });
 
@@ -219,13 +217,13 @@ angular.module('ejs.directives').directive('grid', function(){
         }
         //link:
     };
-});
+}]);
 
 //this creates a single page of a grid based layout, using reservations.grid to handle the decision of where to place various abstracts in the layout.
 //overall, this code isn't that much different from the nested directive, though a few bits have been moved around for speed and
 //the actual process of attaching the html element to the DOM is here, instead of in the nested code
 //this directive is used in conjunction with the more generic 'grid' directive, and probably never needs to be used in an actual template outside of that
-angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', '$log', 'TimeAgo', function (truncate, $timeout, $log, TimeAgo) {
+angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', '$log', 'TimeAgo', '$window', function (truncate, $timeout, $log, TimeAgo, $window) {
     return {
         scope: {
             articles: '=',
@@ -265,8 +263,8 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
             };
 
             if(tablet){
-                blockSize.w = 340;
-                blockSize.h = 300;
+                blockSize.w = $window.innerWidth / 3;
+                blockSize.h = ($window.innerHeight - 30) / 2;
             }
 
             //these are the various properties that are passed into the grid object upon creation. Change these values when doing stuff like paging to dynamically resize the grid
@@ -467,7 +465,6 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
 
             //this goes through all the articles, and renders them.
             function render(articles, complete) {
-                $log.info('In render()');
                 //generates HTML of an article, and then appends it to the container div
                 //NOTE: the x, y, w, h arguments are all in column and row positions, and NOT in pixels. these values are multiplied by the blockSize height and width to get the CSS values needed
                 function create(x, y, w, h, article) {
@@ -529,6 +526,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                             top: (y * blockSize.h) + 'px'
                         })
                         .appendTo(container);
+
                 }
 
                 //grid rows is overwritten, which gives us a nice page style and prevents "hanging chads"
