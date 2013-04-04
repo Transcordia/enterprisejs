@@ -4,6 +4,7 @@
 var mobile = window.matchMedia( "(max-width: 640px)" );*/
 var tablet = Modernizr.mq( "only screen and (max-width: 1024px)" );
 var phone = Modernizr.mq( "only screen and (max-width: 640px)" );
+
 var template = '<div id="article-container"><div ng-repeat="page in pages"><div class="article-page" grid-page articles="page.articles" page="$index"></div></div></div>';
 
 if(tablet){
@@ -185,7 +186,6 @@ angular.module('ejs.directives').directive('grid', ["$log", function($log){
 
             function slideComplete(args){
                 if((args.data.numberOfSlides) == args.currentSlideNumber){
-                    //$('.iosSlider').iosSlider('addSlide', "<div class = 'slide item5'>slide "+ (args.data.numberOfSlides + 1) +"</div>", args.data.numberOfSlides + 1)
                     directiveScope.$emit('event:loadMoreArticles');
                 }
             }
@@ -210,7 +210,6 @@ angular.module('ejs.directives').directive('grid', ["$log", function($log){
                 });
             }
         }
-        //link:
     };
 }]);
 
@@ -328,9 +327,9 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                         var img = $(this).find('.abstract-image-holder img').removeAttr('height').css('width', '280px');
                     }
 
-                    if(!phone){
+                    //if(!phone){
                         //$('.abstract-title-holder span h1').ellipsis();
-                    }
+                    //}
                 });
 
                 if(tablet){
@@ -435,14 +434,9 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                             div.appendTo('#article-container');
                         }
 
-                        //scope.loadMore();
                         scope.$emit('event:loadMoreArticles');
                     }
                 });
-
-                /*scope.$on('LOAD_MORE_COMPLETE', function(){
-                    $('.gears').remove();
-                });*/
 
                 complete();
 
@@ -628,30 +622,18 @@ angular.module('ejs.directives').directive('whenScrolled', function() {
         var raw = elm[0];
         var offset = attr.offset || 0;
 
-        if( (tablet) && (is_touch_device()) )
-        {
-            /*$(elm).hammer().on('swiperight', function() {
-                //scope.$apply(attr.whenScrolled);
-                alert('Swiped right!!!');
-            });
-            $(elm).hammer().on('swipeleft', function() {
-                //scope.$apply(attr.whenScrolled);
-                alert('Swiped left!!!');
-            });*/
-        } else {
-            angular.element(window).bind('scroll', function() {
-                var rectObject = raw.getBoundingClientRect();
-                //the number being subtracted from window.height() is the static height of any footers or other elements that are on all the pages.
-                //offset is passed in as an option and is the height of any padding or margins that might occur as part of the element this directive is used on
-                //
-                //WARNING: if there's any changes in that collection of elements (mostly in terms of changing the CSS), these numbers needs to be changed. this also prevents use of 'ems' as they don't translate consistently to pixel values
-                //there might be a way to handle this without using static numbers. if so, please do, as this current solution isn't as flexible and reusable as it could be
-                if (Math.floor(rectObject.bottom) === $(window).height() - 0 - offset) {
-                    scope.$apply(attr.whenScrolled);
-                }
-                //console.log("compare: "+(Math.floor(rectObject.bottom) + " = " + ($(window).height() - 0 - offset)));  //if there's any problems with this whenScrolled method, uncomment this to debug
-            });
-        }
+        angular.element(window).bind('scroll', function() {
+            var rectObject = raw.getBoundingClientRect();
+            //the number being subtracted from window.height() is the static height of any footers or other elements that are on all the pages.
+            //offset is passed in as an option and is the height of any padding or margins that might occur as part of the element this directive is used on
+            //
+            //WARNING: if there's any changes in that collection of elements (mostly in terms of changing the CSS), these numbers needs to be changed. this also prevents use of 'ems' as they don't translate consistently to pixel values
+            //there might be a way to handle this without using static numbers. if so, please do, as this current solution isn't as flexible and reusable as it could be
+            if (Math.floor(rectObject.bottom) === $(window).height() - 0 - offset) {
+                scope.$apply(attr.whenScrolled);
+            }
+            //console.log("compare: "+(Math.floor(rectObject.bottom) + " = " + ($(window).height() - 0 - offset)));  //if there's any problems with this whenScrolled method, uncomment this to debug
+        });
     };
 });
 
