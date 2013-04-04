@@ -854,7 +854,6 @@ p{
 
 .modal.fade.full-article .modal-body{
     padding: 0;
-    overflow: hidden;
     max-height: none;
 }
 
