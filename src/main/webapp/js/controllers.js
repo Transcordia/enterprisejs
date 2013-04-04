@@ -106,6 +106,7 @@ function addArticleModal($rootScope, $scope, $location) {
     $scope.addArticle = function(url){
         $rootScope.showAddUrlModal = false;
         $rootScope.url = url;
+        $scope.urlToCheck = '';
         $location.path('/article/add');
     };
 }
