@@ -80,14 +80,13 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
 
     function loadMoreArticles(){
         if(!lastPage){
-            $log.info('Loading from ' + from);
-
             $http.get('api/articles/?from='+ from +'&size='+ size)
                 .success(function(data){
                     if(data.content.length > 0) {
                         numArticlesInLastResponse = data.content.length;
 
-                        if(!tabletMode)
+                        $scope.articles = $scope.articles.concat(data.content);
+                        /*if(!tabletMode)
                         {
                             $scope.newArticles = data.content;
 
@@ -95,7 +94,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
                         } else { //if the user is on a tablet, then we want to replace the article list with the old articles + the new from of articles
                             $scope.articles = $scope.extraTabletArticles.concat(data.content);
                             window.scrollTo(0, 0);
-                        }
+                        }*/
 
                         //$scope.$emit('LOAD_MORE_COMPLETE');
                     }

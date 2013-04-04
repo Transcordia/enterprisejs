@@ -11,11 +11,6 @@ if(tablet){
                 '<div class="sliderContainer">' +
                     '<div class="iosSlider">' +
                         '<div class="slider">' +
-                            /*'<div class="slide item1">slide 1</div>' +
-                            '<div class="slide item2">slide 2</div>' +
-                            '<div class ="slide item3">slide 3</div>' +
-                            '<div class ="slide item4">slide 4</div>' +
-                            '<div class ="slide item5">slide 5</div>' +*/
                             '<div class="slide" ng-repeat="page in pages">' +
                                 '<div class="article-page" grid-page articles="page.articles" page="$index"></div>' +
                             '</div>' +
