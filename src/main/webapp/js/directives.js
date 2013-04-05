@@ -178,11 +178,11 @@ angular.module('ejs.directives').directive('grid', ["$log", function($log){
                 $('.iosSlider').iosSlider({
                     snapToChildren: true,
                     desktopClickDrag: true,
-                    onSlideComplete: slideComplete
+                    onSlideStart: slideStart
                 });
             }
 
-            function slideComplete(args){
+            function slideStart(args){
                 if((args.data.numberOfSlides) == args.currentSlideNumber){
                     directiveScope.$emit('event:loadMoreArticles');
                 }
