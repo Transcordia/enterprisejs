@@ -18,7 +18,7 @@
 
                         <div class="content">
                             <img ng-src="{{article.thumbnail}}" alt="">
-                            <p class="description">{{article.content}}</p>
+                            <p class="description" ng-bind-html-unsafe="article.content"></p>
                         </div>
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                         <!--<div class="article-tweet-button" reload-twitter-btns>
                             <a href="https://twitter.com/share" data-url="{{url}}" data-text="Enterprise JS: {{article.title}}" class="twitter-share-button" data-lang="en">Tweet</a>
                         </div>-->
-
+                        <!--<a ng-href="/article/edit/{{article._id}}">Edit</a>-->
                         <!--<span class="muted"><like objectid="{{article._id}}"></like> ({{article.likes}})</span>-->
                     </div>
                 </div>
