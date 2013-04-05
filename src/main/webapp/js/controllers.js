@@ -17,7 +17,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
 
     var from = 0;
     var size = 20;
-    var totalArticles = 100;
+    var totalArticles = 30;
     var numArticlesInLastResponse;
     var lastPage = false;
     var tabletMode = ((tablet) && !(mobile)) && (is_touch_device());
@@ -64,31 +64,24 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
     
     $scope.$on('event:nextPageStart', function(event, nextStart) {
         from += nextStart;
-        //$log.info('number of articles passed into event listener ' + nextStart);
+        $log.info('start paging from: ' + from);
     });
 
     $scope.$on('event:loadMoreArticles', function(){
         loadMoreArticles();
     });
 
-    /*$scope.loadMore = function() {
-        loadMoreArticles();
-    };*/
-
     function loadMoreArticles(){
         if(!lastPage){
             $http.get('api/articles/?from='+ from +'&size='+ size)
                 .success(function(data){
                     if(data.content.length > 0) {
-                        numArticlesInLastResponse = data.content.length;
-
                         $scope.articles = $scope.articles.concat(data.content);
+                    }else{
+                        lastPage = true;
+                        $scope.$broadcast('event:lastPage');
                     }
                 });
-        }
-
-        if(numArticlesInLastResponse < size){
-            lastPage = true;
         }
     }
 

@@ -223,6 +223,11 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
         },
         link:  function(scope, element, attrs) {
             //this is for converting our single digit layout property on the article to a width and height value when using the grid
+            scope.$on('event:lastPage', function(){
+                $('.gears').css('display', 'none');
+                $('#article-container').css('margin-bottom', '0px');
+            });
+
             var gridCombinations = {
                 "1": {
                     "w": 1,
@@ -391,6 +396,8 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                     image = " no-image";
                     imageOrientation = " "
                 }
+
+                scope.$emit('event:nextPageStart', 20);
 
                 $(articleHtml).appendTo(container);
 
