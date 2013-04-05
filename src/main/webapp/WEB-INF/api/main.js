@@ -90,16 +90,21 @@ app.post('articles/image', function(req){
     };
 
     return _simpleHTTPRequest(opts);
-})
+});
 
 //editing an article
 app.put('/articles', function(req){
     var article = req.postParams.article;
 
-    var map = store.getMap('ejs', 'articles');
+    var opts = {
+        url: getZociaUrl(req) + '/resources/' + article._id,
+        method: 'PUT',
+        data: JSON.stringify(article),
+        headers: Headers({ 'x-rt-index': 'ejs', 'Content-Type': 'application/json', 'Authorization': _generateBasicAuthorization('backdoor', 'Backd00r') }),
+        async: false
+    };
 
-    map.put(article);
-    return json(article, 201);
+    return _simpleHTTPRequest(opts);
 });
 
 app.get('/articles/:id', function(req, id){

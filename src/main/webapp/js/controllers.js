@@ -277,10 +277,18 @@ function EditArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParam
             $scope.article = data.content;
         });
 
+    $scope.success = false;
+    $scope.status = false;
+
     $scope.save = function() {
+        $scope.status = false;
         $http.put('api/articles', { "article": $scope.article })
-            .success(function(data, status, headers){
-                $location.path('/article/' + data._id);
+            .success(function(data, status, headers){  console.log("article edit result: ",data);
+                if(data.success) {
+                    $scope.success = true;
+                } else {
+                    $scope.status = data.status + " " + data.content.message;
+                }
             });
     }
 }

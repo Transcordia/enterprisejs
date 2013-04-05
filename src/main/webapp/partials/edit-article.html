@@ -1,26 +1,26 @@
 <div class="container">
     <div class="row">
-        <div class="span12">
-            <div class="article {{articleLayout}}">
-                <h2>{{article.title}}</h2>
+        <div class="article">
+            <div class="span5">
+                <h4>Article Image</h4>
+                <img ng-src="{{article.thumbnail}}" check-size>
 
-                <div class="article-holder new-article">
-                    <img ng-src="{{article.images[0].src}}" alt="">
-                </div>
+                <h4>Article Title</h4>
+                <p>{{article.title}}</p>
+                <h4>Article Description</h4>
                 <p class="description"><textarea ng-model="article.description"></textarea></p>
+                <h4>Article Content</h4>
                 <p class="content"><textarea ng-model="article.content"></textarea></p>
-                <p class="stats clearfix">
-                    <span class="likes-count">0 likes</span>
-                    <span class="comment-count">0 comments</span>
-                    <span class="reblog-count">0 reblogs</span>
-                </p>
-                <div class="convo clearfix">
-                    <a href=""><div class="image-placeholder"></div></a>
-                    <p></p>
-                </div>
+
+                <div ng-show="success" style="font-size: 14px;">Article saved successfully. <a ng-href="#/article/{{article._id}}">View the updated article now</a></div>
+                <div ng-show="status != false" style="font-size: 14px;">Error saving article: {{status}}</div>
+                <button ng-click="save()" class="btn btn-warning">Save Article</button>
             </div>
 
-            <button ng-click="save()">Save</button>
+            <div class="span6">
+                <iframe src="{{article.url}}" width="98%" height="800"></iframe><br>
+            </div>
         </div>
+
     </div>
 </div>
