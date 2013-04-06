@@ -635,7 +635,8 @@ angular.module('ejs.directives').directive('whenScrolled', function() {
             //WARNING: if there's any changes in that collection of elements (mostly in terms of changing the CSS), these numbers needs to be changed. this also prevents use of 'ems' as they don't translate consistently to pixel values
             //there might be a way to handle this without using static numbers. if so, please do, as this current solution isn't as flexible and reusable as it could be
             if (Math.floor(rectObject.bottom) === $(window).height() - 0 - offset) {
-                scope.$apply(attr.whenScrolled);
+                //scope.$apply(attr.whenScrolled);
+                scope.$emit('event:loadMoreArticles');
             }
             //console.log("compare: "+(Math.floor(rectObject.bottom) + " = " + ($(window).height() - 0 - offset)));  //if there's any problems with this whenScrolled method, uncomment this to debug
         });
