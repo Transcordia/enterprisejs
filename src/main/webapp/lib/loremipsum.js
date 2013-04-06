@@ -145,7 +145,7 @@ function generateRandomArticles(total, save){
             key: 'article-key-' + new Date().getTime(),
             thumbnail: thumbnail,
             author: 'admin',
-            title: title,
+            title: i + ' ' + title,
             format: 'article',
             locale: 'en',
             mimetype: 'image/gif',
