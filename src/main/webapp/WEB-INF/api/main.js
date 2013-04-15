@@ -189,27 +189,6 @@ app.post('/articles/views/:id', function(req, id){
 });
 
 /**
- * Sorts the list of articles according to score (this might be temporary, and removed if/when we switch over to zocia which would have sorting as part of elasticsearch)
- * @param articles
- */
-function sortArticles(articles)
-{
-    articles.sort(function(a, b) {
-        //we actually want higher scores to move to the top, so this is the reverse the comparison on mdn
-        if(a.rating > b.rating)
-        {
-            return -1;
-        }
-        if(a.rating < b.rating)
-        {
-            return 1;
-        }
-
-        return 0;
-    });
-}
-
-/**
  * Function for calculating the score of an article, using the hacknews style scoring algorithm .
  * This drops the score based heavily on time, so newer articles have a higher score, and thus, higher rank, than older ones
  * even those with more views

@@ -35,7 +35,7 @@
 
                         <a class="btn" ng-click="$parent.showFullArticle=true">View Original</a>
                         <!-- not sure how much modifications we can do with twitter and facebook buttons -->
-                        <a class="btn" href="https://twitter.com/share?text=Enterprise JS: {{article.title}} {{fullUrl}}&lang=en" class="twitter-share-button">Share on Twitter</a>
+                        <a class="btn" href="https://twitter.com/share?text=Enterprise JS: {{article.title}} {{fullUrl}}&lang=en" target="_blank" class="twitter-share-button">Share on Twitter</a>
                         <a class="btn" target="_blank" onclick="return !window.open(this.href, 'Facebook', 'width=640,height=300')" href="http://www.facebook.com/sharer/sharer.php?s=100&p[title]={{article.title}}&p[summary]={{article.title}}&p[url]={{fullUrl}}&p[images][0]={{article.thumbnail}}">Share on Facebook</a>
                         <!--<div class="article-tweet-button" reload-twitter-btns>
                             <a href="https://twitter.com/share" data-url="{{url}}" data-text="Enterprise JS: {{article.title}}" class="twitter-share-button" data-lang="en">Tweet</a>
