@@ -109,7 +109,7 @@ function parseStructuredData(url){
     jsoupDocument = Jsoup.connect(url).get();
 
     var ogMeta = jsoupDocument.select('meta[property^=og:]');
-    if(!ogMeta.isEmpty()){
+    if(!ogMeta.isEmpty()){  console.log("CONTENT: "+jsoupDocument.select('meta[property=og:description]').attr('content'));
         var structuredData = {
             title: jsoupDocument.select('meta[property=og:title]').attr('content'),
             author: "admin",
@@ -262,6 +262,11 @@ function parseRSSFeed(xmlDoc, title, url){
                 content: item.select('content|encoded').text(),
                 images: feedImages,
                 uri: url
+            };
+
+            if(feed.content === "")
+            {
+                feed.content = feed.description;
             }
 
             log.info('RSS feed data parsed by Jsoup: {}', JSON.stringify(feed, null, 4));
@@ -314,6 +319,11 @@ function parseAtomFeed(xmlDoc, title, url){
                 content: entry.select('content').text(),
                 images: feedImages,
                 uri: url
+            };
+
+            if(feed.content === "")
+            {
+                feed.content = feed.description;
             }
 
             log.info('Atom feed data parsed by Jsoup: {}', JSON.stringify(feed, null, 4));
@@ -454,13 +464,16 @@ function getAbstractImage(images){
     }
 }
 
-
+//todo: if there's no image, but the article shows up in the FIRST ROW, then the layout is often incorrect.
 function preferredArea(title, description, image){
     // area represents the square area of space an article occupies in the layout
     // values can be 1, 2, 3, 4
     var area = 1; // start with an area of 1
     var orientation;
     var length = description.split(" ").length;
+    var short = 20;
+    var medium = 50;
+    var long = 80;
 
     if(image){
         orientation = abstractImageOrientation(image);
@@ -474,70 +487,70 @@ function preferredArea(title, description, image){
 
     // will this article fit into a 1 x 1?
     // it will if it has short description and no image for the abstract
-    if(!image && length <= 50){
+    if(!image && length <= medium){
         return area;
     }
 
-    if(image && length <= 30){
+    if(image && length <= short){
         return area;
     }
 
     // will this article fit into a 1 x 1?
     // it will if it has a short description and non-portrait image for the abstract
-    if(image && (length > 30
-        && length <= 50)
+    if(image && (length > short
+        && length <= medium)
         && orientation == "landscape"){
         return area; // preferred  area of 2
     }
 
     // will this article fit into a 2 x 1?
     // it will if it has short description and an image for the abstract
-    if(image && length <= 20 && orientation == "portrait"){
+    if(image && length <= short && orientation == "portrait"){
         return area += 1; // preferred  area of 2
     }
 
     // will this article fit into a 2 x 1?
     // it will if it has mid length description and an image for the abstract
     // with a portrait orientation
-    if(image && length > 20
+    if(image && length > short
         && orientation == "portrait"){
         return area += 1; // preferred  area of 2
     }
 
     // will this article fit into a 2 x 1?
     // it will if it has a mid length description and no image for the abstract
-    if(!image && (length > 20
-        && length <= 80)){
+    if(!image && (length > short
+        && length <= long)){
         return area += 1; // preferred  area of 2
     }
 
     // will this article fit into a 1 x 2?
     // it will if it has a description and non-portrait image for the abstract
     if(image && (length > 0
-        && length <= 80)
+        && length <= long)
         && orientation == "landscape"){
         return area += 2; // preferred  area of 3
     }
 
-    if(!image && (length <= 80)){
+    if(!image && (length <= long)){
         return area += 2; // preferred  area of 3
     }
 
     // will this article fit into a 3 x 1?
     // it will if it has a long description and no image for the abstract
-    if(!image && length > 80){
+    if(!image && length > long){
         return area += 3; // preferred  area of 4
     }
 
     // will this article fit into a 3 x 1?
     // it will if it has a long description and smaller image for the abstract
-    if(image && length > 80 && image.w <= 300){
+    if(image && length > long && image.w <= 300){
         return area += 3; // preferred  area of 4
     }
 
     // will this article fit into a 2 x 2?
     // it will if it has a long description and a larger image for the abstract
-    if(image && length > 80 && image.w > 300){
+    if(image && length > long && image.w > 300){
         return area += 4; // preferred  area of 5
     }
 

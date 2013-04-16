@@ -17,7 +17,6 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
 
     var from = 0;
     var size = 20;
-    var totalArticles = 30;
     var numArticlesInLastResponse;
     var lastPage = false;
     var tabletMode = ((tablet) && !(mobile)) && (is_touch_device());
@@ -37,6 +36,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
     $http.get('api/articles/?from=' + from + '&size=' + size)
         .success(function(data, status, headers){
             /*if(data.content.length == 0){
+                var totalArticles = 30;
                 generateRandomArticles(totalArticles, function(data) {
                     $http.post('api/articles', data)
                         .success(function(data, status, headers){
@@ -114,7 +114,14 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
             url: $rootScope.url
         })
             .success(function(data, status, headers){
+                console.log("parsed feed, results are: ",data);
                 $scope.article = data.response;
+                //occasionally (depending on the feed), the uri property doesn't get set. this ensures that that always happens
+                if($scope.article.uri === undefined)
+                {
+                    $scope.article.uri = $rootScope.url;
+                }
+
                 if($scope.article.images.length === 0)
                 {
                     activeImage = -1;
@@ -312,10 +319,13 @@ function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $
 
     var marginLeft = 'margin-left:-' + (($window.innerWidth * 0.96) / 2) + 'px';
 
-    $scope.articleLayout = "one-col three-row";
     $scope.marginLeft = marginLeft;
     //we need to know the full URL for twitter/facebook sharing, and when we get it, we need to url encode the # so it doesn't break things
     $scope.fullUrl = $location.absUrl().replace('#', '%23');
+
+    $scope.$on('$routeChangeStart', function() {
+        $rootScope.showFullArticle = false;
+    });
 }
 ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$window"];
 

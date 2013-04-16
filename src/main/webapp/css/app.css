@@ -674,6 +674,7 @@ p{
 .article-view-container .article{
     box-shadow: none;
     -moz-box-shadow: none;
+    padding: 0 20px;
 }
 
 .row .span8 .article{
@@ -694,7 +695,7 @@ p{
 }
 
 .row .sidebar {
-    margin: 10px;
+    margin: 10px 20px 0 0;
 }
 
 .row .sidebar .time-posted {
