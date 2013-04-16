@@ -109,7 +109,7 @@ function parseStructuredData(url){
     jsoupDocument = Jsoup.connect(url).get();
 
     var ogMeta = jsoupDocument.select('meta[property^=og:]');
-    if(!ogMeta.isEmpty()){
+    if(!ogMeta.isEmpty()){  console.log("CONTENT: "+jsoupDocument.select('meta[property=og:description]').attr('content'));
         var structuredData = {
             title: jsoupDocument.select('meta[property=og:title]').attr('content'),
             author: "admin",
@@ -262,6 +262,11 @@ function parseRSSFeed(xmlDoc, title, url){
                 content: item.select('content|encoded').text(),
                 images: feedImages,
                 uri: url
+            };
+
+            if(feed.content === "")
+            {
+                feed.content = feed.description;
             }
 
             log.info('RSS feed data parsed by Jsoup: {}', JSON.stringify(feed, null, 4));
@@ -314,6 +319,11 @@ function parseAtomFeed(xmlDoc, title, url){
                 content: entry.select('content').text(),
                 images: feedImages,
                 uri: url
+            };
+
+            if(feed.content === "")
+            {
+                feed.content = feed.description;
             }
 
             log.info('Atom feed data parsed by Jsoup: {}', JSON.stringify(feed, null, 4));
@@ -454,7 +464,7 @@ function getAbstractImage(images){
     }
 }
 
-
+//todo: if there's no image, but the article shows up in the FIRST ROW, then the layout is often incorrect.
 function preferredArea(title, description, image){
     // area represents the square area of space an article occupies in the layout
     // values can be 1, 2, 3, 4
