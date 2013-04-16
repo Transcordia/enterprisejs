@@ -256,7 +256,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
             //the size of a single block (1x1) in pixels
             var blockSize = {
                 "w": 320,
-                "h": 320
+                "h": 340
             };
 
             if(tablet){

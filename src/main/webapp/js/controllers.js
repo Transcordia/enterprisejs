@@ -270,15 +270,20 @@ addArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "
 /**
  * For editing an article (mostly choosing layout after the article gets imported. This might not be needed, depending on how things go)
  */
-function EditArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout){
+function EditArticleCtrl($rootScope, $scope, $http, $log, $routeParams, truncate){
 
     $http.get('api/articles/' + $routeParams.id)
         .success(function(data, status, headers){
             $scope.article = data.content;
+            // truncate long descriptions
+            if($scope.article.description.split(" ").length > 50){
+                $scope.article.description = truncate($scope.article.description, 50);
+            }
         });
 
     $scope.success = false;
     $scope.status = false;
+
 
     $scope.save = function() {
         $scope.status = false;
@@ -292,7 +297,7 @@ function EditArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParam
             });
     }
 }
-EditArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout"];
+EditArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$routeParams", "truncate"];
 
 
 /**
@@ -323,9 +328,14 @@ function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $
     //we need to know the full URL for twitter/facebook sharing, and when we get it, we need to url encode the # so it doesn't break things
     $scope.fullUrl = $location.absUrl().replace('#', '%23');
 
-    $scope.$on('$routeChangeStart', function() {
-        $rootScope.showFullArticle = false;
-    });
+    $scope.showArticle = setModal;
+
+    function setModal(value)
+    {
+        $scope.showFullArticle = value;
+    }
+
+    setModal(false);
 }
 ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$window"];
 

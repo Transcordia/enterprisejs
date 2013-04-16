@@ -459,6 +459,11 @@ p{
     display: block;
 }
 
+/* Editing an article */
+.article p input {
+    width: 96%;
+}
+
 .article p textarea {
     width: 95%;
 }
@@ -468,6 +473,7 @@ p{
 .article .content textarea {
     height: 400px;
 }
+
 
 .article.size21.portrait h1{
     float: right;
