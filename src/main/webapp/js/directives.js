@@ -288,7 +288,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
 
                 container.find('.article-content').each(function(){
                     $(this).width($(this).parent().width() - 40);
-                    $(this).height($(this).parent().height() - 85);
+                    $(this).height($(this).parent().height() - 65);
 
                     if($(this).parent().hasClass('size21') ||
                         $(this).parent().hasClass('size11')){
