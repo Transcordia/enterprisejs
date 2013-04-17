@@ -199,7 +199,7 @@ angular.module('ejs.directives').directive('grid', ["$log", function($log){
                 scope.$watch('articles', function (newValue, oldValue) {
                     if(newValue.length > 0)
                     {
-                        scope.pages.push({"articles": newValue.slice(from)});
+                        scope.pages.push({"articles": newValue});
                     }
                 });
 
@@ -346,7 +346,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 var image = " no-image";
                 var imageOrientation = " ";
 
-                for(var i = 1; i < articles.length; i++){
+                for(var i = 0; i < articles.length; i++){
                     var article = articles[i];
                     var date = TimeAgo(article.dateCreated);
 
@@ -359,7 +359,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                         imageOrientation = article.thumbnailOrientation;
                     }
 
-                    if(i < 4 && scope.page == 0){
+                    if(i < 3 && scope.page == 0){
                         articleHtml += '<div class="article featured">\
                                             <div class="abstract-title-holder">\
                                                 <span>\
@@ -546,7 +546,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 } while ( (rez) && (count < articles.length) );
 
                 //lets other directives/controllers know how many articles we successfully used on this page
-                scope.$emit('event:nextPageStart', count);
+                scope.$emit('event:nextPageStart', count - 1);
 
                 //changes the container height. this is important because otherwise our infinite scroll won't work since the container height will be 0 (everything inside it is absolutely positioned)
                 container.height(gridSize.rows * blockSize.h);
