@@ -71,7 +71,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
         loadMoreArticles();
     });
 
-    function loadMoreArticles(){
+    function loadMoreArticles(){  console.log("load more articles");
         if(!lastPage){
             $http.get('api/articles/?from='+ from +'&size='+ size)
                 .success(function(data){
@@ -84,6 +84,8 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
                 });
         }
     }
+
+    $scope.loadMore = loadMoreArticles;
 
     /*$scope.$on('extraArticles', function(event, extras) {
         $scope.extraTabletArticles = extras;
