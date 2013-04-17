@@ -768,7 +768,26 @@ p{
 .row .sidebar .ui-scrollfix {
     position: fixed;
     top: 10px;
-    margin-right: 40px;
+    width: 200px;
+}
+
+@media (min-width: 1200px) {
+    .row .sidebar .ui-scrollfix {
+        width: 250px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+    .row .sidebar .ui-scrollfix {
+        width: 146px;
+    }
+}
+
+@media (max-width: 767px) {
+    .row .sidebar .ui-scrollfix {
+        position: inherit;
+        width: 100%;
+    }
 }
 
 .article.featured p.description{
@@ -885,13 +904,14 @@ p{
 .modal.fade.full-article .modal-header{
     border-bottom: none;
 }
-
+/* really huge desktop */
 @media (max-width: 1370px){
     .hero-title h1{
         font-size: 30px;
     }
 }
 
+/* large-ish desktop */
 @media (max-width: 1024px) {
     #wrapper{
         width: 100%;
@@ -946,6 +966,7 @@ p{
     }
 }
 
+/* tablet */
 @media (max-width: 640px) {
     body{
         padding-right: 0;
