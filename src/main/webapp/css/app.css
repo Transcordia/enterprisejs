@@ -120,6 +120,15 @@ p{
     margin-top: 0;
 }
 
+.edit.article h4{
+    margin-top: 10px;
+}
+
+.edit.article {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
 .article.large{
     width: 100%;
 }
@@ -459,6 +468,11 @@ p{
     display: block;
 }
 
+/* Editing an article */
+.article p input {
+    width: 96%;
+}
+
 .article p textarea {
     width: 95%;
 }
@@ -468,6 +482,7 @@ p{
 .article .content textarea {
     height: 400px;
 }
+
 
 .article.size21.portrait h1{
     float: right;
@@ -748,6 +763,12 @@ p{
         color-stop(0, rgb(230,230,230)),
         color-stop(1, rgb(185,185,185))
     );
+}
+
+.row .sidebar .ui-scrollfix {
+    position: fixed;
+    top: 10px;
+    margin-right: 40px;
 }
 
 .article.featured p.description{

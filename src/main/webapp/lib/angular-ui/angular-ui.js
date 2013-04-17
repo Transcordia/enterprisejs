@@ -194,6 +194,10 @@ angular.module('ui.directives')
       scope.$watch(attrs.ngModel, function(value) {
         elm.modal(value && 'show' || 'hide');
       });
+      //todo: THERE WAS A BUG HERE
+      scope.$on('$routeChangeStart', function() {
+        elm.modal('hide');
+      });
       //If bootstrap animations are enabled, listen to 'shown' and 'hidden' events
       elm.on(jQuery.support.transition && 'shown' || 'show', function() {
         $timeout(function() {

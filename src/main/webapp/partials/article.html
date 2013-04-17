@@ -1,6 +1,6 @@
-<div ui-modal class="modal fade full-article" ng-model="$parent.showFullArticle" style="height:96%;width:96%;{{marginLeft}}">
+<div ui-modal class="modal fade full-article" ng-model="showFullArticle" style="height:96%;width:96%;{{marginLeft}}">
     <div class="modal-header">
-        <button type="button" ng-click="$parent.showFullArticle=false" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <button type="button" ng-click="showArticle(false)" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         <h3><a ng-href="{{article.uri}}">Full Article</a></h3>
     </div>
     <div class="modal-body">
@@ -32,14 +32,15 @@
                         <p class="stats clearfix">
                             <span class="view-count">{{article.views}}</span>
                         </p>
-
-                        <a class="btn" ng-click="$parent.showFullArticle=true">View Original</a>
-                        <!-- not sure how much modifications we can do with twitter and facebook buttons -->
-                        <a class="btn" href="https://twitter.com/share?text=Enterprise JS: {{article.title}} {{fullUrl}}&lang=en" target="_blank" class="twitter-share-button">Share on Twitter</a>
-                        <a class="btn" target="_blank" onclick="return !window.open(this.href, 'Facebook', 'width=640,height=300')" href="http://www.facebook.com/sharer/sharer.php?s=100&p[title]={{article.title}}&p[summary]={{article.title}}&p[url]={{fullUrl}}&p[images][0]={{article.thumbnail}}">Share on Facebook</a>
-                        <!--<div class="article-tweet-button" reload-twitter-btns>
-                            <a href="https://twitter.com/share" data-url="{{url}}" data-text="Enterprise JS: {{article.title}}" class="twitter-share-button" data-lang="en">Tweet</a>
-                        </div>-->
+                        <div ui-scrollfix="-5">
+                            <a class="btn" ng-click="showArticle(true)">View Original</a>
+                            <!-- not sure how much modifications we can do with twitter and facebook buttons -->
+                            <a class="btn" onclick="return !window.open(this.href, 'Twitter', 'width=640,height=380')"  href="https://twitter.com/share?text=Enterprise JS: {{article.title}} {{fullUrl}}&lang=en" target="_blank" class="twitter-share-button">Share on Twitter</a>
+                            <a class="btn" target="_blank" onclick="return !window.open(this.href, 'Facebook', 'width=640,height=300')" href="http://www.facebook.com/sharer/sharer.php?s=100&p[title]={{article.title}}&p[summary]={{article.title}}&p[url]={{fullUrl}}&p[images][0]={{article.thumbnail}}">Share on Facebook</a>
+                            <!--<div class="article-tweet-button" reload-twitter-btns>
+                                <a href="https://twitter.com/share" data-url="{{url}}" data-text="Enterprise JS: {{article.title}}" class="twitter-share-button" data-lang="en">Tweet</a>
+                            </div>-->
+                        </div>
                         <a ng-href="#/article/edit/{{article._id}}">Edit</a>
                         <!--<span class="muted"><like objectid="{{article._id}}"></like> ({{article.likes}})</span>-->
                     </div>
