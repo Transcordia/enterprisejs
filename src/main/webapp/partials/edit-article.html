@@ -12,7 +12,7 @@
                 <h4>Article Content</h4>
                 <p class="content"><textarea ng-model="article.content"></textarea></p>
 
-                <div ng-show="success" style="font-size: 14px;">Article saved successfully. <a ng-href="#/article/{{article._id}}">View the updated article now</a></div>
+                <div ng-show="success" style="font-size: 14px; margin-bottom: 10px;">Article saved successfully. <a ng-href="#/article/{{article._id}}">View the updated article now</a></div>
                 <div ng-show="status != false" style="font-size: 14px;">Error saving article: {{status}}</div>
                 <button ng-click="save()" class="btn btn-warning">Save Article</button>
             </div>
