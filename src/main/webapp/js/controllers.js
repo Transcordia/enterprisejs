@@ -24,7 +24,6 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
 
     if (tablet)
     {
-        // viewport is tablet
         size = 6;
     }
 
