@@ -178,15 +178,19 @@ angular.module('ejs.directives').directive('grid', ["$log", function($log){
                 $('.iosSlider').iosSlider({
                     snapToChildren: true,
                     desktopClickDrag: true,
-                    elasticPullResistance: 0.3,
-                    onSlideComplete: slideComplete
+                    onSlideComplete: slideComplete,
+                    onSliderResize: sliderResize
                 });
             }
 
             function slideComplete(args){
-                if((args.data.numberOfSlides) == args.currentSlideNumber){
+                if(args.data.numberOfSlides == args.currentSlideNumber){
                     directiveScope.$emit('event:loadMoreArticles');
                 }
+            }
+
+            function sliderResize(args){
+                directiveScope.$broadcast('event:tabletOrientationChange');
             }
 
             return function(scope, elem, attr) {
@@ -198,8 +202,7 @@ angular.module('ejs.directives').directive('grid', ["$log", function($log){
                 //we watch the article scope property because the array is loaded in with AJAX, and we can't do any rendering until it's loaded from the server
                 //because of this, we want to make sure array of articles is at least 0 before rendering, otherwise there's nothing to render and we'd get an error message
                 scope.$watch('articles', function (newValue, oldValue) {
-                    if(newValue.length > 0)
-                    {
+                    if(newValue.length > 0){
                         scope.pages.push({"articles": newValue});
                     }
                 });
@@ -229,6 +232,8 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 $('#article-container').css('margin-bottom', '0px');
             });
 
+            //grid width and height of various combinations.
+            //these are calculated in /api/utility/parse.js, preferredArea()
             var gridCombinations = {
                 "1": {
                     "w": 1,
@@ -253,6 +258,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
             };
 
             var container = $(element);
+            var count = 0;
 
             //the size of a single block (1x1) in pixels
             var blockSize = {
@@ -260,6 +266,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 "h": 320
             };
 
+            //if we're on a tablet, the block height/width in pixels are going to be different
             if(tablet){
                 blockSize.w = $window.innerWidth / 3;
                 blockSize.h = ($window.innerHeight - 30) / 2;
@@ -288,7 +295,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
 
                 container.find('.article-content').each(function(){
                     $(this).width($(this).parent().width() - 40);
-                    $(this).height($(this).parent().height() - 85);
+                    $(this).height($(this).parent().height() - 65);
 
                     if($(this).parent().hasClass('size21') ||
                         $(this).parent().hasClass('size11')){
@@ -459,7 +466,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
             }
 
             //this goes through all the articles, and renders them.
-            function render(articles, complete) {
+            function render(articles, complete, loadArticles) {
                 //generates HTML of an article, and then appends it to the container div
                 //NOTE: the x, y, w, h arguments are all in column and row positions, and NOT in pixels. these values are multiplied by the blockSize height and width to get the CSS values needed
                 function create(x, y, w, h, article) {
@@ -531,14 +538,18 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                     gridSize.rows = 2;
                 }
 
+                //this creates a new reservation grid of the specified height and width
                 var grid = new ReservationGrid(gridSize.columns, gridSize.rows, gridSize.maxBlockWidth, gridSize.maxBlockHeight);
 
-                var count = 0;
                 grid.clear();
+
+                count = 0;
 
                 container.empty();
                 //exit the loop if there's no more space or no more articles to place. this ensures that all articles are placed if there's room in the grid but not enough articles, while preventing hanging chads otherwise
                 do {
+                    //reserves a slot in the grid. this returns an object if a spot is found, which allows us to actually create the block
+                    //if there isn't any room in the grid, then rez is null. at this point, the grid is likely full, and we'll have to wait for the next page for success
                     var rez = grid.reserve(gridCombinations[articles[count].layout].w, gridCombinations[articles[count].layout].h);
                     if (rez) {
                         create(rez.x, rez.y, rez.w, rez.h, articles[count]);
@@ -547,7 +558,9 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 } while ( (rez) && (count < articles.length) );
 
                 //lets other directives/controllers know how many articles we successfully used on this page
-                scope.$emit('event:nextPageStart', count - 1);
+                if(loadArticles){
+                    scope.$emit('event:nextPageStart', count - 1);
+                }
 
                 //changes the container height. this is important because otherwise our infinite scroll won't work since the container height will be 0 (everything inside it is absolutely positioned)
                 container.height(gridSize.rows * blockSize.h);
@@ -583,15 +596,22 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
             //we only want to render the page when the number of possible columns has changed
             $(window).resize(function() {
                 var newColumns = Math.floor(container.width()/blockSize.w);
-                if(newColumns !== gridSize.columns)
+                if(newColumns !== gridSize.columns && !tablet)
                 {
                     gridSize.columns = newColumns;
                     render(scope.articles, animationComplete);
                 }
             });
 
+            scope.$on('event:tabletOrientationChange', function(){
+                blockSize.w = $window.innerWidth / 3;
+                blockSize.h = ($window.innerHeight - 30) / 2;
+
+                render(scope.articles, animationComplete, false);
+            });
+
             if(!phone){
-                render(scope.articles, animationComplete);
+                render(scope.articles, animationComplete, true);
             }else{
                 renderForPhones(scope.articles, animationComplete);
             }
