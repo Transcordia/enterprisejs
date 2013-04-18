@@ -232,6 +232,8 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 $('#article-container').css('margin-bottom', '0px');
             });
 
+            //grid width and height of various combinations.
+            //these are calculated in /api/utility/parse.js, preferredArea()
             var gridCombinations = {
                 "1": {
                     "w": 1,
@@ -264,6 +266,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 "h": 320
             };
 
+            //if we're on a tablet, the block height/width in pixels are going to be different
             if(tablet){
                 blockSize.w = $window.innerWidth / 3;
                 blockSize.h = ($window.innerHeight - 30) / 2;
@@ -292,7 +295,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
 
                 container.find('.article-content').each(function(){
                     $(this).width($(this).parent().width() - 40);
-                    $(this).height($(this).parent().height() - 85);
+                    $(this).height($(this).parent().height() - 65);
 
                     if($(this).parent().hasClass('size21') ||
                         $(this).parent().hasClass('size11')){
@@ -535,6 +538,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                     gridSize.rows = 2;
                 }
 
+                //this creates a new reservation grid of the specified height and width
                 var grid = new ReservationGrid(gridSize.columns, gridSize.rows, gridSize.maxBlockWidth, gridSize.maxBlockHeight);
 
                 grid.clear();
@@ -544,6 +548,8 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 container.empty();
                 //exit the loop if there's no more space or no more articles to place. this ensures that all articles are placed if there's room in the grid but not enough articles, while preventing hanging chads otherwise
                 do {
+                    //reserves a slot in the grid. this returns an object if a spot is found, which allows us to actually create the block
+                    //if there isn't any room in the grid, then rez is null. at this point, the grid is likely full, and we'll have to wait for the next page for success
                     var rez = grid.reserve(gridCombinations[articles[count].layout].w, gridCombinations[articles[count].layout].h);
                     if (rez) {
                         create(rez.x, rez.y, rez.w, rez.h, articles[count]);
