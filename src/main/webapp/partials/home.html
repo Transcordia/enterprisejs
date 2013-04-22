@@ -1,5 +1,7 @@
+<div class="loading-gears" gears ng-class="showGears"></div>
+
 <div>
-    <div class="ejs-hero hidden-phone">
+    <div class="ejs-hero hidden-phone" ui-if=!loading>
         <div class="abstract-image-container">
             <img ng-src="img/hero-sample-image.jpg" alt="">
             <div class="hero-abstract-title-container">
@@ -18,6 +20,5 @@
             <div grid articles="articles"></div>
         </div>-->
         <div grid articles="articles"></div>
-        <div class="loading-gears" gears ng-class="loading"></div>
     </div>
 </div>

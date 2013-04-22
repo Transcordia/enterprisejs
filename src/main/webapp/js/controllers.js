@@ -14,7 +14,8 @@ function is_touch_device() {
 function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout, $window) {
     $scope.urlToCheck = '';
     $scope.articles = [];
-    $scope.loading = "";
+    $scope.loading = true;
+    $scope.showGears = "";
 
     var from = 0;
     var size = 20;
@@ -45,7 +46,8 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
                             });
                     });
                 }else{
-                    $scope.loading = "fadeout";
+                    $scope.loading = false;
+                    $scope.showGears = "fadeout";
 
                     $scope.articles = data.content;
                     numArticlesInLastResponse = data.content.length;

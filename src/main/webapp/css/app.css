@@ -907,9 +907,10 @@ p{
     border-bottom: none;
 }
 
-.loading-gears{
+.app-view-container .loading-gears{
+    position: relative;
     width: 600px;
-    margin: 4em auto 0 auto;
+    margin-left: 20%;
     -webkit-transition: opacity 0.5s ease-in;
 }
 
@@ -993,8 +994,6 @@ p{
 }
 
 .app-view-container > *{
-    width:100%;
-    position:absolute;
     top:0;
     left:0;
     right:0;
