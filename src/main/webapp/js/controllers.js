@@ -128,7 +128,7 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
             url: $rootScope.url
         })
             .success(function(data, status, headers){
-                console.log("parsed feed, results are: ",data);
+                $log.info("parsed feed, results are: ",data);
                 $scope.article = data.response;
                 //occasionally (depending on the feed), the uri property doesn't get set. this ensures that that always happens
                 if($scope.article.uri === undefined)
@@ -141,7 +141,7 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
                     activeImage = -1;
                 }
 
-                $log.info($('.slides_container img'));
+                $scope.error = ($scope.article.description === "");
             }).error(function(data, status) {
                 alert("Error loading article. Something went wrong. Status: "+status);
             });

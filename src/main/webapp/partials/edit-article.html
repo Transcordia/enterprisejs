@@ -8,9 +8,9 @@
                 <h4>Article Title</h4>
                 <p><input ng-model="article.title"></p>
                 <h4>Article Description</h4>
-                <p class="description"><textarea ng-model="article.description"></textarea></p>
+                <p class="description"><textarea ui-tinymce ng-model="article.description"></textarea></p>
                 <h4>Article Content</h4>
-                <p class="content"><textarea ng-model="article.content"></textarea></p>
+                <p class="content"><textarea ui-tinymce ng-model="article.content"></textarea></p>
 
                 <div ng-show="success" style="font-size: 14px; margin-bottom: 10px;">Article saved successfully. <a ng-href="#/article/{{article._id}}">View the updated article now</a></div>
                 <div ng-show="status != false" style="font-size: 14px;">Error saving article: {{status}}</div>
