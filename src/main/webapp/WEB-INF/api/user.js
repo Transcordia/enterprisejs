@@ -3,10 +3,11 @@
  * User: toddbarchok
  * Date: 3/26/13
  * Time: 2:56 PM
- * To change this template use File | Settings | File Templates.
+ * This file handles all calls to /api/user
+ * The main function is for processing openID requests from Google Identity Toolkit and generally creating and signing in and out users to the system
  */
 
-
+var httpclient = require('ringo/httpclient');
 var log = require('ringo/logging').getLogger(module.id);
 var {json} = require('ringo/jsgi/response');
 
@@ -14,6 +15,11 @@ var {Application} = require('stick');
 var app = exports.app = Application();
 app.configure('notfound', 'params', 'mount', 'route');
 
+var {getZociaUrl} = require('utility/getUrls');
+var {encode} = require('ringo/base64');
+var {Headers} = require('ringo/utils/http');
+
+//
 app.post('/status', function(req) { console.log("USER STATUS INFO");
     return json({ "registered": true });
 });
@@ -23,6 +29,7 @@ app.post('/login', function(req) {    console.log("user is now logged in");
 });
 
 /*
+This is the results returned by Google's provider. They're here in full as an example
  {
  "rp_target":"callback",
  "rp_purpose":"signin",
@@ -57,16 +64,27 @@ function processGoogle(userDetails, profile)
         given: userDetails["openid.ext1.value.attr3"],
         surname: userDetails["openid.ext1.value.attr6"]
     };
+    //temporary solution, ideally the user could supply their own username...
+    profile.username = profile.name.given + profile.name.surname;
 
     profile.thumbnail = 'images/GCEE_image_defaultMale.jpeg';
     profile.accountEmail = {
         address: userDetails["openid.ext1.value.attr0"]
     };
 
+    profile.thirdPartyLogins = [{
+        "identifier": userDetails["openid.identity"],
+        "values": {
+            "claimed_id": userDetails["openid.claimed_id"],
+            "assoc_handle": userDetails["openid.assoc_handle"]
+        }
+    }];
+
     return profile;
 }
 
 /*
+These are the results from Yahoo's provider. Included here as an example of what gets returned
  {
  "openid.ns":"http://specs.openid.net/auth/2.0",
  "openid.mode":"id_res",
@@ -107,19 +125,30 @@ function processYahoo(userDetails, profile)
         address: userDetails["openid.ext1.value.attr0"]
     };
 
+    profile.thirdPartyLogins = [{
+        "identifier": userDetails["openid.identity"],
+        "values": {
+            "claimed_id": userDetails["openid.claimed_id"],
+            "assoc_handle": userDetails["openid.assoc_handle"]
+        }
+    }];
+
     return profile;
 }
 
+//ideally this needs to create the user in zocia
 function createUser(req, userDetails)
 {
     console.log("user is now created");
 
     var profile = {};
 
+    profile.source = "ejs";
     profile.websites = [];
     profile.educationHistory = [];
     profile.workHistory = [];
 
+    //process the result from open ID based on the endpoint. then we need to create the user itself
     switch(userDetails["openid.op_endpoint"])
     {
         case "https://www.google.com/accounts/o8/ud":
@@ -134,11 +163,32 @@ function createUser(req, userDetails)
     }
 
     profile.password = '';
+    profile.accountEmail.status = "verified";
+
+    var opts = {
+        url: getZociaUrl(req) + '/profiles/',
+        method:'POST',
+        data:JSON.stringify(profile),
+        headers:Headers({ 'x-rt-index':'ejs',
+            'Content-Type':'application/json',
+            'Authorization':_generateBasicAuthorization('backdoor', 'Backd00r')}),
+        async:false
+    };
+
+    var exchange = httpclient.request(opts);
+
+    if(exchange.success)
+    {
+        console.log("successful user creation ok then!");
+    }
+    console.log("result: "+exchange.status);
 
     //create user, then we need to redirect them back to everything
     return json({ "status": JSON.stringify(profile) });
 }
 
+//due to inconsistency between open ID endpoints, some endpoints will return the results in a POST request while others will use GET
+//we need to catch and handle both requests the same way, so that's what we're doing here
 app.post('/create', function(req) {
     return createUser(req, req.postParams);
 });
@@ -146,3 +196,9 @@ app.post('/create', function(req) {
 app.get('/create', function(req) {
     return createUser(req, req.params);
 });
+
+function _generateBasicAuthorization(username, password) {
+    var header = username + ":" + password;
+    var base64 = encode(header);
+    return 'Basic ' + base64;
+}
