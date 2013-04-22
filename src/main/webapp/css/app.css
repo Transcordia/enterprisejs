@@ -968,15 +968,24 @@ p{
 }
 
 .view-enter-setup {
-    left: 100%;
-}
-.view-enter-setup.view-enter-start {
-    left:0;
+    opacity: 0;
+    left: 300px;
+    position: absolute;
 }
 
-.view-leave-setup {}
+.view-enter-setup.view-enter-start {
+    left:0;
+    opacity:1;
+}
+
+.view-leave-setup {
+    position:absolute;
+    left:0;
+    opacity:1;
+}
 .view-leave-setup.view-leave-start {
-    left: -100%;
+    left: -300px;
+    opacity: 0;
 }
 
 .app-view-container{

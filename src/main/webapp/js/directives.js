@@ -571,18 +571,9 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
 
                 //if it's the first page, then we set stuff like the hero and the featured articles. we don't have these for every page, so doing them more than once would be pointless
                 if(scope.page === 0) {
-                    var totalWidth = 0;
-
-                    $(".featured").each(function(){
-                        totalWidth += $(this).width();
-                    });
-
                     if(tablet){
                         $('#article-container').css({'width': '100%'});
                     }
-
-                    var wrapperOffset = ($(window).width() - $('#wrapper').width()) / 2;
-                    $('.ejs-hero .abstract-image-container').css({'width': totalWidth + 'px', 'margin': '0 0 0 ' + wrapperOffset + 'px'});
 
                     $('.article.featured').each(function(){
                         var offset = $(this).height() - $(this).find('.article-abstract-image').outerHeight();
@@ -593,18 +584,23 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                     });
                 }
 
+                setArticleContainerWidth();
+
                 complete();
             }
 
             //re-renders the layout on window resize, but because some browsers will call this event DURING a resize,
             //we only want to render the page when the number of possible columns has changed
             $(window).resize(function() {
+                $('#article-container').css({'width': 'auto'});
                 var newColumns = Math.floor(container.width()/blockSize.w);
                 if(newColumns !== gridSize.columns && !tablet)
                 {
                     gridSize.columns = newColumns;
                     render(scope.articles, animationComplete);
                 }
+
+                setArticleContainerWidth();
             });
 
             scope.$on('event:tabletOrientationChange', function(){
@@ -618,6 +614,19 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 render(scope.articles, animationComplete, true);
             }else{
                 renderForPhones(scope.articles, animationComplete);
+            }
+
+            function setArticleContainerWidth(){
+                var totalWidth = 0;
+
+                $(".featured").each(function(){
+                    totalWidth += $(this).width();
+                });
+
+                var wrapperOffset = ($(window).width() - $('#wrapper').width()) / 2;
+                $('.ejs-hero .abstract-image-container').css({'width': totalWidth + 'px'});
+
+                $('#article-container').css({'width': totalWidth});
             }
         }
     }
