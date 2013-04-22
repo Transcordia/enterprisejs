@@ -1,19 +1,23 @@
-<div class="ejs-hero hidden-phone">
-    <div class="abstract-image-container">
-        <img ng-src="img/hero-sample-image.jpg" alt="">
-        <div class="hero-abstract-title-container">
+<div>
+    <div class="ejs-hero hidden-phone">
+        <div class="abstract-image-container">
+            <img ng-src="img/hero-sample-image.jpg" alt="">
+            <div class="hero-abstract-title-container">
             <span>
                 <div class="hero-title-description-container clearfix">
                     <div class="hero-title"><h1>This Is The Title of The Hero Element. This Is The Title of The Hero Element</h1></div>
                     <div class="hero-description"><p>Nebulas adspirate glomeravit sive regat nam pro caligine pondere mundo tellus qui ensis illas indigestaque formas innabilis illi</p></div>
                 </div>
             </span>
+            </div>
         </div>
     </div>
-</div>
 
-<div id="wrapper">
-    <div when-scrolled="loadMore()" offset="60">
+    <div id="wrapper">
+        <!--<div infinite-scroll="loadMore()" infinite-scroll="100">
+            <div grid articles="articles"></div>
+        </div>-->
         <div grid articles="articles"></div>
+        <div class="loading-gears" gears ng-class="loading"></div>
     </div>
 </div>

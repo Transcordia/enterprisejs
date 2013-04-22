@@ -14,6 +14,7 @@ function is_touch_device() {
 function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout, $window) {
     $scope.urlToCheck = '';
     $scope.articles = [];
+    $scope.loading = "";
 
     var from = 0;
     var size = 20;
@@ -35,19 +36,21 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
 
     $http.get('api/articles/?from=' + from + '&size=' + size)
         .success(function(data, status, headers){
-            if(data.content.length == 0){
-                generateRandomArticles(totalArticles, function(data) {
-                    $http.post('api/articles', data)
-                        .success(function(data, status, headers){
-                            $log.info(data.articles);
-                        });
-                });
-            }else{
-                $scope.articles = data.content;
-                numArticlesInLastResponse = data.content.length;
-            }
-            $scope.articles = data.content;
-            numArticlesInLastResponse = data.content.length;
+            $timeout(function(){
+                if(data.content.length == 0){
+                    generateRandomArticles(totalArticles, function(data) {
+                        $http.post('api/articles', data)
+                            .success(function(data, status, headers){
+                                $log.info(data.content);
+                            });
+                    });
+                }else{
+                    $scope.loading = "fadeout";
+
+                    $scope.articles = data.content;
+                    numArticlesInLastResponse = data.content.length;
+                }
+            }, 2000);
         });
 
     $rootScope.doLogin = function(){
@@ -56,11 +59,11 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
                 $log.info(data);
             })
     };
+
     //note: we should probably eventually switch to using start/size arguments for paging.
     //this will likely happen as a result of switching to Zocia
     //once this happens, we will need to listen to events to catch how many articles successfully get added to the grid
     //example code follows
-    
     $scope.$on('event:nextPageStart', function(event, nextStart) {
         from += nextStart;
 
@@ -68,6 +71,8 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
     });
 
     $scope.$on('event:loadMoreArticles', function(){
+        $scope.busy = true;
+
         loadMoreArticles();
     });
 

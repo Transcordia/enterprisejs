@@ -3,7 +3,11 @@
 var tablet = Modernizr.mq( "only screen and (max-width: 1024px) and (min-width: 641px)" );
 var phone = Modernizr.mq( "only screen and (max-width: 640px)" );
 
-var template = '<div id="article-container"><div ng-repeat="page in pages"><div class="article-page" grid-page articles="page.articles" page="$index"></div></div></div>';
+var template = '<div id="article-container">' +
+                    '<div ng-repeat="page in pages" ng-animate="\'page\'">' +
+                        '<div class="article-page" grid-page articles="page.articles" page="$index"></div>' +
+                    '</div>' +
+               '</div>';
 
 if(tablet){
     template = '<div id="article-container">' +
@@ -181,16 +185,16 @@ angular.module('ejs.directives').directive('grid', ["$log", function($log){
                     onSlideComplete: slideComplete,
                     onSliderResize: sliderResize
                 });
-            }
 
-            function slideComplete(args){
-                if(args.data.numberOfSlides == args.currentSlideNumber){
-                    directiveScope.$emit('event:loadMoreArticles');
+                var slideComplete = function(args){
+                    if(args.data.numberOfSlides == args.currentSlideNumber){
+                        directiveScope.$emit('event:loadMoreArticles');
+                    }
                 }
-            }
 
-            function sliderResize(args){
-                directiveScope.$broadcast('event:tabletOrientationChange');
+                var sliderResize = function(args){
+                    directiveScope.$broadcast('event:tabletOrientationChange');
+                }
             }
 
             return function(scope, elem, attr) {
@@ -202,7 +206,7 @@ angular.module('ejs.directives').directive('grid', ["$log", function($log){
                 //we watch the article scope property because the array is loaded in with AJAX, and we can't do any rendering until it's loaded from the server
                 //because of this, we want to make sure array of articles is at least 0 before rendering, otherwise there's nothing to render and we'd get an error message
                 scope.$watch('articles', function (newValue, oldValue) {
-                    if(newValue.length > 0){
+                    if(newValue && newValue.length > 0){
                         scope.pages.push({"articles": newValue});
                     }
                 });
@@ -740,3 +744,31 @@ angular.module('ejs.directives').directive('like', ['$http', '$rootScope', funct
         }
     }
 }]);
+
+angular.module('ejs.directives').directive('gears', function(){
+    return{
+        restrict: 'A',
+        link: function(scope, elm, attrs){
+            for(var i = 1; i <= 10; i++){
+                var gearTop, left, opacity;
+                var sizes = ['small', 'medium', 'large'];
+                var rotationSpeed = ['slow-rotation', 'med-rotation', 'fast-rotation'];
+
+                opacity = (Math.floor(Math.random() * (100 - 20 + 1)) + 20) / 100;
+                gearTop = Math.floor(Math.random() * 300);
+                left = Math.floor(Math.random() * 600);
+
+                var gear = $(document.createElement('img'));
+                gear.attr('src', 'img/EJS_loadingAnimation_GearLrg_600x600.png');
+                gear.addClass(sizes[Math.floor(Math.random() * 3)] + ' ' + rotationSpeed[Math.floor(Math.random() * 3)]);
+                gear.css({
+                    'position': 'absolute',
+                    'top': gearTop + 'px',
+                    'left': left + 'px'
+                });
+                gear.appendTo('.loading-gears');
+                gear.fadeTo(0, opacity);
+            }
+        }
+    }
+});
