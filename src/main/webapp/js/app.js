@@ -45,5 +45,11 @@ angular.module('ejs', ['ejs.filters', 'ejs.services', 'ejs.directives', 'ui', 'i
             controller: MobileCtrl
         });
 
+    $routeProvider.when('/login',
+        {
+            templateUrl: 'partials/login.html',
+            controller: AppCtrl
+        });
+
     $routeProvider.otherwise({redirectTo: '/home'});
   }]);
