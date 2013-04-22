@@ -48,7 +48,7 @@
     </script>
     <script type="text/javascript">
         $(function() {
-            //this needs to be set to a config value instead of hard coded the way it is here
+            //the base URLs needs to be set via a function or something instead of hard coded the way they are here
             window.google.identitytoolkit.setConfig({
                 developerKey: "AIzaSyAH6F_1XgdpAb93KazCHcSWHUmkAQAbWn8",
                 companyName: "",
@@ -91,7 +91,7 @@
             <a class="visible-phone visible-tablet" ng-href="#/home"><img ng-src="img/EJS_images_logo_mobile.png" alt=""></a>
             <ul id="navigation" class="hidden-phone">
                <li><p ng-click="showAddUrlModal=true">Add <i class="icon-white icon-plus"></i></p></li>
-                <li><a ng-href="#/login">Login</a></li>
+                <li><a onclick="return !window.open(this.href, 'Log In', 'width=640,height=380')" href="#/login">Log In</a></li>
                 <!--<li><a ng-href="#/templates">Templates</a></li>
                 <li><a ng-href="#/sorttest">Test sorting</a></li>-->
             </ul>
