@@ -77,7 +77,7 @@ p{
 }
 
 #article-container{
-    margin: 0 auto;
+    margin: 0 auto 10px auto;
     padding-bottom: 100px;
 }
 
@@ -930,21 +930,38 @@ p{
     height: 300px;
 }
 
-.slow-rotation{
-    -webkit-animation: rotation 10s infinite linear;
+.slow-clockwise{
+    -webkit-animation: clockwise 10s infinite linear;
 }
 
-.med-rotation{
-    -webkit-animation: rotation 5s infinite linear;
+.med-clockwise{
+    -webkit-animation: clockwise 5s infinite linear;
 }
 
-.fast-rotation{
-    -webkit-animation: rotation 2s infinite linear;
+.fast-clockwise{
+    -webkit-animation: clockwise 2s infinite linear;
 }
 
-@-webkit-keyframes rotation{
-    from {-webkit-transform: rotate(0deg);}
-    to {-webkit-transform: rotate(359deg);}
+.slow-counter-clockwise{
+    -webkit-animation: counter-clockwise 10s infinite linear;
+}
+
+.med-counter-clockwise{
+    -webkit-animation: counter-clockwise 5s infinite linear;
+}
+
+.fast-counter-clockwise{
+    -webkit-animation: counter-clockwise 2s infinite linear;
+}
+
+@-webkit-keyframes clockwise{
+  from {-webkit-transform: rotate(359deg);}
+  to {-webkit-transform: rotate(0deg);}
+}
+
+@-webkit-keyframes counter-clockwise{
+  from {-webkit-transform: rotate(0deg);}
+  to {-webkit-transform: rotate(359deg);}
 }
 
 /* styles for ng-animate ng-repeat */

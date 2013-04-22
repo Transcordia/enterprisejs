@@ -669,8 +669,7 @@ angular.module('ejs.directives').directive('whenScrolled', function() {
             //WARNING: if there's any changes in that collection of elements (mostly in terms of changing the CSS), these numbers needs to be changed. this also prevents use of 'ems' as they don't translate consistently to pixel values
             //there might be a way to handle this without using static numbers. if so, please do, as this current solution isn't as flexible and reusable as it could be
             if (Math.floor(rectObject.bottom) === $(window).height() - 0 - offset) {
-                //scope.$apply(attr.whenScrolled);
-                scope.$emit('event:loadMoreArticles');
+                scope.$apply(attr.whenScrolled);
             }
             //console.log("compare: "+(Math.floor(rectObject.bottom) + " = " + ($(window).height() - 0 - offset)));  //if there's any problems with this whenScrolled method, uncomment this to debug
         });
@@ -758,26 +757,70 @@ angular.module('ejs.directives').directive('gears', function(){
     return{
         restrict: 'A',
         link: function(scope, elm, attrs){
-            for(var i = 1; i <= 10; i++){
-                var gearTop, left, opacity;
-                var sizes = ['small', 'medium', 'large'];
-                var rotationSpeed = ['slow-rotation', 'med-rotation', 'fast-rotation'];
+            var largeGear = $(document.createElement('img'));
+            largeGear.attr('src', 'img/EJS_loadingAnimation_GearLrg_600x600.png');
+            largeGear.addClass('large med-clockwise');
+            largeGear.css({
+                'position': 'absolute',
+                'top': '100px',
+                'left': '100px'
+            });
+            largeGear.appendTo('.loading-gears');
 
-                opacity = (Math.floor(Math.random() * (100 - 20 + 1)) + 20) / 100;
-                gearTop = Math.floor(Math.random() * 300);
-                left = Math.floor(Math.random() * 600);
+            var medGear = $(document.createElement('img'));
+            medGear.attr('src', 'img/EJS_loadingAnimation_GearLrg_600x600.png');
+            medGear.addClass('medium fast-counter-clockwise');
+            medGear.css({
+                'position': 'absolute',
+                'top': '376px',
+                'left': '86px'
+            });
+            medGear.appendTo('.loading-gears');
+            medGear.fadeTo(0, 0.5);
 
-                var gear = $(document.createElement('img'));
-                gear.attr('src', 'img/EJS_loadingAnimation_GearLrg_600x600.png');
-                gear.addClass(sizes[Math.floor(Math.random() * 3)] + ' ' + rotationSpeed[Math.floor(Math.random() * 3)]);
-                gear.css({
-                    'position': 'absolute',
-                    'top': gearTop + 'px',
-                    'left': left + 'px'
-                });
-                gear.appendTo('.loading-gears');
-                gear.fadeTo(0, opacity);
-            }
+            var smallGear = $(document.createElement('img'));
+            smallGear.attr('src', 'img/EJS_loadingAnimation_GearLrg_600x600.png');
+            smallGear.addClass('small fast-counter-clockwise');
+            smallGear.css({
+                'position': 'absolute',
+                'top': '36px',
+                'left': '100px'
+            });
+            smallGear.appendTo('.loading-gears');
+            smallGear.fadeTo(0, 0.25);
+
+            var largeGearTwo = $(document.createElement('img'));
+            largeGearTwo.attr('src', 'img/EJS_loadingAnimation_GearLrg_600x600.png');
+            largeGearTwo.addClass('large med-clockwise');
+            largeGearTwo.css({
+                'position': 'absolute',
+                'top': '200px',
+                'left': '400px'
+            });
+            largeGearTwo.appendTo('.loading-gears');
+            largeGearTwo.fadeTo(0, 0.65);
+
+            var smallGearTwo = $(document.createElement('img'));
+            smallGearTwo.attr('src', 'img/EJS_loadingAnimation_GearLrg_600x600.png');
+            smallGearTwo.addClass('small fast-counter-clockwise');
+            smallGearTwo.css({
+                'position': 'absolute',
+                'top': '473px',
+                'left': '582px'
+            });
+            smallGearTwo.appendTo('.loading-gears');
+            smallGearTwo.fadeTo(0, 0.25);
+
+
+            var largeGearThree = $(document.createElement('img'));
+            largeGearThree.attr('src', 'img/EJS_loadingAnimation_GearLrg_600x600.png');
+            largeGearThree.addClass('large med-clockwise');
+            largeGearThree.css({
+                'position': 'absolute',
+                'top': '550px',
+                'left': '400px'
+            });
+            largeGearThree.appendTo('.loading-gears');
         }
     }
 });

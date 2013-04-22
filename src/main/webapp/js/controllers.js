@@ -73,8 +73,6 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
     });
 
     $scope.$on('event:loadMoreArticles', function(){
-        $scope.busy = true;
-
         loadMoreArticles();
     });
 
