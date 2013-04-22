@@ -37,22 +37,20 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
 
     $http.get('api/articles/?from=' + from + '&size=' + size)
         .success(function(data, status, headers){
-            $timeout(function(){
-                if(data.content.length == 0){
-                    generateRandomArticles(totalArticles, function(data) {
-                        $http.post('api/articles', data)
-                            .success(function(data, status, headers){
-                                $log.info(data.content);
-                            });
-                    });
-                }else{
-                    $scope.loading = false;
-                    $scope.showGears = "fadeout";
+            if(data.content.length == 0){
+                generateRandomArticles(totalArticles, function(data) {
+                    $http.post('api/articles', data)
+                        .success(function(data, status, headers){
+                            $log.info(data.content);
+                        });
+                });
+            }else{
+                $scope.loading = false;
+                $scope.showGears = "fadeout";
 
-                    $scope.articles = data.content;
-                    numArticlesInLastResponse = data.content.length;
-                }
-            }, 2000);
+                $scope.articles = data.content;
+                numArticlesInLastResponse = data.content.length;
+            }
         });
 
     $rootScope.doLogin = function(){
