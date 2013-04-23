@@ -53,3 +53,9 @@ angular.module('ejs', ['ejs.filters', 'ejs.services', 'ejs.directives', 'ui']).
 
     $routeProvider.otherwise({redirectTo: '/home'});
   }]);
+
+angular.module('ejs').value('ui.config', {
+    tinymce: {
+        theme: 'simple'
+    }
+});

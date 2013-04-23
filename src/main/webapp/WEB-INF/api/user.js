@@ -139,14 +139,9 @@ function processYahoo(userDetails, profile)
 //ideally this needs to create the user in zocia
 function createUser(req, userDetails)
 {
-    console.log("user is now created");
+    console.log("user is being created");
 
     var profile = {};
-
-    profile.source = "ejs";
-    profile.websites = [];
-    profile.educationHistory = [];
-    profile.workHistory = [];
 
     //process the result from open ID based on the endpoint. then we need to create the user itself
     switch(userDetails["openid.op_endpoint"])
@@ -162,6 +157,30 @@ function createUser(req, userDetails)
             break;
     }
 
+    /*
+     var exchange = roundTableAjaxRequest({
+     "url": '/profiles/search',
+     "data": {
+     "query": {
+     "query_string": {
+     "fields" : [
+     "thirdPartyLogins.values.profile.providerName",
+     "thirdPartyLogins.values.profile.displayName"
+     ],
+     "query" : thirdPartyResults.profile.providerName.replace('!', '') + ' AND ' + thirdPartyResults.profile.displayName,
+     "use_dis_max" : true
+     }
+     }
+     },
+     "method": 'POST'
+     });
+     */
+
+    //these are all the properties needed to create a user in zocia
+    profile.source = "ejs";
+    profile.websites = [];
+    profile.educationHistory = [];
+    profile.workHistory = [];
     profile.password = '';
     profile.accountEmail.status = "verified";
 
@@ -180,6 +199,8 @@ function createUser(req, userDetails)
     if(exchange.success)
     {
         console.log("successful user creation ok then!");
+    } else {
+        console.log("there was an error creating the user, we shall now do something else");
     }
     console.log("result: "+exchange.status);
 

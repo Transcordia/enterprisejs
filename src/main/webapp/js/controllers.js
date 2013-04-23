@@ -130,7 +130,7 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
             url: $rootScope.url
         })
             .success(function(data, status, headers){
-                console.log("parsed feed, results are: ",data);
+                $log.info("parsed feed, results are: ",data);
                 $scope.article = data.response;
                 //occasionally (depending on the feed), the uri property doesn't get set. this ensures that that always happens
                 if($scope.article.uri === undefined)
@@ -143,13 +143,21 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
                     activeImage = -1;
                 }
 
-                $log.info($('.slides_container img'));
+                $scope.error = ($scope.article.description === "");
             }).error(function(data, status) {
                 alert("Error loading article. Something went wrong. Status: "+status);
             });
     } else {
         $scope.hideImages = true;
     }
+
+    $scope.tinyMCEConfig = {
+        theme: 'advanced',
+
+        plugins : "inlinepopups",
+        theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,undo,redo,|,cleanup,|,bullist,numlist,|,code,link,unlink",
+        theme_advanced_toolbar_location : "top"
+    };
 
     var imagesLoaded = 0;
     var activeImage = 0;
@@ -300,6 +308,13 @@ function EditArticleCtrl($rootScope, $scope, $http, $log, $routeParams, truncate
     $scope.success = false;
     $scope.status = false;
 
+    $scope.tinyMCEConfig = {
+        theme: 'advanced',
+
+        plugins : "inlinepopups",
+        theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,undo,redo,|,cleanup,|,bullist,numlist,|,code,link,unlink",
+        theme_advanced_toolbar_location : "top"
+    };
 
     $scope.save = function() {
         $scope.status = false;
