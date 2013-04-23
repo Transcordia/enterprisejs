@@ -149,6 +149,14 @@ function addArticleCtrl($rootScope, $scope, $http, $log, $location, truncate) {
         $scope.hideImages = true;
     }
 
+    $scope.tinyMCEConfig = {
+        theme: 'advanced',
+
+        plugins : "inlinepopups",
+        theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,undo,redo,|,cleanup,|,bullist,numlist,|,code,link,unlink",
+        theme_advanced_toolbar_location : "top"
+    };
+
     var imagesLoaded = 0;
     var activeImage = 0;
 
@@ -298,6 +306,13 @@ function EditArticleCtrl($rootScope, $scope, $http, $log, $routeParams, truncate
     $scope.success = false;
     $scope.status = false;
 
+    $scope.tinyMCEConfig = {
+        theme: 'advanced',
+
+        plugins : "inlinepopups",
+        theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,undo,redo,|,cleanup,|,bullist,numlist,|,code,link,unlink",
+        theme_advanced_toolbar_location : "top"
+    };
 
     $scope.save = function() {
         $scope.status = false;

@@ -21,9 +21,9 @@
                 <p>{{article.title}}</p>
                 <h4>Article Description</h4>
                 <p ng-show="error">There was a problem parsing the article. No content was found. Copy/paste content from the original article into the description and content blocks.</p>
-                <p class="description"><textarea ui-tinymce ng-model="article.description"></textarea></p>
+                <p class="description"><textarea ui-tinymce="tinyMCEConfig" ng-model="article.description"></textarea></p>
                 <h4>Article Content</h4>
-                <p class="content"><textarea ui-tinymce ng-model="article.content"></textarea></p>
+                <p class="content"><textarea ui-tinymce="tinyMCEConfig" ng-model="article.content"></textarea></p>
 
                 <button ng-click="saveArticle(article)" class="btn btn-warning">Save Article</button>
             </div>
