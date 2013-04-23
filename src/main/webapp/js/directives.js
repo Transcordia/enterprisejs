@@ -182,19 +182,15 @@ angular.module('ejs.directives').directive('grid', ["$log", function($log){
                 $('.iosSlider').iosSlider({
                     snapToChildren: true,
                     desktopClickDrag: true,
-                    onSlideComplete: slideComplete,
-                    onSliderResize: sliderResize
-                });
-
-                var slideComplete = function(args){
-                    if(args.data.numberOfSlides == args.currentSlideNumber){
-                        directiveScope.$emit('event:loadMoreArticles');
+                    onSlideComplete: function(args){
+                        if(args.data.numberOfSlides == args.currentSlideNumber){
+                            directiveScope.$parent.loadMoreArticles();
+                        }
+                    },
+                    onSliderResize: function(args){
+                        directiveScope.$broadcast('event:tabletOrientationChange');
                     }
-                }
-
-                var sliderResize = function(args){
-                    directiveScope.$broadcast('event:tabletOrientationChange');
-                }
+                });
             }
 
             return function(scope, elem, attr) {

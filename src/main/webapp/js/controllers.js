@@ -26,6 +26,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
 
     if (tablet)
     {
+        $window.location = 'http://localhost:8080/ejs/tablet/';
         size = 6;
     }
 
@@ -45,11 +46,12 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
                         });
                 });
             }else{
-                $scope.loading = false;
                 $scope.showGears = "fadeout";
 
                 $scope.articles = data.content;
                 numArticlesInLastResponse = data.content.length;
+
+                $scope.loading = false;
             }
         });
 
@@ -71,10 +73,10 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
     });
 
     $scope.$on('event:loadMoreArticles', function(){
-        loadMoreArticles();
+        $scope.loadMoreArticles();
     });
 
-    function loadMoreArticles(){
+    $scope.loadMoreArticles = function(){
         if(!lastPage){
             $http.get('api/articles/?from='+ from +'&size='+ size)
                 .success(function(data){
@@ -97,7 +99,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
         }
     }
 
-    $scope.loadMore = loadMoreArticles;
+    //$scope.loadMore = loadMoreArticles;
 
     /*$scope.$on('extraArticles', function(event, extras) {
         $scope.extraTabletArticles = extras;
