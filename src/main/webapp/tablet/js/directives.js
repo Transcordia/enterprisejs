@@ -24,12 +24,11 @@ var template = '<div id="article-container">' +
 //this keeps track of our article pages, by dividing them up into an array of objects, each of which simply contains a property "articles"
 //it's worth pointing out that the article array gets split based on the index of the last article shown, and not loaded.
 //because of this, there's probably going to have to be some changes in how the paging system on the backend works once zocia is implemented.
-angular.module('ejs-tablet.directives').directive('grid', ["$log", "$http", function($log, $http){
+angular.module('ejs-tablet.directives').directive('grid', ["$log", "$http", "$timeout", function($log, $http, $timeout){
     return {
         restrict: 'A',
         scope: {
-            articles: '=',
-            pageSize: '='
+            articles: '='
         },
         template: template,
         replace: true,
@@ -50,6 +49,7 @@ angular.module('ejs-tablet.directives').directive('grid', ["$log", "$http", func
             });
 
             return function(scope, elem, attr) {
+                $log.info('scope id: ' + scope.$id);
                 directiveScope = scope;
 
                 scope.pages = [];

@@ -36,6 +36,8 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
      * $http.get('api/articles/score');
      */
 
+    $log.info('scope id in controller: ' + $scope.$id);
+
     $http.get('api/articles/?from=' + from + '&size=' + size)
         .success(function(data, status, headers){
             if(data.content.length == 0){

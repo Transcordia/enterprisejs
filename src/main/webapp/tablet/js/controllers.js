@@ -13,7 +13,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
     $scope.showGears = "";
 
     var from = 0;
-    var size = 20;
+    var size = 6;
     var lastPage = false;
     var totalArticles = 51;
 
@@ -22,6 +22,8 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
      * been generated and indexed
      * $http.get('api/articles/score');
      */
+
+    $log.info('scope id in controller: ' + $scope.$id);
 
     $http.get('/ejs/api/articles/?from=' + from + '&size=' + size)
         .success(function(data, status, headers){
@@ -54,10 +56,12 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
     //example code follows
     $scope.$on('event:nextPageStart', function(event, nextStart) {
         from += nextStart;
+
+        $log.info('total number of articles placed on the page: ' + from);
     });
 
     $scope.$on('event:loadMoreArticles', function(){
-        $http.get('/ejs/api/articles/?from='+ from +'&size='+ size)
+        /*$http.get('/ejs/api/articles/?from='+ from +'&size='+ size)
             .success(function(data){
                 if(data.content.length != 1) {
                     $scope.articles = data.content;
@@ -65,7 +69,19 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
                     lastPage = true;
                     $scope.$broadcast('event:lastPage');
                 }
-            });
+            });*/
+
+        var jqxhr = $.ajax('/ejs/api/articles/?from='+ from +'&size='+ size)
+            .done(function(data){
+                //$log.info(data.content.length);
+                if(data.content.length != 1) {
+                    $scope.articles = data.content;
+                }else{
+                    lastPage = true;
+                    $scope.$broadcast('event:lastPage');
+                }
+            })
+            .fail(function(){ $log.info('The call failed!')});
     });
 
 
