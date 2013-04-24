@@ -136,6 +136,85 @@ function processYahoo(userDetails, profile)
     return profile;
 }
 
+/*
+ This gets the data from various oauth providers that GIT supports, and decides what to do with it
+ First we need to pass in that data back to GIT, which will return us a nice, easy to use format that we can be certain will contain various bits of information
+ Once we get the users identity and other details, we need to search through the existing user accounts. If we find one that matches, then we log them in. Otherwise, we auto-create the account
+ */
+function checkUser(req, userDetails)
+{
+    //when sending in the parameters that we got back from GIT to the "verifyAssertion" API call,
+    //the parameters need to be encoded into a string along the lines of &param=value&more=value2
+    //otherwise, GIT will return an error message
+    function processParams(params) {
+        var result = "";
+
+        for (var key in params) {
+            result += key + "=" + encodeURIComponent(params[key]) + "&";
+        }
+
+        return result;
+    }
+
+    var data = {
+        "requestUri": "http://localhost:8080/ejs/api/user/create",
+        "postBody": processParams(userDetails),
+        "returnOauthToken": true
+    };
+
+    var opts = {
+        url: "https://www.googleapis.com/identitytoolkit/v1/relyingparty/verifyAssertion?key=AIzaSyAH6F_1XgdpAb93KazCHcSWHUmkAQAbWn8",
+        method: 'POST',
+        data: JSON.stringify(data),
+        headers:Headers({ 'Content-Type':'application/json' }),
+        async: false
+    };
+
+    var exchange = httpclient.request(opts);
+
+    console.log("CHECK URL RESULT: "+exchange.content);
+
+    var oAuthResults = JSON.parse(exchange.content);
+
+    //we've got the data from the oauth providers, and filtered it through GIT to get a standardized form of the data
+    //now we search through our user accounts to see if it exists or not
+    opts = {
+        "url": getZociaUrl(req) + '/profiles/search',
+        "data": JSON.stringify({
+            "query": {
+                "query_string": {
+                    "fields" : [
+                        "thirdPartyLogins.values.profile.providerName",
+                        "thirdPartyLogins.values.profile.displayName"
+                    ],
+                    "query" : oAuthResults.identifier + ' AND ' + oAuthResults.displayName,
+                    "use_dis_max" : true
+                }
+            }
+        }),
+        "method": 'POST',
+        headers:Headers({ 'x-rt-index':'ejs',
+            'Content-Type':'application/json' }),
+        async:false
+    };
+
+    exchange = httpclient.request(opts);
+
+    var results = JSON.parse(exchange.content);
+
+    if(results.length > 0)
+    {
+        //user found logging in user now
+    } else {
+        //user NOT found creating user now
+        createUser(req, oAuthResults);
+    }
+
+    console.log("wheeee: " + results.length);
+
+    return json(true);
+}
+
 //ideally this needs to create the user in zocia
 function createUser(req, userDetails)
 {
@@ -211,11 +290,11 @@ function createUser(req, userDetails)
 //due to inconsistency between open ID endpoints, some endpoints will return the results in a POST request while others will use GET
 //we need to catch and handle both requests the same way, so that's what we're doing here
 app.post('/create', function(req) {
-    return createUser(req, req.postParams);
+    return checkUser(req, req.postParams);
 });
 
 app.get('/create', function(req) {
-    return createUser(req, req.params);
+    return checkUser(req, req.params);
 });
 
 function _generateBasicAuthorization(username, password) {
