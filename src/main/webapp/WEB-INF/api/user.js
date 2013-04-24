@@ -29,114 +29,6 @@ app.post('/login', function(req) {    console.log("user is now logged in");
 });
 
 /*
-This is the results returned by Google's provider. They're here in full as an example
- {
- "rp_target":"callback",
- "rp_purpose":"signin",
- "gx.rp_st":"AEp4C1sd3HYoD8t937hx7EGNRRWVqMfM3IoI7iKVMrZAkEI8bG0awtVpnd83xhRwZfWUeimB96o1Rf29weU4Nz0gjaYOCAEAkqmSSBywc3pxt9QRHKth3O2yZCzUyqDR7nRkNaPm4vHQ",
- "openid.ns":"http://specs.openid.net/auth/2.0",
- "openid.mode":"id_res",
- "openid.op_endpoint":"https://www.google.com/accounts/o8/ud",
- "openid.response_nonce":"2013-03-27T18:40:40Z73i0_5FmBf4TYQ",
- "openid.return_to":"http://localhost:8080/ejs/api/user/create?rp_target=callback&rp_purpose=signin&gx.rp_st=AEp4C1sd3HYoD8t937hx7EGNRRWVqMfM3IoI7iKVMrZAkEI8bG0awtVpnd83xhRwZfWUeimB96o1Rf29weU4Nz0gjaYOCAEAkqmSSBywc3pxt9QRHKth3O2yZCzUyqDR7nRkNaPm4vHQ",
- "openid.assoc_handle":"1.AMlYA9XppaTSE68rE5QGQfU-T6ByltaZ8UgbLEEIEK250iMwkVXp5np2SzviTQ",
- "openid.signed":"op_endpoint,claimed_id,identity,return_to,response_nonce,assoc_handle,ns.ext1,ext1.mode,ext1.type.attr3,ext1.value.attr3,ext1.type.attr6,ext1.value.attr6,ext1.type.auto2,ext1.value.auto2,ext1.type.attr9,ext1.value.attr9,ext1.type.attr0,ext1.value.attr0",
- "openid.sig":"mYGUaKSx35RPmJUdjPAMYmdIbJI=",
- "openid.identity":"https://www.google.com/accounts/o8/id?id=AItOawku1T0cyQFqbLwlVlPG8MXjHFpOAkNJ5is",
- "openid.claimed_id":"https://www.google.com/accounts/o8/id?id=AItOawku1T0cyQFqbLwlVlPG8MXjHFpOAkNJ5is",
- "openid.ns.ext1":"http://openid.net/srv/ax/1.0",
- "openid.ext1.mode":"fetch_response",
- "openid.ext1.type.attr3":"http://axschema.org/namePerson/first",
- "openid.ext1.value.attr3":"Todd",
- "openid.ext1.type.attr6":"http://axschema.org/namePerson/last",
- "openid.ext1.value.attr6":"Barchok",
- "openid.ext1.type.auto2":"http://www.google.com/accounts/api/federated-login/id",
- "openid.ext1.value.auto2":"108627989255012550126",
- "openid.ext1.type.attr9":"http://axschema.org/pref/language",
- "openid.ext1.value.attr9":"en",
- "openid.ext1.type.attr0":"http://axschema.org/contact/email",
- "openid.ext1.value.attr0":"tbarchok@pykl.com"
- }
- */
-function processGoogle(userDetails, profile)
-{
-    profile.name = {
-        given: userDetails["openid.ext1.value.attr3"],
-        surname: userDetails["openid.ext1.value.attr6"]
-    };
-    //temporary solution, ideally the user could supply their own username...
-    profile.username = profile.name.given + profile.name.surname;
-
-    profile.thumbnail = 'images/GCEE_image_defaultMale.jpeg';
-    profile.accountEmail = {
-        address: userDetails["openid.ext1.value.attr0"]
-    };
-
-    profile.thirdPartyLogins = [{
-        "identifier": userDetails["openid.identity"],
-        "values": {
-            "claimed_id": userDetails["openid.claimed_id"],
-            "assoc_handle": userDetails["openid.assoc_handle"]
-        }
-    }];
-
-    return profile;
-}
-
-/*
-These are the results from Yahoo's provider. Included here as an example of what gets returned
- {
- "openid.ns":"http://specs.openid.net/auth/2.0",
- "openid.mode":"id_res",
- "openid.return_to":"http://localhost:8080/ejs/api/user/create?rp_target=callback&rp_purpose=signin&gx.rp_st=AEp4C1vN9X7aH8655zmoBc9avikeY4UC1ie3JUclQliGmkrs7SSD2wUObY82Qp5sca047xlpVU9VlL689XTK7mLOM2VzuEeMaElbjjkgj3e-lJzFC6iFyTusEWTKCHmSphOfZFF2PlDf",
- "openid.claimed_id":"https://me.yahoo.com/a/SmngC48Otd88pkE6Cl.sunYxwfmR#b2c64",
- "openid.identity":"https://me.yahoo.com/a/SmngC48Otd88pkE6Cl.sunYxwfmR",
- "openid.assoc_handle":"OLYOHVK0DPusmE0O3oFjlg8Ng_7jcBLCo3YT25rOiqVPLJ.7FwBFtY6wSPPPBu77GKS3PMhwi0TZiouhD8NUJawSq0jq7tn4TfFUo3XEJ9kFAiYBklPcPct_2vP9PIVzLQ--",
- "openid.realm":"http://localhost:8080",
- "openid.ns.ax":"http://openid.net/srv/ax/1.0",
- "openid.ax.mode":"fetch_response",
- "openid.ax.value.fullname":"Todd B.",
- "openid.ax.value.nickname":"Todd B",
- "openid.ax.value.language":"en-US",
- "openid.ax.value.timezone":"America/New_York",
- "openid.ax.value.image":"https://s.yimg.com/dh/ap/social/profile/profile_b48.png",
- "openid.response_nonce":"2013-03-27T15:03:14Zee5GL6YF5vwQXz3eyAmdmF4TtV1sc7PiqQ--",
- "openid.signed":"assoc_handle,claimed_id,identity,mode,ns,op_endpoint,response_nonce,return_to,signed,ax.value.fullname,ax.type.fullname,ax.value.nickname,ax.type.nickname,ax.value.language,ax.type.language,ax.value.timezone,ax.type.timezone,ax.value.image,ax.type.image,ns.ax,ax.mode,pape.auth_level.nist",
- "openid.op_endpoint":"https://open.login.yahooapis.com/openid/op/auth",
- "openid.ax.type.fullname":"http://axschema.org/namePerson",
- "openid.ax.type.nickname":"http://axschema.org/namePerson/friendly",
- "openid.ax.type.language":"http://axschema.org/pref/language",
- "openid.ax.type.timezone":"http://axschema.org/pref/timezone",
- "openid.ax.type.image":"http://axschema.org/media/image/default",
- "openid.pape.auth_level.nist":"0",
- "openid.sig":"3sz/MDAAiMnP5qLaeMsb4SX19II="
- }
- */
-function processYahoo(userDetails, profile)
-{
-    profile.username = userDetails["openid.ax.value.nickname"];
-    profile.name = {
-        given: userDetails["openid.ax.value.fullname"],
-        surname: userDetails["openid.ext1.value.attr6"]
-    };
-
-    profile.thumbnail = userDetails["openid.ax.value.image"];
-    profile.accountEmail = {
-        address: userDetails["openid.ext1.value.attr0"]
-    };
-
-    profile.thirdPartyLogins = [{
-        "identifier": userDetails["openid.identity"],
-        "values": {
-            "claimed_id": userDetails["openid.claimed_id"],
-            "assoc_handle": userDetails["openid.assoc_handle"]
-        }
-    }];
-
-    return profile;
-}
-
-/*
  This gets the data from various oauth providers that GIT supports, and decides what to do with it
  First we need to pass in that data back to GIT, which will return us a nice, easy to use format that we can be certain will contain various bits of information
  Once we get the users identity and other details, we need to search through the existing user accounts. If we find one that matches, then we log them in. Otherwise, we auto-create the account
@@ -172,9 +64,10 @@ function checkUser(req, userDetails)
 
     var exchange = httpclient.request(opts);
 
-    console.log("CHECK URL RESULT: "+exchange.content);
-
     var oAuthResults = JSON.parse(exchange.content);
+
+    oAuthResults.claimed_id = userDetails["openid.claimed_id"];
+    oAuthResults.assoc_handle = userDetails["openid.assoc_handle"];
 
     //we've got the data from the oauth providers, and filtered it through GIT to get a standardized form of the data
     //now we search through our user accounts to see if it exists or not
@@ -184,10 +77,9 @@ function checkUser(req, userDetails)
             "query": {
                 "query_string": {
                     "fields" : [
-                        "thirdPartyLogins.values.profile.providerName",
-                        "thirdPartyLogins.values.profile.displayName"
+                        "accountEmail.address"
                     ],
-                    "query" : oAuthResults.identifier + ' AND ' + oAuthResults.displayName,
+                    "query" : oAuthResults.verifiedEmail,
                     "use_dis_max" : true
                 }
             }
@@ -205,12 +97,12 @@ function checkUser(req, userDetails)
     if(results.length > 0)
     {
         //user found logging in user now
+        console.log("USER FOUND LOGGING IN USER NOW");
     } else {
         //user NOT found creating user now
-        createUser(req, oAuthResults);
+        var profile = createUser(req, oAuthResults);
+        console.log("user created: "+JSON.stringify(profile));
     }
-
-    console.log("wheeee: " + results.length);
 
     return json(true);
 }
@@ -218,42 +110,30 @@ function checkUser(req, userDetails)
 //ideally this needs to create the user in zocia
 function createUser(req, userDetails)
 {
-    console.log("user is being created");
-
     var profile = {};
 
-    //process the result from open ID based on the endpoint. then we need to create the user itself
-    switch(userDetails["openid.op_endpoint"])
-    {
-        case "https://www.google.com/accounts/o8/ud":
-            profile = processGoogle(userDetails, profile);
-            break;
-        case "https://open.login.yahooapis.com/openid/op/auth":
-            profile = processYahoo(userDetails, profile);
-            break;
-        default:
-            log.error("Open ID Endpoint not recognized. Only Yahoo and Google endpoints supported.");
-            break;
-    }
+    //userDetails come from: https://developers.google.com/identity-toolkit/v2/reference/relyingparty/verifyAssertion
+    profile.name = {
+        given: userDetails.firstName,
+        surname: userDetails.lastName,
+        fullName: userDetails.fullName
+    };
 
-    /*
-     var exchange = roundTableAjaxRequest({
-     "url": '/profiles/search',
-     "data": {
-     "query": {
-     "query_string": {
-     "fields" : [
-     "thirdPartyLogins.values.profile.providerName",
-     "thirdPartyLogins.values.profile.displayName"
-     ],
-     "query" : thirdPartyResults.profile.providerName.replace('!', '') + ' AND ' + thirdPartyResults.profile.displayName,
-     "use_dis_max" : true
-     }
-     }
-     },
-     "method": 'POST'
-     });
-     */
+    profile.username = userDetails.nickName || (profile.name.given + profile.name.surname);
+
+    profile.thumbnail = userDetails.photoUrl || 'images/GCEE_image_defaultMale.jpeg';
+    profile.accountEmail = {
+        address: userDetails.verifiedEmail,
+        status: "verified"
+    };
+
+    profile.thirdPartyLogins = [{
+        "identifier": userDetails.identifier,
+        "values": {
+            "claimed_id": userDetails.claimed_id,
+            "assoc_handle": userDetails.assoc_handle
+        }
+    }];
 
     //these are all the properties needed to create a user in zocia
     profile.source = "ejs";
@@ -261,7 +141,6 @@ function createUser(req, userDetails)
     profile.educationHistory = [];
     profile.workHistory = [];
     profile.password = '';
-    profile.accountEmail.status = "verified";
 
     var opts = {
         url: getZociaUrl(req) + '/profiles/',
@@ -277,14 +156,13 @@ function createUser(req, userDetails)
 
     if(exchange.success)
     {
-        console.log("successful user creation ok then!");
+        //create user was successful, return the profile object so it can be used
+        return profile;
     } else {
-        console.log("there was an error creating the user, we shall now do something else");
+        log.error("There was an error creating the user. Status: "+exchange.status);
+        return false;
     }
-    console.log("result: "+exchange.status);
 
-    //create user, then we need to redirect them back to everything
-    return json({ "status": JSON.stringify(profile) });
 }
 
 //due to inconsistency between open ID endpoints, some endpoints will return the results in a POST request while others will use GET
