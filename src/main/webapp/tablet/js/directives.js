@@ -38,13 +38,17 @@ angular.module('ejs-tablet.directives').directive('grid', ["$log", "$http", "$ti
             $('.iosSlider').iosSlider({
                 snapToChildren: true,
                 desktopClickDrag: true,
-                onSlideStart: function(args){
+                onSlideComplete: function(args){
                     if(args.data.numberOfSlides == args.currentSlideNumber){
                         directiveScope.$emit('event:loadMoreArticles');
+                        $('.iosSlider').iosSlider('update');
                     }
                 },
                 onSliderResize: function(args){
                     directiveScope.$broadcast('event:tabletOrientationChange');
+                },
+                onSliderLoaded: function(args){
+                    //$('.iosSlider').iosSlider('update');
                 }
             });
 

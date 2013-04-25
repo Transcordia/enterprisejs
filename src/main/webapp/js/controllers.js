@@ -28,10 +28,10 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
 
     if (tablet)
     {
-        if($location.host != 'qa-ejs.elasticbeanstalk'){
-            $window.location = '/ejs/tablet/';
-        }else{
+        if($window.location.host == 'qa-ejs.elasticbeanstalk.com'){
             $window.location = '/tablet/';
+        }else{
+            $window.location = '/ejs/tablet/';
         }
 
         size = 6;

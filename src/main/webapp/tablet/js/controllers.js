@@ -23,9 +23,15 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
      * $http.get('api/articles/score');
      */
 
-    $log.info('scope id in controller: ' + $scope.$id);
+    var url;
 
-    $http.get('/ejs/api/articles/?from=' + from + '&size=' + size)
+    if($window.location.host == 'qa-ejs.elasticbeanstalk.com'){
+        url = '/api'
+    }else{
+        url = '/ejs/api';
+    }
+
+    $http.get(url + '/articles/?from=' + from + '&size=' + size)
         .success(function(data, status, headers){
             if(data.content.length == 0){
                 generateRandomArticles(totalArticles, function(data) {
@@ -71,7 +77,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
                 }
             });*/
 
-        var jqxhr = $.ajax('/ejs/api/articles/?from='+ from +'&size='+ size)
+        var jqxhr = $.ajax(url + '/articles/?from='+ from +'&size='+ size)
             .done(function(data){
                 //$log.info(data.content.length);
                 if(data.content.length != 1) {
@@ -102,11 +108,11 @@ AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeP
  */
 function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $window){
     var id = $routeParams.id;
-    $http.get('/ejs/api/articles/' + id)
+    $http.get(url + '/articles/' + id)
         .success(function(data, status, headers){
             $scope.article = data.content;
 
-            $http.post('/ejs/api/articles/views/'+ id)
+            $http.post(url + '/articles/views/'+ id)
                 .success(function(data) {
                     $scope.article.views = data.content.views;
                 });
