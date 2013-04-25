@@ -90,14 +90,26 @@
             <a class="hidden-phone hidden-tablet" ng-href="#/home"><img ng-src="img/EJS_images_logo.png" alt=""></a>
             <a class="visible-phone visible-tablet" ng-href="#/home"><img ng-src="img/EJS_images_logo_mobile.png" alt=""></a>
             <ul id="navigation" class="hidden-phone">
-               <li><p ng-click="showAddUrlModal=true">Add <i class="icon-white icon-plus"></i></p></li>
-                <li><a onclick="return !window.open(this.href, 'Log In', 'width=600,height=470')" href="#/login" target="_blank">Log In</a></li>
+                <!--<li><p ng-click="showAddUrlModal=true">Add <i class="icon-white icon-plus"></i></p></li>-->
+                <li><a onclick="return !window.open(this.href, 'Log In', 'width=600,height=470')" href="#/login" target="_blank">
+                        <h3>LOG IN</h3>
+                    </a>
+                </li>
+                <li ng-click="showAddUrlModal=true">
+                    <div id="add-link-btn">
+                        <div class="add-link-btn-inner">
+                            <div id="inner-plus-horiz"></div>
+                            <div id="inner-plus-vert"></div>
+                        </div>
+                    </div>
+                </li>
                 <!--<li><a ng-href="#/templates">Templates</a></li>
                 <li><a ng-href="#/sorttest">Test sorting</a></li>-->
             </ul>
         </div>
     </div>
 </div>
+<div class="fake-bottom-border"></div>
 
 <div  ng-controller="addArticleModal">
     <div ui-modal class="modal fade" ng-model="$parent.showAddUrlModal">

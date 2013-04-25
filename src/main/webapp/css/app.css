@@ -51,7 +51,18 @@ p{
 
 .navbar{
     margin-bottom: 0;
-    border-bottom: 3px solid #d3d4d4;
+}
+
+.fake-bottom-border{
+    background-color: #d3d4d4;
+    height:3px;
+    width: 100%;
+    position: absolute;
+    top: 88px;
+    z-index: 100;
+    zoom: 1;
+    filter: alpha(opacity=70);
+    opacity: 0.7;
 }
 
 .ejs-hero{
@@ -81,6 +92,7 @@ p{
 #article-container{
     margin: 0 auto 10px auto;
     padding-bottom: 100px;
+    border-right: solid 1px #c9c9c9;
 }
 
 .article-page {
@@ -91,7 +103,7 @@ p{
     position: absolute;
 }
 
-.article{
+.article-view-container .article{
     overflow: hidden;
     font-size: 11px;
     border-left: solid 1px #c9c9c9;
@@ -99,6 +111,13 @@ p{
     /*box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
     -moz-box-shadow: 0 1px 2px rgba(34,25,25,0.4);
     -webkit-box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);*/
+}
+
+.article{
+    overflow: hidden;
+    font-size: 11px;
+    border-left: solid 1px #c9c9c9;
+    border-bottom: solid 1px #c9c9c9;
 }
 
 /*.article div{
@@ -148,7 +167,7 @@ p{
 }
 
 .article-abstract-image{
-    width: 100%;
+    width:99.9%;
     height: 190px;
     background-color: white;
     position: relative;
@@ -366,11 +385,16 @@ p{
     position: relative;
     float: right;
     z-index: 105;
+    margin-bottom: 0;
 }
 
 #navigation li{
     position: relative;
-    display: inline;
+    display: inline-block;
+}
+
+#navigation li:first-child{
+    top: -3.5em;
 }
 
 #navigation li p{
@@ -379,6 +403,14 @@ p{
     font-weight: bold;
     height: 29px;
     padding: 15px 27px 0 14px;
+}
+
+#navigation li h3{
+    margin: 0;
+}
+
+#navigation li a{
+    color: #7f7f7f;
 }
 
 .modal-body .leftside{
@@ -636,7 +668,7 @@ p{
 .article-views p img,
 .landscape .article-views p img{
     position: relative;
-    top: -1px;
+    top: -4px;
 }
 
 /*.article-views p img{
@@ -816,6 +848,41 @@ p{
 .edit-link:hover{
     color: #656565;
     text-decoration: none;
+}
+
+#add-link-btn{
+    margin-top: 5px;
+    height: 66px;
+    width: 66px;
+    border: 4px solid #282828;
+    background-color: #393939;
+    cursor: pointer;
+}
+
+#add-link-btn .add-link-btn-inner{
+    position: relative;
+    margin-top: 7px;
+    border: 4px solid #282828;
+    background-color: #7f7f7f;
+    height: 44px;
+    width: 44px;
+}
+
+#inner-plus-horiz,
+#inner-plus-vert{
+    position: absolute;
+    background-color: #393939;
+    width: 24px;
+    height: 5px;
+    top: 20px;
+    left: 9px;
+}
+
+#inner-plus-vert{
+    width: 5px;
+    height: 24px;
+    top: 10px;
+    left: 19px;
 }
 
 @media (min-width: 1200px) {
