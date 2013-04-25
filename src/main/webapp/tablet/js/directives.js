@@ -40,20 +40,19 @@ angular.module('ejs-tablet.directives').directive('grid', ["$log", "$http", "$ti
                 desktopClickDrag: true,
                 onSlideComplete: function(args){
                     if(args.data.numberOfSlides == args.currentSlideNumber){
-                        directiveScope.$emit('event:loadMoreArticles');
                         $('.iosSlider').iosSlider('update');
+
+                        directiveScope.$emit('event:loadMoreArticles');
+
+                        //$('.iosSlider').iosSlider('addSlide', '<div><h1>This is a slide</h1></div>', args.currentSlideNumber + 1);
                     }
                 },
                 onSliderResize: function(args){
                     directiveScope.$broadcast('event:tabletOrientationChange');
-                },
-                onSliderLoaded: function(args){
-                    //$('.iosSlider').iosSlider('update');
                 }
             });
 
             return function(scope, elem, attr) {
-                $log.info('scope id: ' + scope.$id);
                 directiveScope = scope;
 
                 scope.pages = [];

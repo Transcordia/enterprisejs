@@ -86,7 +86,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
     });
 
     $scope.loadMoreArticles = function(){
-        if(!lastPage){
+        /*if(!lastPage){
             $http.get('api/articles/?from='+ from +'&size='+ size)
                 .success(function(data){
                     if(mobile){
@@ -105,6 +105,30 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
                         }
                     }
                 });
+        }*/
+
+        if(!lastPage){
+            var jqxhr = $.ajax('api/articles/?from='+ from +'&size='+ size)
+                .done(function(data){
+                    if(mobile){
+                        if(data.content.length > 0) {
+                            $scope.articles = data.content;
+
+                            $scope.$apply();
+                        }else{
+                            lastPage = true;
+                            $scope.$broadcast('event:lastPage');
+                        }
+                    }else{
+                        if(data.content.length != 1) {
+                            $scope.articles = data.content;
+                        }else{
+                            lastPage = true;
+                            $scope.$broadcast('event:lastPage');
+                        }
+                    }
+                })
+                .fail(function(){ $log.info('The call failed!')});
         }
     }
 
