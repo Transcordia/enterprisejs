@@ -16,6 +16,8 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
     $scope.articles = [];
     $scope.loading = true;
     $scope.showGears = "";
+    $scope.tablet = tablet;
+    $scope.mobile = mobile;
 
     var from = 0;
     var size = 20;
@@ -344,7 +346,9 @@ EditArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$routeParams
  * @param $routeParams
  */
 function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $window){
-    $scope.$emit('event:viewArticleDetail');
+    if(!mobile){
+        $scope.$emit('event:viewArticleDetail');
+    }
 
     var id = $routeParams.id;
     $http.get('api/articles/' + id)

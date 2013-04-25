@@ -1,6 +1,6 @@
 <div>
     <div ui-if=!tablet>
-        <div class="loading-gears" gears ng-class="showGears"></div>
+        <div ui-if="!mobile" class="loading-gears" gears ng-class="showGears"></div>
 
         <div class="ejs-hero hidden-phone" ui-if=!loading>
             <div class="abstract-image-container">

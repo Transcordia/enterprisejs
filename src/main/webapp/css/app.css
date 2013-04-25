@@ -1247,7 +1247,7 @@ p{
         position: relative;
         border-left: none;
         border-right: none;
-        border-bottom: none;
+        border-bottom: 1px solid #c9c9c9;
     }
 
     .article .title-description.clearfix h1{
@@ -1367,5 +1367,24 @@ p{
 
     .article-views p img{
         top: 0;
+    }
+
+    .app-view-container{
+        position: static;
+    }
+
+    .row .sidebar {
+        margin: 10px 20px 0 20px;
+    }
+
+    #footer h3{
+        font-size: 18.5px;
+    }
+
+    .view-enter-setup, .view-leave-setup {
+        -webkit-transition: none;
+        -moz-transition: none;
+        -o-transition: none;
+        transition: none;
     }
 }

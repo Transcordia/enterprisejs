@@ -379,7 +379,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                                             <div class="article-abstract-meta">\
                                                 <div class="clearfix">\
                                                     <div class="time-posted"><p><i>'+ date +'</i></p></div>\
-                                                    <div class="article-views"><p><img src="img/newIconPageViews.png" /> '+ article.views +'</p></div>\
+                                                    <div class="article-views"><p><img src="img/newViewsIcon.png" /> '+ article.views +'</p></div>\
                                                 </div>\
                                             </div>\
                                         </div>';
@@ -394,7 +394,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                                         <div class="article-abstract-meta">\
                                             <div class="clearfix">\
                                                 <div class="time-posted"><p><i>'+ date +'</i></p></div>\
-                                                <div class="article-views"><p><img src="img/newIconPageViews.png" /> ' + article.views + '</p></div>\
+                                                <div class="article-views"><p><img src="img/newViewsIcon.png" /> ' + article.views + '</p></div>\
                                             </div>\
                                         </div>\
                                     </div>';
@@ -596,7 +596,9 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                     render(scope.articles, animationComplete);
                 }
 
-                setArticleContainerWidth();
+                if(!phone){
+                    setArticleContainerWidth();
+                }
             });
 
             scope.$on('event:tabletOrientationChange', function(){
