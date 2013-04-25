@@ -447,7 +447,8 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                             div.appendTo('#article-container');
                         }
 
-                        scope.$emit('event:loadMoreArticles');
+                        //scope.$emit('event:loadMoreArticles');
+                        scope.$parent.$parent.$parent.loadMoreArticles();
                     }
                 });
 
