@@ -344,6 +344,8 @@ EditArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$routeParams
  * @param $routeParams
  */
 function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $window){
+    $scope.$emit('event:viewArticleDetail');
+
     var id = $routeParams.id;
     $http.get('api/articles/' + id)
         .success(function(data, status, headers){

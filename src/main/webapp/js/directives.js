@@ -623,6 +623,8 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 $('.ejs-hero .abstract-image-container').css({'width': totalWidth + 'px'});
 
                 $('#article-container').css({'width': totalWidth});
+
+                $('.navbar-inner div').first().css({'width': totalWidth});
             }
         }
     }
@@ -748,6 +750,17 @@ angular.module('ejs.directives').directive('like', ['$http', '$rootScope', funct
         }
     }
 }]);
+
+angular.module('ejs.directives').directive('resizeNav', function(){
+    return{
+        restrict: 'A',
+        link: function(scope, elm, attrs){
+            scope.$on('event:viewArticleDetail', function(){
+                elm.css('width', $('.article-view-container').width()+'px');
+            });
+        }
+    }
+});
 
 angular.module('ejs.directives').directive('gears', function(){
     return{
