@@ -76,6 +76,8 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
                 //$log.info(data.content.length);
                 if(data.content.length != 1) {
                     $scope.articles = data.content;
+
+                    $scope.$apply();
                 }else{
                     lastPage = true;
                     $scope.$broadcast('event:lastPage');
