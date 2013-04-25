@@ -28,7 +28,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
 
     if (tablet)
     {
-        $window.location = 'http://localhost:8080/ejs/tablet/';
+        $window.location = '/ejs/tablet/';
         size = 6;
     }
 
