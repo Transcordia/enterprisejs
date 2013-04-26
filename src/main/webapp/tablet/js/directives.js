@@ -49,7 +49,7 @@ angular.module('ejs-tablet.directives').directive('grid', ["$log", "$http", "$ti
             });
 
             return {
-                pre: function(scope, elem, attr){
+                pre: function(scope, element, attr){
                     directiveScope = scope;
 
                     scope.pages = [];
@@ -66,6 +66,10 @@ angular.module('ejs-tablet.directives').directive('grid', ["$log", "$http", "$ti
                     scope.$on('event:nextPageStart', function(event, nextStart) {
                         from += nextStart;
                     });
+
+                    scope.$on('event:pagePreloadComplete', function(event){
+                        element.addClass('fadein');
+                    })
                 }
             }
         }
