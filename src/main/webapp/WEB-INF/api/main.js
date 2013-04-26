@@ -12,7 +12,7 @@ var {Application} = require("stick");
 var {trimpath, trimpathResponse, registerHelper} = require( 'trimpath' );
 
 var {processUrl, iso8601ToDate, dateToISO8601, preferredArea, getAbstractImage, abstractImageOrientation} = require('utility/parse');
-var {getZociaUrl, getZociaBase, getElasticBase} = require('utility/getUrls');
+var {getZociaUrl, getZociaBase, getElasticBase, ctx} = require('utility/getUrls');
 var {encode} = require('ringo/base64');
 
 var store = require('store-js');
@@ -26,21 +26,6 @@ registerHelper( {
     }
 } );
 
-function ctx( url ) {
-    // Only prepend the context path if the URL is a relative
-    if ( /^\//.test( url ) ) {
-        var req = getRequest();
-        if ( !req ) {
-            throw 'Function ctx requires a request object to be known to the application.';
-        }
-
-        // Get the servlet's context path
-        var contextPath = req.env.servletRequest.contextPath;
-        url = contextPath + url;
-    }
-    return url;
-}
-
 function getRequest() {
     var app = require( module.resolve( 'main' ) ).app;
     if ( app ) return app.request;
@@ -48,7 +33,8 @@ function getRequest() {
 }
 
 var app = exports.app = Application();
-app.configure('notfound', 'params', 'mount', 'route', auth);
+//the order of these is important. auth needs to be injected before mount and route otherwise things won't work right
+app.configure('notfound', 'params', auth, 'mount', 'route');
 
 app.mount('/user', require('./user'));
 
@@ -399,3 +385,12 @@ function auth(next) {
         return next(req);
     }
 }
+
+/**
+ * Returns the authentication credentials for the current user using the Spring Security
+ * classes.
+ */
+app.get( '/auth', function ( req ) {
+    log.info("logging in user");
+    return json( req.auth );
+} );

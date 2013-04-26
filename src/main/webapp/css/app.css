@@ -393,7 +393,7 @@ p{
     display: inline-block;
 }
 
-#navigation li:first-child{
+#navigation li.upworthy{
     top: -3.5em;
 }
 

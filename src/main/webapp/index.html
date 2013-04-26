@@ -48,39 +48,37 @@
     </script>
     <script type="text/javascript">
         $(function() {
+            var url = window.location.origin + window.location.pathname
             //the base URLs needs to be set via a function or something instead of hard coded the way they are here
             window.google.identitytoolkit.setConfig({
                 developerKey: "AIzaSyAH6F_1XgdpAb93KazCHcSWHUmkAQAbWn8",
                 companyName: "",
-                callbackUrl: "http://localhost:8080/ejs/api/user/check",
+                callbackUrl: url + "popup.html",
                 realm: "",
-                userStatusUrl: "http://localhost:8080/ejs/api/user/status",
-                loginUrl: "http://localhost:8080/ejs/api/user/login",
-                signupUrl: "http://localhost:8080/ejs/#/signup",
-                homeUrl: "http://localhost:8080/ejs/#/home",
-                logoutUrl: "http://localhost:8080/ejs/#/signout",
                 idps: ["Gmail", "Yahoo"],
                 tryFederatedFirst: true,
                 useContextParam: false,
                 language: "en"
             });
         });
+
+        function openLoginWindow()
+        {
+            // open popup window and pass field id
+            window.open('#/login','Log In', 'width=600,height=470');
+        }
+
+        function closeLoginWindow(result)
+        {
+            // this gets called from the popup window and updates the field with a new value
+            console.log("window closed which means something good or bad may have happened: "+result);
+            if(result)
+            {
+                var elem = angular.element($(".app-view-container"));
+                elem.scope().$broadcast('event:int-signinConfirmed');
+            }
+        }
     </script>
-    <!--
-        <script type="text/javascript">
-        <!--google.load('identitytoolkit', '2', {packages: ['store']});
-            jQuery(function() {
-                var homeUrl = '/'; // Your home page URL.
-                var account = {
-                    email: 'user@idp.com',  // required
-                    displayName: 'User Name',  // optional
-                    photoUrl: 'http://website.com/img/user.png'  // optional
-                };
-                // Store the account then return to homeUrl.
-                window.google.identitytoolkit.storeAccount(account, homeUrl);
-            });
-        </script>
-           -->
 </head>
 <body>
 
@@ -91,11 +89,11 @@
             <a class="visible-phone visible-tablet" ng-href="#/home"><img ng-src="img/EJS_images_logo_mobile.png" alt=""></a>
             <ul id="navigation" class="hidden-phone">
                 <!--<li><p ng-click="showAddUrlModal=true">Add <i class="icon-white icon-plus"></i></p></li>-->
-                <li><a onclick="return !window.open(this.href, 'Log In', 'width=600,height=470')" href="#/login" target="_blank">
+                <li ng-class="{ 'upworthy': auth.isAuthenticated }" ng-controller="pykl.LoginCtrl"><a onclick="openLoginWindow()" href="#" target="_blank">
                         <h3>LOG IN</h3>
                     </a>
                 </li>
-                <li ng-click="showAddUrlModal=true">
+                <li ui-if="auth.isAuthenticated" ng-click="showAddUrlModal=true">
                     <div id="add-link-btn">
                         <div class="add-link-btn-inner">
                             <div id="inner-plus-horiz"></div>
@@ -144,6 +142,7 @@
 <script src="js/controllers.js"></script>
 <script src="js/filters.js"></script>
 <script src="js/directives.js"></script>
+<script src="js/auth.js"></script>
 
 <script src="lib/angular-ui/angular-ui.js"></script>
 
