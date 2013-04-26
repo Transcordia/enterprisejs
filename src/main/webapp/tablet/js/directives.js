@@ -345,3 +345,75 @@ angular.module('ejs-tablet.directives').directive('gridPage', ['truncate', '$tim
         }
     }
 }]);
+
+angular.module('ejs-tablet.directives').directive('gears', function(){
+    return{
+        restrict: 'A',
+        link: function(scope, elm, attrs){
+            var largeGear = $(document.createElement('img'));
+            largeGear.attr('src', '../img/EJS_loadingAnimation_GearLrg_600x600.png');
+            largeGear.addClass('large med-clockwise');
+            largeGear.css({
+                'position': 'absolute',
+                'top': '100px',
+                'left': '100px'
+            });
+            largeGear.appendTo('.loading-gears');
+
+            var medGear = $(document.createElement('img'));
+            medGear.attr('src', '../img/EJS_loadingAnimation_GearLrg_600x600.png');
+            medGear.addClass('medium fast-counter-clockwise');
+            medGear.css({
+                'position': 'absolute',
+                'top': '376px',
+                'left': '86px'
+            });
+            medGear.appendTo('.loading-gears');
+            medGear.fadeTo(0, 0.5);
+
+            var smallGear = $(document.createElement('img'));
+            smallGear.attr('src', '../img/EJS_loadingAnimation_GearLrg_600x600.png');
+            smallGear.addClass('small fast-counter-clockwise');
+            smallGear.css({
+                'position': 'absolute',
+                'top': '36px',
+                'left': '100px'
+            });
+            smallGear.appendTo('.loading-gears');
+            smallGear.fadeTo(0, 0.25);
+
+            var largeGearTwo = $(document.createElement('img'));
+            largeGearTwo.attr('src', '../img/EJS_loadingAnimation_GearLrg_600x600.png');
+            largeGearTwo.addClass('large med-clockwise');
+            largeGearTwo.css({
+                'position': 'absolute',
+                'top': '200px',
+                'left': '400px'
+            });
+            largeGearTwo.appendTo('.loading-gears');
+            largeGearTwo.fadeTo(0, 0.65);
+
+            var smallGearTwo = $(document.createElement('img'));
+            smallGearTwo.attr('src', '../img/EJS_loadingAnimation_GearLrg_600x600.png');
+            smallGearTwo.addClass('small fast-counter-clockwise');
+            smallGearTwo.css({
+                'position': 'absolute',
+                'top': '473px',
+                'left': '582px'
+            });
+            smallGearTwo.appendTo('.loading-gears');
+            smallGearTwo.fadeTo(0, 0.25);
+
+
+            var largeGearThree = $(document.createElement('img'));
+            largeGearThree.attr('src', '../img/EJS_loadingAnimation_GearLrg_600x600.png');
+            largeGearThree.addClass('large med-clockwise');
+            largeGearThree.css({
+                'position': 'absolute',
+                'top': '550px',
+                'left': '400px'
+            });
+            largeGearThree.appendTo('.loading-gears');
+        }
+    }
+});

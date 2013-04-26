@@ -11,11 +11,13 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
     $scope.articles = [];
     $scope.loading = true;
     $scope.showGears = "";
+    $scope.showArticles = "";
 
     var from = 0;
     var size = 6;
     var lastPage = false;
     var totalArticles = 51;
+    var pageNumber = 1;
 
     /**
      * If you need to generate random articles in order to seed elasticsearch, run this xhr AFTER all articles have
@@ -43,17 +45,15 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
     $scope.$on('event:nextPageStart', function(event, nextStart) {
         from += nextStart;
 
-        var pageCount = 1;
+        $log.info('this event has been fired ' + pageNumber++ + 'times');
 
-        while(pageCount < 5){
+        if(pageNumber < 5){
             $http.get(url($window.location.host) + '/articles/?from=' + from + '&size=' + size)
                 .success(function(data, status, headers){
                     $scope.articles = data.content;
 
                     $('.iosSlider').iosSlider('update');
                 });
-
-            pageCount++;
         }
 
         $log.info('total number of articles placed on the page: ' + from);
