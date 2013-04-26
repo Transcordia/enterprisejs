@@ -48,7 +48,7 @@ function getRequest() {
 }
 
 var app = exports.app = Application();
-app.configure('notfound', 'params', 'mount', 'route');
+app.configure('notfound', 'params', 'mount', 'route', auth);
 
 app.mount('/user', require('./user'));
 
@@ -337,3 +337,65 @@ app.post('/utility/unlike/:id', function(req, id) {
 
     return json(JSON.parse(exchange.content));
 });   */
+
+
+/**
+ * Middleware component for Stick to inject Spring Security credentials and props into request object.
+ *
+ * @return {Function}
+ */
+function auth(next) {
+    return function (req) {
+        req.auth = {
+            isAuthenticated: false,
+            roles: [],
+            isUserInRole: function (r) {
+                r = r.toLocaleLowerCase();
+                return this.roles.some(function (role) {
+                    return r === role
+                })
+            }
+        };
+
+        var SecurityContextHolder = Packages.org.springframework.security.core.context.SecurityContextHolder;
+        var springAuth = SecurityContextHolder.context.authentication;
+
+        // An unauthenticated user will have a principal of type String ('anonymousUser')
+        if (springAuth && typeof springAuth.principal !== 'string') {
+            var p = springAuth.principal;
+
+            // While an authenticated user will have a BLTVUserDetails object as the principal
+            req.auth.isAuthenticated = springAuth.isAuthenticated();
+            req.auth.username = p.username;
+            req.auth.password = p.password;
+
+            var authorities = springAuth.principal.authorities.iterator();
+            while (authorities.hasNext()) {
+                var authority = authorities.next();
+                req.auth.roles.push(authority.toString().toLowerCase());
+            }
+
+            req.auth.principal = {
+                id: p.id,
+                username: p.username,
+                name: p.name,
+                email: p.email,
+                country: p.country,
+                profileType: p.profileType,
+                accountType: p.accountType,
+                thumbnail: p.thumbnail
+            };
+            // todo: Need to take gender into consideration or generate a unisex thumbnail
+            req.auth.principal.thumbnail =
+                (p.thumbnail === 'profiles-0000-0000-0000-000000000001' || p.thumbnail === '')
+                    ? 'images/GCEE_image_profileMale_135x135.jpeg'
+                    : p.thumbnail
+        } else {
+            req.auth.principal = {
+                id: '',
+                username: 'AnonymousUser'
+            };
+        }
+        return next(req);
+    }
+}

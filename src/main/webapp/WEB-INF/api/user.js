@@ -19,6 +19,12 @@ var {getZociaUrl} = require('utility/getUrls');
 var {encode} = require('ringo/base64');
 var {Headers} = require('ringo/utils/http');
 
+// Included for forcing users to be re-authenticated
+var {SecurityContextHolder} = Packages.org.springframework.security.core.context;
+var {RoundtableUser} = Packages.com.zocia.nep.security;
+var {UsernamePasswordAuthenticationToken} = Packages.org.springframework.security.authentication;
+var {PreAuthenticatedAuthenticationToken} = Packages.org.springframework.security.web.authentication.preauth;
+
 //
 app.post('/status', function(req) { console.log("USER STATUS INFO");
     return json({ "registered": true });
@@ -49,7 +55,7 @@ function checkUser(req, userDetails)
     }
 
     var data = {
-        "requestUri": "http://localhost:8080/ejs/api/user/create",
+        "requestUri": "http://localhost:8080/ejs/api/user/check",
         "postBody": processParams(userDetails),
         "returnOauthToken": true
     };
@@ -72,66 +78,64 @@ function checkUser(req, userDetails)
     //we've got the data from the oauth providers, and filtered it through GIT to get a standardized form of the data
     //now we search through our user accounts to see if it exists or not
     opts = {
-        "url": getZociaUrl(req) + '/profiles/search',
-        "data": JSON.stringify({
-            "query": {
-                "query_string": {
-                    "fields" : [
-                        "accountEmail.address"
-                    ],
-                    "query" : oAuthResults.verifiedEmail,
-                    "use_dis_max" : true
-                }
-            }
-        }),
-        "method": 'POST',
-        headers:Headers({ 'x-rt-index':'ejs',
-            'Content-Type':'application/json' }),
+        "url": getZociaUrl(req) + '/profiles/byprimaryemail/'+oAuthResults.verifiedEmail,
+        "method": 'GET',
+        headers:Headers({ 'x-rt-index':'ejs' }),
         async:false
     };
 
     exchange = httpclient.request(opts);
 
-    var results = JSON.parse(exchange.content);
-
-    if(results.length > 0)
+    if(exchange.status === 200)
     {
+        var results = JSON.parse(exchange.content);
         //user found logging in user now
         console.log("USER FOUND LOGGING IN USER NOW");
+        forceLoginWithUsername(results.username);
+        return json({"user": "login successful"});
     } else {
         //user NOT found creating user now
         var profile = createUser(req, oAuthResults);
-        console.log("user created: "+JSON.stringify(profile));
+        if(profile) {
+            console.log("user created: "+JSON.stringify(profile));
+            //issue: things might not work instantly. might need to add a few seconds delay
+            forceLoginWithUsername(profile.username);
+            return json({"user": "creation successful"});
+        } else {
+            return json(false);
+        }
     }
 
     return json(true);
 }
 
 //ideally this needs to create the user in zocia
-function createUser(req, userDetails)
+function createUser(req, oAuthResults)
 {
     var profile = {};
 
-    //userDetails come from: https://developers.google.com/identity-toolkit/v2/reference/relyingparty/verifyAssertion
+    //oAuthResults come from: https://developers.google.com/identity-toolkit/v2/reference/relyingparty/verifyAssertion
     profile.name = {
-        given: userDetails.firstName,
-        surname: userDetails.lastName,
-        fullName: userDetails.fullName
+        given: oAuthResults.firstName,
+        surname: oAuthResults.lastName,
+        fullName: oAuthResults.fullName
     };
 
-    profile.username = userDetails.nickName || (profile.name.given + profile.name.surname);
+    profile.username = oAuthResults.nickName || (profile.name.given + profile.name.surname);
 
-    profile.thumbnail = userDetails.photoUrl || 'images/GCEE_image_defaultMale.jpeg';
+    profile.thumbnail = oAuthResults.photoUrl || 'images/GCEE_image_defaultMale.jpeg';
     profile.accountEmail = {
-        address: userDetails.verifiedEmail,
+        address: oAuthResults.verifiedEmail,
         status: "verified"
     };
 
+    profile.status = "verified";
+
     profile.thirdPartyLogins = [{
-        "identifier": userDetails.identifier,
+        "identifier": oAuthResults.identifier,
         "values": {
-            "claimed_id": userDetails.claimed_id,
-            "assoc_handle": userDetails.assoc_handle
+            "claimed_id": oAuthResults.claimed_id,
+            "assoc_handle": oAuthResults.assoc_handle
         }
     }];
 
@@ -154,7 +158,7 @@ function createUser(req, userDetails)
 
     var exchange = httpclient.request(opts);
 
-    if(exchange.success)
+    if(exchange.status === 201)
     {
         //create user was successful, return the profile object so it can be used
         return profile;
@@ -162,16 +166,15 @@ function createUser(req, userDetails)
         log.error("There was an error creating the user. Status: "+exchange.status);
         return false;
     }
-
 }
 
 //due to inconsistency between open ID endpoints, some endpoints will return the results in a POST request while others will use GET
 //we need to catch and handle both requests the same way, so that's what we're doing here
-app.post('/create', function(req) {
+app.post('/check', function(req) {
     return checkUser(req, req.postParams);
 });
 
-app.get('/create', function(req) {
+app.get('/check', function(req) {
     return checkUser(req, req.params);
 });
 
@@ -179,4 +182,24 @@ function _generateBasicAuthorization(username, password) {
     var header = username + ":" + password;
     var base64 = encode(header);
     return 'Basic ' + base64;
+}
+
+/**
+ * Forces the user to be authenticated.
+ *
+ * @param profile
+ */
+function forceLoginWithUsername(username) {
+    if (!username) throw 'Cannot force login with a profile that does not contain a username.';
+
+    var request = getApp().request;
+    var authManager = request.env.servlet.getBean('preauthAuthProvider');
+    var authToken = new PreAuthenticatedAuthenticationToken(username, '');
+
+    var auth = authManager.authenticate(authToken);
+    SecurityContextHolder.getContext().setAuthentication(auth);
+}
+
+function getApp() {
+    return require(module.resolve('main')).app;
 }
