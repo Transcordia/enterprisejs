@@ -40,11 +40,8 @@ angular.module('ejs-tablet.directives').directive('grid', ["$log", "$http", "$ti
                 desktopClickDrag: true,
                 onSlideComplete: function(args){
                     if(args.data.numberOfSlides == args.currentSlideNumber){
-                        $('.iosSlider').iosSlider('update');
-
+                        //$('.iosSlider').iosSlider('update');
                         directiveScope.$emit('event:loadMoreArticles');
-
-                        //$('.iosSlider').iosSlider('addSlide', '<div><h1>This is a slide</h1></div>', args.currentSlideNumber + 1);
                     }
                 },
                 onSliderResize: function(args){
@@ -52,23 +49,25 @@ angular.module('ejs-tablet.directives').directive('grid', ["$log", "$http", "$ti
                 }
             });
 
-            return function(scope, elem, attr) {
-                directiveScope = scope;
+            return {
+                pre: function(scope, elem, attr){
+                    directiveScope = scope;
 
-                scope.pages = [];
-                var from = 0;
+                    scope.pages = [];
+                    var from = 0;
 
-                //we watch the article scope property because the array is loaded in with AJAX, and we can't do any rendering until it's loaded from the server
-                //because of this, we want to make sure array of articles is at least 0 before rendering, otherwise there's nothing to render and we'd get an error message
-                scope.$watch('articles', function (newValue, oldValue) {
-                    if(newValue && newValue.length > 0){
-                        scope.pages.push({"articles": newValue});
-                    }
-                }, true);
+                    //we watch the article scope property because the array is loaded in with AJAX, and we can't do any rendering until it's loaded from the server
+                    //because of this, we want to make sure array of articles is at least 0 before rendering, otherwise there's nothing to render and we'd get an error message
+                    scope.$watch('articles', function (newValue, oldValue) {
+                        if(newValue && newValue.length > 0){
+                            scope.pages.push({"articles": newValue});
+                        }
+                    }, true);
 
-                scope.$on('event:nextPageStart', function(event, nextStart) {
-                    from += nextStart;
-                });
+                    scope.$on('event:nextPageStart', function(event, nextStart) {
+                        from += nextStart;
+                    });
+                }
             }
         }
     };

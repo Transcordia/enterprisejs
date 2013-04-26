@@ -6,7 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout, $window) {
+function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $timeout, $window, url) {
     $scope.urlToCheck = '';
     $scope.articles = [];
     $scope.loading = true;
@@ -23,30 +23,9 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
      * $http.get('api/articles/score');
      */
 
-    var url;
-
-    if($window.location.host == 'qa-ejs.elasticbeanstalk.com'){
-        url = '/api'
-    }else{
-        url = '/ejs/api';
-    }
-
-    $http.get(url + '/articles/?from=' + from + '&size=' + size)
+    $http.get(url($window.location.host) + '/articles/?from=' + from + '&size=' + size)
         .success(function(data, status, headers){
-            if(data.content.length == 0){
-                generateRandomArticles(totalArticles, function(data) {
-                    $http.post('api/articles', data)
-                        .success(function(data, status, headers){
-                            $log.info(data.content);
-                        });
-                });
-            }else{
-                $scope.showGears = "fadeout";
-
-                $scope.articles = data.content;
-
-                $scope.loading = false;
-            }
+            $scope.articles = data.content;
         });
 
     $rootScope.doLogin = function(){
@@ -55,6 +34,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
                 $log.info(data);
             })
     };
+
 
     //note: we should probably eventually switch to using start/size arguments for paging.
     //this will likely happen as a result of switching to Zocia
@@ -67,23 +47,15 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
     });
 
     $scope.$on('event:loadMoreArticles', function(){
-        /*$http.get('/ejs/api/articles/?from='+ from +'&size='+ size)
-            .success(function(data){
-                if(data.content.length != 1) {
-                    $scope.articles = data.content;
-                }else{
-                    lastPage = true;
-                    $scope.$broadcast('event:lastPage');
-                }
-            });*/
-
-        var jqxhr = $.ajax(url + '/articles/?from='+ from +'&size='+ size)
+        var jqxhr = $.ajax(url($window.location.host) + '/articles/?from='+ from +'&size='+ size)
             .done(function(data){
                 //$log.info(data.content.length);
                 if(data.content.length != 1) {
                     $scope.articles = data.content;
 
                     $scope.$apply();
+
+                    $('.iosSlider').iosSlider('update');
                 }else{
                     lastPage = true;
                     $scope.$broadcast('event:lastPage');
@@ -91,10 +63,8 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
             })
             .fail(function(){ $log.info('The call failed!')});
     });
-
-
 }
-AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout", "$window"];
+AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout", "$window", "url"];
 
 /**
  * Single article view
@@ -106,13 +76,13 @@ AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeP
  * @param $location
  * @param $routeParams
  */
-function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $window){
+function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $window, url){
     var id = $routeParams.id;
-    $http.get(url + '/articles/' + id)
+    $http.get(url($window.location.host) + '/articles/' + id)
         .success(function(data, status, headers){
             $scope.article = data.content;
 
-            $http.post(url + '/articles/views/'+ id)
+            $http.post(url($window.location.host) + '/articles/views/'+ id)
                 .success(function(data) {
                     $scope.article.views = data.content.views;
                 });
@@ -133,4 +103,4 @@ function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $
 
     setModal(false);
 }
-ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$window"];
+ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$window", "url"];

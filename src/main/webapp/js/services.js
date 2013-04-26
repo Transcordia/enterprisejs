@@ -24,3 +24,17 @@ angular.module('ejs.services').factory('TimeAgo', function(){
         return moment(time, 'YYYY-MM-DD HH:mm Z').fromNow();
     }
 });
+
+angular.module('ejs.services').factory('url', function(){
+    return function(location){
+        var url;
+
+        if(location.host == 'qa-ejs.elasticbeanstalk.com'){
+            url = '/api'
+        }else{
+            url = '/ejs/api';
+        }
+
+        return url;
+    }
+});
