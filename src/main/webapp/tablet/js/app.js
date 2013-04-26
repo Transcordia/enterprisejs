@@ -12,7 +12,7 @@ angular.module('ejs-tablet', ['ejs.filters', 'ejs.services', 'ejs-tablet.directi
 
     $routeProvider.when('/article/:id',
         {
-            templateUrl: '../partials/article.html',
+            templateUrl: 'partials/article.html',
             controller: ArticleCtrl
         });
 

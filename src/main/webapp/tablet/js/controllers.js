@@ -65,21 +65,23 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
     });
 
     $scope.$on('event:loadMoreArticles', function(){
-        var jqxhr = $.ajax(url($window.location.host) + '/articles/?from='+ from +'&size='+ size)
-            .done(function(data){
-                //$log.info(data.content.length);
-                if(data.content.length != 1) {
-                    $scope.articles = data.content;
+        if(!lastPage){
+            var jqxhr = $.ajax(url($window.location.host) + '/articles/?from='+ from +'&size='+ size)
+                .done(function(data){
+                    //$log.info(data.content.length);
+                    if(data.content.length != 1) {
+                        $scope.articles = data.content;
 
-                    $scope.$apply();
+                        $scope.$apply();
 
-                    $('.iosSlider').iosSlider('update');
-                }else{
-                    lastPage = true;
-                    $scope.$broadcast('event:lastPage');
-                }
-            })
-            .fail(function(){ $log.info('The call failed!')});
+                        $('.iosSlider').iosSlider('update');
+                    }else{
+                        lastPage = true;
+                        $scope.$broadcast('event:lastPage');
+                    }
+                })
+                .fail(function(){ $log.info('The call failed!')});
+        }
     });
 }
 AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout", "$window", "url"];

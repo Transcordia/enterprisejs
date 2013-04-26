@@ -1152,8 +1152,6 @@ p{
     display: none;
 }
 
-
-
 /* really huge desktop */
 @media (max-width: 1370px){
     .hero-title h1{
@@ -1217,6 +1215,14 @@ p{
 
     .app-view-container{
         position: static;
+    }
+
+    .article{
+        overflow: hidden;
+        font-size: 11px;
+        border-right: solid 1px #c9c9c9;
+        border-left: none;
+        border-bottom: solid 1px #c9c9c9;
     }
 }
 
