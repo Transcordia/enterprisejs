@@ -29,7 +29,7 @@ angular.module('ejs.services').factory('url', function(){
     return function(location){
         var url;
 
-        if(location.host == 'qa-ejs.elasticbeanstalk.com'){
+        if(location == 'qa-ejs.elasticbeanstalk.com'){
             url = '/api'
         }else{
             url = '/ejs/api';

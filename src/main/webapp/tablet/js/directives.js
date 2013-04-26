@@ -40,7 +40,6 @@ angular.module('ejs-tablet.directives').directive('grid', ["$log", "$http", "$ti
                 desktopClickDrag: true,
                 onSlideComplete: function(args){
                     if(args.data.numberOfSlides == args.currentSlideNumber){
-                        //$('.iosSlider').iosSlider('update');
                         directiveScope.$emit('event:loadMoreArticles');
                     }
                 },

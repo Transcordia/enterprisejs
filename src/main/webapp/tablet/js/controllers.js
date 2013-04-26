@@ -43,6 +43,19 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
     $scope.$on('event:nextPageStart', function(event, nextStart) {
         from += nextStart;
 
+        var pageCount = 1;
+
+        while(pageCount < 5){
+            $http.get(url($window.location.host) + '/articles/?from=' + from + '&size=' + size)
+                .success(function(data, status, headers){
+                    $scope.articles = data.content;
+
+                    $('.iosSlider').iosSlider('update');
+                });
+
+            pageCount++;
+        }
+
         $log.info('total number of articles placed on the page: ' + from);
     });
 
