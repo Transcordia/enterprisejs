@@ -7,19 +7,23 @@
            http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
     <http auto-config='true'>
-        <intercept-url pattern="/admin/**" access="ROLE_ADMIN" />
-        <intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <!--<intercept-url pattern="/admin/**" access="ROLE_ADMIN" />
+        <intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />-->
         <http-basic />
         <logout/>
     </http>
 
-<!--
-    <beans:bean id="restUserDetailsService"
-                class="com.zocia.spring.security.RESTUserDetailsService"
-                destroy-method="destroy">
-        <beans:property name="esClient" value="#{esServer.client}"/>
+
+    <beans:bean id="RESTUserDetailsService" class="com.zocia.security.RESTUserDetailsService">
+        <beans:property name="userUrl" value="${zociaUrl}/profiles/search" />
     </beans:bean>
--->
+
+
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider user-service-ref="RESTUserDetailsService">
+            <password-encoder hash="md5"/>
+        </authentication-provider>
+    </authentication-manager>
 
     <authentication-manager alias="authenticationManager">
         <authentication-provider>
@@ -32,4 +36,17 @@
         </authentication-provider>
 -->
     </authentication-manager>
+
+    <!-- This provider is used in the controller code to force a login when a user has
+        preauthorized using a third party service like JanRain. It is not wored up to the
+        Spring Security filters -->
+    <beans:bean id="preauthAuthProvider"
+                class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
+        <beans:property name="preAuthenticatedUserDetailsService">
+            <beans:bean id="userDetailsServiceWrapper"
+                        class="org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper">
+                <beans:property name="userDetailsService" ref="RESTUserDetailsService"/>
+            </beans:bean>
+        </beans:property>
+    </beans:bean>
 </beans:beans>
