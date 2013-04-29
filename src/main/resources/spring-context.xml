@@ -33,7 +33,7 @@
         <entry key="zociaUrl" value="${zociaUrl}"/>
         <entry key="zociaBase" value="${zociaBase}"/>
         <entry key="elasticBase" value="${elasticBase}"/>
-        <entry key="webappUrl" value="${webappUrl}"/>
+        <entry key="localUrl" value="${localUrl}"/>
         <entry key="version" value="${buildnum}"/>
         <entry key="s3AccessKey" value="${aws.app.access_key}"/>
         <entry key="s3SecretKey" value="${aws.app.secret_key}"/>

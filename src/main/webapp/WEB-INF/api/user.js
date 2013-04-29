@@ -15,7 +15,7 @@ var {Application} = require('stick');
 var app = exports.app = Application();
 app.configure('notfound', 'params', 'mount', 'route');
 
-var {getZociaUrl} = require('utility/getUrls');
+var {getZociaUrl, getLocalUrl} = require('utility/getUrls');
 var {encode} = require('ringo/base64');
 var {Headers} = require('ringo/utils/http');
 
@@ -54,8 +54,10 @@ function checkUser(req, userDetails)
         return result;
     }
 
+    var url = getLocalUrl(req);
+
     var data = {
-        "requestUri": "http://localhost:8080/ejs/api/user/check",
+        "requestUri": url.substr(0, (url.length - 3)) + "popup.html",
         "postBody": processParams(userDetails),
         "returnOauthToken": true
     };
@@ -71,6 +73,12 @@ function checkUser(req, userDetails)
     var exchange = httpclient.request(opts);
 
     var oAuthResults = JSON.parse(exchange.content);
+
+    if(oAuthResults.verifiedEmail === undefined)
+    {
+        log.error("Verified Email not found: "+JSON.stringify(oAuthResults));
+        return json(false);
+    }
 
     oAuthResults.claimed_id = userDetails["openid.claimed_id"];
     oAuthResults.assoc_handle = userDetails["openid.assoc_handle"];
@@ -90,26 +98,27 @@ function checkUser(req, userDetails)
     {
         var results = JSON.parse(exchange.content);
         //user found logging in user now
-        console.log("USER FOUND LOGGING IN USER NOW");
         forceLoginWithUsername(results.username);
-        return json({"user": "login successful"});
+        return json(true);
     } else {
         //user NOT found creating user now
         var profile = createUser(req, oAuthResults);
         if(profile) {
-            console.log("user created: "+JSON.stringify(profile));
-            //issue: things might not work instantly. might need to add a few seconds delay
+            java.lang.Thread.sleep(2000);
+            //todo: things might not work instantly. might need to add a few seconds delay
             forceLoginWithUsername(profile.username);
-            return json({"user": "creation successful"});
-        } else {
-            return json(false);
+            return json(true);
         }
     }
 
-    return json(true);
+    return json(false);
 }
 
-//ideally this needs to create the user in zocia
+/*
+    takes user details supplied from identity toolkit, and creates a zocia user from those values
+    in addition, if the user's email contains pykl.com as the address, they will be given admin status,
+    which will allow them access to add and edit articles
+ */
 function createUser(req, oAuthResults)
 {
     var profile = {};
@@ -128,6 +137,11 @@ function createUser(req, oAuthResults)
         address: oAuthResults.verifiedEmail,
         status: "verified"
     };
+
+    if(oAuthResults.verifiedEmail.indexOf("@pykl.com") >= 0)
+    {
+        profile.roles = ["ROLE_USER", "ROLE_ADMIN"];
+    }
 
     profile.status = "verified";
 
@@ -177,6 +191,12 @@ app.post('/check', function(req) {
 app.get('/check', function(req) {
     return checkUser(req, req.params);
 });
+
+app.get('/logout', function(req) {
+    SecurityContextHolder.getContext().setAuthentication(null);
+
+    return json(true);
+})
 
 function _generateBasicAuthorization(username, password) {
     var header = username + ":" + password;
