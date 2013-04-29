@@ -55,7 +55,7 @@
             window.google.identitytoolkit.setConfig({
                 developerKey: "AIzaSyAH6F_1XgdpAb93KazCHcSWHUmkAQAbWn8",
                 companyName: "",
-                callbackUrl: url + "popup.html",
+                callbackUrl: url + "api/user/check",
                 realm: "",
                 idps: ["Gmail", "Yahoo"],
                 tryFederatedFirst: true,
@@ -68,12 +68,12 @@
         {
             // open popup window and pass field id
             window.open('#/login','Log In', 'width=600,height=470');
+            return false;
         }
 
         function closeLoginWindow(result)
         {
             // this gets called from the popup window and updates the field with a new value
-            console.log("window closed which means something good or bad may have happened: "+result);
             if(result)
             {
                 var elem = angular.element($(".app-view-container"));
@@ -90,12 +90,11 @@
             <a class="hidden-phone hidden-tablet" ng-href="#/home"><img ng-src="img/EJS_images_logo.png" alt=""></a>
             <a class="visible-phone visible-tablet" ng-href="#/home"><img ng-src="img/EJS_images_logo_mobile.png" alt=""></a>
             <ul id="navigation" class="hidden-phone">
-                <!--<li><p ng-click="showAddUrlModal=true">Add <i class="icon-white icon-plus"></i></p></li>-->
-                <li ng-class="{ 'upworthy': auth.isAuthenticated }" ng-controller="pykl.LoginCtrl"><a onclick="openLoginWindow()" href="#" target="_blank">
+                <li ng-class="{ 'upworthy': auth.isAuthenticated }" ng-controller="pykl.LoginCtrl"><a onclick="return openLoginWindow()" href="#" target="_blank">
                         <h3>LOG IN</h3>
                     </a>
                 </li>
-                <li ui-if="auth.isAuthenticated" ng-click="showAddUrlModal=true">
+                <li ui-if="auth.isAuthenticated" ng-click="$parent.showAddUrlModal=true">
                     <div id="add-link-btn">
                         <div class="add-link-btn-inner">
                             <div id="inner-plus-horiz"></div>
@@ -103,8 +102,6 @@
                         </div>
                     </div>
                 </li>
-                <!--<li><a ng-href="#/templates">Templates</a></li>
-                <li><a ng-href="#/sorttest">Test sorting</a></li>-->
             </ul>
         </div>
     </div>

@@ -9,7 +9,7 @@
 
 var httpclient = require('ringo/httpclient');
 var log = require('ringo/logging').getLogger(module.id);
-var {json} = require('ringo/jsgi/response');
+var {json, redirect} = require('ringo/jsgi/response');
 
 var {Application} = require('stick');
 var app = exports.app = Application();
@@ -55,10 +55,16 @@ function checkUser(req, userDetails)
     }
 
     var url = getLocalUrl(req);
+    var body = processParams(userDetails);
+    if(req.params !== userDetails)
+    {
+        body += processParams(req.params);
+    }
 
     var data = {
-        "requestUri": url.substr(0, (url.length - 3)) + "popup.html",
-        "postBody": processParams(userDetails),
+        "requestUri": url + "/user/check",
+        //"requestUri": url.substr(0, (url.length - 3)) + "popup.html",
+        "postBody": body,
         "returnOauthToken": true
     };
 
@@ -99,7 +105,7 @@ function checkUser(req, userDetails)
         var results = JSON.parse(exchange.content);
         //user found logging in user now
         forceLoginWithUsername(results.username);
-        return json(true);
+        return redirect(url.substr(0, (url.length - 3)) + "popup.html?true");//json(true);
     } else {
         //user NOT found creating user now
         var profile = createUser(req, oAuthResults);
@@ -107,11 +113,11 @@ function checkUser(req, userDetails)
             java.lang.Thread.sleep(2000);
             //todo: things might not work instantly. might need to add a few seconds delay
             forceLoginWithUsername(profile.username);
-            return json(true);
+            return redirect(url.substr(0, (url.length - 3)) + "popup.html?true");//json(true);
         }
     }
 
-    return json(false);
+    return redirect(url.substr(0, (url.length - 3)) + "popup.html?false");//json(true);
 }
 
 /*

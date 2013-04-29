@@ -46,17 +46,17 @@ var pykl = window.pykl || {};
         }
 
         initAuth();
-        function getAuth() {    console.log("getting ting");
+        function getAuth() {
             var random = 17 * Math.random() * Math.random();
             return $.ajax('api/auth?random=' + random)
-                .done(function (data, status) {  console.log("BOO!");
+                .done(function (data, status) {
                     $rootScope.auth.principal = data.principal;
                     $rootScope.auth.isAuthenticated =
                         (data && (data.username != null) && (data.username != 'anonymousUser'));
                     roles = data.roles;
                     $rootScope.auth.id = data.principal.id;
                     $rootScope.auth.username = data.principal.username;
-                    //$log.info('Received successful auth response:', data);
+                    $log.info('Received successful auth response:', data);
                     $timeout(getAuth, 300000);
                 })
                 .fail(function (data, status) {
@@ -77,7 +77,7 @@ var pykl = window.pykl || {};
             return ($rootScope.auth.id === id);
         };
 
-        $rootScope.$on(EVENT_INTERNAL_SIGNIN_CONFIRMED, function () {  console.log("relogging in or something");
+        $rootScope.$on(EVENT_INTERNAL_SIGNIN_CONFIRMED, function () {
             getAuth();
         });
         $rootScope.$on(EVENT_INTERNAL_SIGNOUT_CONFIRMED, function () {
@@ -86,7 +86,7 @@ var pykl = window.pykl || {};
 
         getAuth();
 
-        // Return the service onject for direct invocations
+        // Return the service object for direct invocations
         var result = {
             isUserInRole: isUserInRole,
             event:{
@@ -132,83 +132,6 @@ var pykl = window.pykl || {};
     }]);
 
 
-    /*
-
-
-    pyklSecurity.run(['$rootScope', '$http', '$location', '$log',
-        function run($rootScope, $http, $location, $log) {
-            // Holds any all requests that fail because of an authentication error.
-            $rootScope.requests401 = [];
-
-            $rootScope.$on(EVENT_SIGNIN_CONFIRMED, function () {
-
-                function retry(req) {
-                    $http(req.config).then(function (response) {
-                        req.deferred.resolve(response);
-                    });
-                }
-
-                var requests = $rootScope.requests401;
-                for (var i = 0, c = requests.length; i < c; i++) {
-                    retry(requests[i]);
-                }
-            });
-
-            $rootScope.$on(EVENT_SIGNIN_REQUEST, function (event, username, password) {
-                $rootScope.showSignInError = false;
-                var payload = $.param({
-                    j_username:username,
-                    j_password:password
-                });
-                var config = {
-                    headers:{
-                        'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'
-                    }
-                };
-
-                var success = function (data) {
-                    if (data === 'AUTH_SUCCESS') {
-                        $rootScope.$broadcast(EVENT_INTERNAL_SIGNIN_CONFIRMED);
-                    } else {
-                        $rootScope.$broadcast(EVENT_INTERNAL_SIGNIN_FAILED, data);
-                    }
-                };
-
-                //$log.info(' Submitting form to Spring', JSON.stringify(payload), username, password);
-                $http.post('j_spring_security_check', payload, config)
-                    .success(success);
-            });
-
-            $rootScope.$on(EVENT_SIGNOUT_REQUEST, function () {
-                function success() {
-                    $rootScope.$broadcast(EVENT_INTERNAL_SIGNOUT_CONFIRMED);
-                }
-
-                $http.put('j_spring_security_logout', {})
-                    .success(success);
-            });
-
-            $rootScope.$on(EVENT_INTERNAL_SIGNIN_FAILED, function(event, reason) {
-                $log.info("ERROR logging in: Log In attempt returned: "+reason);
-                if(reason === "AUTH_INACTIVE") {
-                    $location.path('activateAccount');
-                } else if(reason === "AUTH_BAD_CREDENTIALS") {
-                    $rootScope.showSignInError = true;
-                    $rootScope.signInErrorReason = "Username or password incorrect";
-                } else {
-
-                    $rootScope.showSignInError = true;
-                    $rootScope.signInErrorReason = "Your account could not be logged in";
-                }
-
-                $rootScope.$on('$routeChangeStart', function(){
-                    $rootScope.showSignInError = false;
-                })
-
-            })
-        } ]
-    );
-     */
     function LoginCtrl($rootScope, $scope, $auth, $log) {
     }
 

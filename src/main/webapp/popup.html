@@ -6,25 +6,14 @@
     <script src="lib/jquery.js"></script> <!-- v1.8.3 -->
 
     <script type="text/javascript">
-        function sendRequest()
+        function success()
         {
-            var url = window.location.origin + window.location.pathname.substr(0, window.location.pathname.indexOf("popup.html"));
             var prmstr = window.location.search.substr(1);
-            $.ajax({
-                url: url + "api/user/check",
-                data: prmstr
-            }).done(function(data) {
-                        success(data);
-            });
-        }
-
-        function success(data)
-        {
-            window.opener.closeLoginWindow(data);
+            window.opener.closeLoginWindow(prmstr);
             window.close();
         }
 
-        sendRequest();
+        success();
     </script>
 </head>
 <body>
