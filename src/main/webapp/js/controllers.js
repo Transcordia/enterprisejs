@@ -43,11 +43,13 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
      * $http.get('api/articles/score');
      */
 
+    //$http.get('api/articles/score');
+
     $log.info('scope id in controller: ' + $scope.$id);
 
     $http.get('api/articles/?from=' + from + '&size=' + size)
         .success(function(data, status, headers){
-            if(data.content.length == 0){
+            /*if(data.content.length == 0){
                 generateRandomArticles(totalArticles, function(data) {
                     $http.post('api/articles', data)
                         .success(function(data, status, headers){
@@ -58,10 +60,16 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
                 $scope.showGears = "fadeout";
 
                 $scope.articles = data.content;
-                numArticlesInLastResponse = data.content.length;
+                //numArticlesInLastResponse = data.content.length;
 
                 $scope.loading = false;
-            }
+            }*/
+            $scope.showGears = "fadeout";
+
+            $scope.articles = data.content;
+            //numArticlesInLastResponse = data.content.length;
+
+            $scope.loading = false;
         });
 
     $rootScope.doLogin = function(){
