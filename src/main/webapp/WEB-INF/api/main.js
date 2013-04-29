@@ -136,7 +136,7 @@ app.get('/articles/:id', function(req, id){
 //gets a list of articles sorted by rating
 app.get('/articles', function(req){
     var opts = {
-        url: getZociaUrl(req) + '/resources/articles/views/?from=' + req.params.from + '&size=' + req.params.size + '&sortDir=asc',
+        url: getZociaUrl(req) + '/resources/articles/rating/?from=' + req.params.from + '&size=' + req.params.size + '&sortDir=desc',
         method: 'GET',
         headers: Headers({ 'x-rt-index': 'ejs', 'Content-Type': 'application/json' }),
         async: false

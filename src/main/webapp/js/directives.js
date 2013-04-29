@@ -365,10 +365,13 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                         thumbnail = '<div class="abstract-image-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
                         image = " has-image ";
                         imageOrientation = article.thumbnailOrientation;
+                    }else if(article.thumbnail == ""){
+                        image = " no-image ";
+                        thumbnail = '<div class="abstract-image-holder"><img src="img/images_ejsLogo_noImage.png"></div>';
                     }
 
                     if(i < 3 && scope.page == 0){
-                        articleHtml += '<div class="article featured">\
+                        articleHtml += '<div class="article featured"' + image + '>\
                                             <div class="abstract-title-holder">\
                                                 <span>\
                                                     <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>\
@@ -485,11 +488,14 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                         thumbnail = '<div class="abstract-image-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
                         image = " has-image ";
                         imageOrientation = " " + article.thumbnailOrientation + " ";
+                    }else if(article.thumbnail == "" && y === 0){
+                        image = " no-image ";
+                        thumbnail = '<div class="abstract-image-holder"><img src="img/images_ejsLogo_noImage.png"></div>';
                     }
 
                     //feature the first row of articles, but only on the first page
                     if( (y === 0) && (scope.page === 0) ) {
-                        articleHtml = '<div class="article featured ' + size+'">\
+                        articleHtml = '<div class="article featured ' + size + image + '">\
                                         <div class="abstract-title-holder">\
                                             <span>\
                                                 <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>\

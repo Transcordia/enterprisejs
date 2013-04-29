@@ -398,6 +398,9 @@ function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $
 
     $scope.showArticle = setModal;
 
+    var date = new Date();
+    $scope.year = date.getFullYear();
+
     function setModal(value)
     {
         $scope.showFullArticle = value;

@@ -169,7 +169,7 @@ p{
 .article-abstract-image{
     width:99.9%;
     height: 190px;
-    background-color: white;
+    background: url(../img/metal_plate.png) repeat;
     position: relative;
     overflow: hidden;
 }
@@ -209,8 +209,16 @@ p{
     width: 100%;
 }
 
+.no-image.featured .abstract-image-holder{
+    text-align: center;
+}
+
+.no-image.featured .abstract-image-holder img{
+    width: auto;
+}
+
 .article h1 a{
-    color: #333333;
+    color: #656565;
     -webkit-transition: color .2s linear;
     -moz-transition: color .2s linear;
     -o-transition: color .2s linear;
@@ -298,10 +306,11 @@ p{
 
 .article-abstract-meta .time-posted{
     float: left;
+    color: #656565;
 }
 
 .article-abstract-meta .time-posted p{
-    color: #d3d3d3;
+    color: #656565;
     padding-top: 0;
 }
 
@@ -544,7 +553,7 @@ p{
 }
 
 .article.size31.featured .abstract-title-holder{
-    left: -95px;
+    left: 0px;
 }
 
 .article.size31.landscape .abstract-image-holder{
@@ -719,7 +728,7 @@ p{
 }
 
 .article-view-container .span12 {
-    /*background: url('../img/articleSidebarBg.jpg') repeat;*/
+    background: url('../img/metal_plate.png') repeat;
     border-right: 3px solid #c9c9c9;
 }
 
@@ -760,7 +769,7 @@ p{
 }
 
 .row .sidebar .time-posted {
-    color: #d3d3d3;
+    /*color: #d3d3d3;*/
 }
 
 .row .sidebar .stats .view-count {
@@ -1280,7 +1289,7 @@ p{
     .article.featured h1 a{
         width: auto;
         padding-right: 10px;
-        color: #fff;
+        color: #656565;
     }
 
     .article.featured.no-image h1 a{
@@ -1360,6 +1369,11 @@ p{
 
     .article .abstract-image-holder {
         float: none;
+        text-align: center;
+    }
+
+    .article-abstract-image img {
+        width: 40%;
     }
 
     .article-content .abstract-image-holder img{
