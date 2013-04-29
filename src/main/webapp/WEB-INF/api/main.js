@@ -51,7 +51,7 @@ app.post('/articles', function(req){
     delete article.images;
     delete article.layout;
 
-    article.key = article.title.replace(/ /g, '+');
+    article.key = 'ejs-article-' + new Date().getTime().toString();
     article.format = "article";
     article.locale = "en";
 
