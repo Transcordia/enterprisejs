@@ -397,7 +397,7 @@
                 <!-- The URL to access web services from the gcplatform. -->
                 <zociaUrl>http://qa-zocia.elasticbeanstalk.com/api</zociaUrl>
                 <zociaBase>http://qa-zocia.elasticbeanstalk.com</zociaBase>
-                <elasticBase>http://ec2-107-22-32-199.compute-1.amazonaws.com:9311</elasticBase>
+                <elasticBase>http://ec2-54-234-3-44.compute-1.amazonaws.com:9311</elasticBase>
                 <localUrl>http://qa-ejs.elasticbeanstalk.com/api</localUrl>
 
                 <!-- Hazelcast configuration
