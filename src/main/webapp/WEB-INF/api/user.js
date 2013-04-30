@@ -63,7 +63,6 @@ function checkUser(req, userDetails)
 
     var data = {
         "requestUri": url + "/user/check",
-        //"requestUri": url.substr(0, (url.length - 3)) + "popup.html",
         "postBody": body,
         "returnOauthToken": true
     };
@@ -102,7 +101,7 @@ function checkUser(req, userDetails)
 
     if(exchange.status === 200)
     {
-        var results = JSON.parse(exchange.content);     console.log("RESULTS: "+JSON.stringify(results));
+        var results = JSON.parse(exchange.content);
         //user found logging in user now
         forceLoginWithUsername(results.username);
         return redirect(url.substr(0, (url.length - 3)) + "popup.html?true");
@@ -136,7 +135,7 @@ function createUser(req, oAuthResults)
         fullName: oAuthResults.fullName
     };
 
-    profile.username = oAuthResults.nickName || (profile.name.given + profile.name.surname) || (oAuthResults.displayName) || (oAuthResults.verifiedEmail.substr(0, oAuthResults.verifiedEmail.indexOf('@')));
+    profile.username = oAuthResults.verifiedEmail.replace(/@/gi, '').replace(/\./gi, '');
 
     profile.thumbnail = oAuthResults.photoUrl || 'images/GCEE_image_defaultMale.jpeg';
     profile.accountEmail = {
