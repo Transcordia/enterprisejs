@@ -39,7 +39,7 @@
     </style>
 
     <![endif]-->
-
+    <!--code for google identity toolkit-->
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/googleapis/0.0.4/googleapis.min.js"></script>
@@ -50,7 +50,7 @@
     </script>
     <script type="text/javascript">
         $(function() {
-            var url = window.location.origin + window.location.pathname
+            var url = window.location.origin + window.location.pathname;
             //the base URLs needs to be set via a function or something instead of hard coded the way they are here
             window.google.identitytoolkit.setConfig({
                 developerKey: "AIzaSyAH6F_1XgdpAb93KazCHcSWHUmkAQAbWn8",
@@ -73,13 +73,31 @@
 
         function closeLoginWindow(result)
         {
-            // this gets called from the popup window and updates the field with a new value
-            if(result)
+            // this gets called from the popup window and is passed in the results of the login
+            if(result === "true")
             {
                 var elem = angular.element($(".app-view-container"));
                 elem.scope().$broadcast('event:int-signinConfirmed');
             }
         }
+
+        function logout()
+        {
+            var url = window.location.origin + window.location.pathname;
+            $.ajax(url + "api/user/logout");
+            closeLoginWindow(true);
+            return false;
+        }
+    </script>
+    <!-- code for google analytics-->
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function()
+        { (i[r].q=i[r].q||[]).push(arguments)}
+                ,i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-40471542-1', 'enterprisejs.org');
+        ga('send', 'pageview');
     </script>
 </head>
 <body>
@@ -90,11 +108,15 @@
             <a class="hidden-phone hidden-tablet" ng-href="#/home"><img ng-src="img/EJS_images_logo.png" alt=""></a>
             <a class="visible-phone visible-tablet" ng-href="#/home"><img ng-src="img/EJS_images_logo_mobile.png" alt=""></a>
             <ul id="navigation" class="hidden-phone">
-                <li ng-class="{ 'upworthy': auth.isAuthenticated }" ng-controller="pykl.LoginCtrl"><a onclick="return openLoginWindow()" href="#" target="_blank">
+                <li ui-if="!auth.isAuthenticated" ng-controller="pykl.LoginCtrl"><a onclick="return openLoginWindow()" href="#" target="_blank">
                         <h3>LOG IN</h3>
                     </a>
                 </li>
-                <li ui-if="auth.isAuthenticated" ng-click="$parent.showAddUrlModal=true">
+                <li ui-if="auth.isAuthenticated" ng-class="{ 'upworthy': auth.isUserInRole('ROLE_ADMIN') }"><a onclick="return logout()" href="">
+                    <h3>LOG OUT</h3>
+                </a>
+                </li>
+                <li ui-if="auth.isUserInRole('ROLE_ADMIN')" ng-click="$parent.showAddUrlModal=true">
                     <div id="add-link-btn">
                         <div class="add-link-btn-inner">
                             <div id="inner-plus-horiz"></div>

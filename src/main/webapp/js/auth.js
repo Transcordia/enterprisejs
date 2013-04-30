@@ -56,7 +56,8 @@ var pykl = window.pykl || {};
                     roles = data.roles;
                     $rootScope.auth.id = data.principal.id;
                     $rootScope.auth.username = data.principal.username;
-                    $log.info('Received successful auth response:', data);
+                    $log.info('Received successful auth response:', $rootScope.auth);
+                    $rootScope.$apply();
                     $timeout(getAuth, 300000);
                 })
                 .fail(function (data, status) {
