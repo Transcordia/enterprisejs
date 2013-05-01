@@ -41,6 +41,7 @@
                                 <!--<div class="article-tweet-button" reload-twitter-btns>
                                     <a href="https://twitter.com/share" data-url="{{url}}" data-text="Enterprise JS: {{article.title}}" class="twitter-share-button" data-lang="en">Tweet</a>
                                 </div>-->
+                                <like ui-if="auth.isAuthenticated" class="btn" article=article liketext="LIKE THIS" unliketext="UNLIKE"></like>
                             </div>
                             <span ui-if="auth.isUserInRole('ROLE_ADMIN')"><img ng-src="img/EJS_editIcon.png" alt=""> <a class="edit-link" ng-href="#/article/edit/{{article._id}}"><h4>EDIT</h4></a></span>
                             <!--<span class="muted"><like objectid="{{article._id}}"></like> ({{article.likes}})</span>-->

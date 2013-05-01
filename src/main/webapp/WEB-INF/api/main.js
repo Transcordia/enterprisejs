@@ -272,14 +272,14 @@ function _generateBasicAuthorization(username, password) {
     var base64 = encode(header);
     return 'Basic ' + base64;
 }
-/*
-    Liking commented out because it relies on zocia at the moment.
+
+
 //likes a specific object. todo: can anonymous users like something?
 app.post('/utility/like/:id', function(req, id) {
     var opts = {
         url: getZociaUrl(req) + "/likes/" + req.auth.principal.id + "/" + id,
         method: 'POST',
-        headers: Headers({ 'x-rt-index': 'gc' }),
+        headers: Headers({ 'x-rt-index': 'ejs' }),
         async: false
     };
 
@@ -297,7 +297,7 @@ app.get('/utility/like/:id', function(req, id) {
     var opts = {
         url: getZociaUrl(req) + "/likes/" + req.auth.principal.id + "/" + id,
         method: 'GET',
-        headers: Headers({ 'x-rt-index': 'gc' }),
+        headers: Headers({ 'x-rt-index': 'ejs' }),
         async: false
     };
 
@@ -315,14 +315,14 @@ app.post('/utility/unlike/:id', function(req, id) {
     var opts = {
         url: getZociaUrl(req) + "/likes/" + req.auth.principal.id + "/" + id,
         method: 'DELETE',
-        headers: Headers({ 'x-rt-index': 'gc', 'Authorization': _generateBasicAuthorization('backdoor', 'Backd00r') }),
+        headers: Headers({ 'x-rt-index': 'ejs', 'Authorization': _generateBasicAuthorization('backdoor', 'Backd00r') }),
         async: false
     };
 
     var exchange = httpclient.request(opts);
 
     return json(JSON.parse(exchange.content));
-});   */
+});
 
 
 /**
