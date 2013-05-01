@@ -350,6 +350,17 @@ angular.module('ejs-tablet.directives').directive('gridPage', ['truncate', '$tim
     }
 }]);
 
+angular.module('ejs-tablet.directives').directive('goToFirst', ['$location', function($location){
+    return{
+        restrict: 'A',
+        link: function(scope, elm, attrs){
+            elm.click(function(){
+                $('.iosSlider').iosSlider('goToSlide', 1);
+            });
+        }
+    }
+}]);
+
 angular.module('ejs-tablet.directives').directive('gears', function(){
     return{
         restrict: 'A',

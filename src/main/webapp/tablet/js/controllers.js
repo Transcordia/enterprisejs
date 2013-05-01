@@ -45,7 +45,8 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
     $scope.$on('event:nextPageStart', function(event, nextStart) {
         from += nextStart;
 
-        $log.info('this event has been fired ' + pageNumber++ + ' times');
+        //$log.info('this event has been fired ' + pageNumber++ + ' times');
+        pageNumber++;
 
         if(pageNumber < 10){
             $http.get(url($window.location.host) + '/articles/?from=' + from + '&size=' + size)
@@ -61,7 +62,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
             $scope.showGears = "fadeout";
         }
 
-        $log.info('total number of articles placed on the page: ' + from);
+        //$log.info('total number of articles placed on the page: ' + from);
     });
 
     $scope.$on('event:loadMoreArticles', function(){
