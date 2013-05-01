@@ -47,7 +47,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
         //$log.info('this event has been fired ' + pageNumber++ + ' times');
         pageNumber++;
 
-        if(pageNumber < 10){
+        if(pageNumber < 4){
             $http.get(url($window.location.host) + '/articles/?from=' + from + '&size=' + size)
                 .success(function(data, status, headers){
                     $scope.articles = data.content;
@@ -56,7 +56,7 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
                 });
         }
 
-        if(pageNumber == 9){
+        if(pageNumber == 3){
             $scope.$broadcast('event:pagePreloadComplete');
             $scope.showGears = "fadeout";
         }

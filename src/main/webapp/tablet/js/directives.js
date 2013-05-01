@@ -38,8 +38,8 @@ angular.module('ejs-tablet.directives').directive('grid', ["$log", "$http", "$ti
             $('.iosSlider').iosSlider({
                 snapToChildren: true,
                 desktopClickDrag: true,
-                onSlideComplete: function(args){
-                    if(args.data.numberOfSlides - 3 == args.currentSlideNumber){
+                onSlideChange: function(args){
+                    if(args.data.numberOfSlides == args.currentSlideNumber){
                         directiveScope.$emit('event:loadMoreArticles');
                     }
                 },
@@ -214,13 +214,16 @@ angular.module('ejs-tablet.directives').directive('gridPage', ['truncate', '$tim
                         var imageHeight = article.imageHeight;
                         var src = article.thumbnail;
                         thumbnail = '<div class="abstract-image-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
-                        image = " has-image ";
+                        image = " has-image";
                         imageOrientation = " " + article.thumbnailOrientation + " ";
+                    }else if(article.thumbnail == "" && y === 0 && scope.page == 0){
+                        image = " no-image";
+                        thumbnail = '<div class="abstract-image-holder"><img src="../img/images_ejsLogo_noImage.png"></div>';
                     }
 
                     //feature the first row of articles, but only on the first page
                     if( (y === 0) && (scope.page === 0) ) {
-                        articleHtml = '<div class="article featured ' + size+'">\
+                        articleHtml = '<div class="article featured ' + size + image + '">\
                                         <div class="abstract-title-holder">\
                                             <span>\
                                                 <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>\

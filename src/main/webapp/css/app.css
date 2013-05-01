@@ -1423,3 +1423,9 @@ p{
         transition: none;
     }
 }
+
+@media screen and (max-width: 1024px) and (max-height: 768px) {
+    .article.size21.featured .abstract-title-holder {
+        left: 0px;
+    }
+}
