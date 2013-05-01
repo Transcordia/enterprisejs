@@ -363,15 +363,15 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                         var imageHeight = article.imageHeight;
                         var src = article.thumbnail;
                         thumbnail = '<div class="abstract-image-holder"><img width="'+ imageWidth +'" height="'+ imageHeight +'" src="'+ src +'"></div>';
-                        image = " has-image ";
+                        image = " has-image";
                         imageOrientation = article.thumbnailOrientation;
-                    }else if(article.thumbnail == ""){
-                        image = " no-image ";
+                    }else if(article.thumbnail == "" && i < 3 && scope.page == 0){
+                        image = " no-image";
                         thumbnail = '<div class="abstract-image-holder"><img src="img/images_ejsLogo_noImage.png"></div>';
                     }
 
                     if(i < 3 && scope.page == 0){
-                        articleHtml += '<div class="article featured"' + image + '>\
+                        articleHtml += '<div class="article featured' + image + '">\
                                             <div class="abstract-title-holder">\
                                                 <span>\
                                                     <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>\
@@ -387,7 +387,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                                             </div>\
                                         </div>';
                     }else{
-                        articleHtml += '<div class="article' + image + imageOrientation +'">\
+                        articleHtml += '<div class="article ' + imageOrientation + image + '">\
                                         <div class="article-content">\
                                             <div class="title-description clearfix">\
                                                 <h1><a href="#/article/' + article._id + '">'+ article.title +'</a></h1>'+ thumbnail +'\
