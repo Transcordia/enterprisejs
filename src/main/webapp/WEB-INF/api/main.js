@@ -36,8 +36,10 @@ var app = exports.app = Application();
 //the order of these is important. auth needs to be injected before mount and route otherwise things won't work right
 app.configure('notfound', 'params', auth, 'mount', 'route');
 
+//allows us to put requests for /user in the user.js file, keeping things cleaner in general. yay!
 app.mount('/user', require('./user'));
 
+//API heartbeat
 app.get('/', function (req) {
 	return json({
 		api: true,
@@ -45,6 +47,7 @@ app.get('/', function (req) {
 	});
 });
 
+//creation of an article
 app.post('/articles', function(req){
     var article = req.postParams.article;
 
@@ -66,6 +69,7 @@ app.post('/articles', function(req){
     return _simpleHTTPRequest(opts);
 });
 
+//creates an image resource
 app.post('articles/image', function(req){
     var image = req.postParams.image;
 
@@ -95,6 +99,7 @@ app.put('/articles', function(req){
     return _simpleHTTPRequest(opts);
 });
 
+//gets a single article
 app.get('/articles/:id', function(req, id){
     var opts = {
         url: getZociaUrl(req) + '/resources/' + id,
@@ -189,7 +194,7 @@ function calculateScore(article)
     var MILLISECONDS_PER_HOUR = 3600000;
     var age = Math.floor((Date.now() - iso8601ToDate(article.dateCreated).getTime())/MILLISECONDS_PER_HOUR);
     var gravity = 2.2;
-    article.rating = (article.views) / (Math.pow(age + 2, gravity));
+    article.rating = (article.views + article.likes) / (Math.pow(age + 2, gravity));
     //article.age = age;
 }
 
@@ -275,11 +280,26 @@ function _generateBasicAuthorization(username, password) {
 
 
 //likes a specific object. todo: can anonymous users like something?
+//we're currently hiding this functionality from un-authed users
 app.post('/utility/like/:id', function(req, id) {
     var opts = {
         url: getZociaUrl(req) + "/likes/" + req.auth.principal.id + "/" + id,
         method: 'POST',
         headers: Headers({ 'x-rt-index': 'ejs' }),
+        async: false
+    };
+
+    var exchange = httpclient.request(opts);
+
+    return json(JSON.parse(exchange.content));
+});
+
+//deletes a like relationship, effectively decreasing total likes by one
+app.post('/utility/unlike/:id', function(req, id) {
+    var opts = {
+        url: getZociaUrl(req) + "/likes/" + req.auth.principal.id + "/" + id,
+        method: 'DELETE',
+        headers: Headers({ 'x-rt-index': 'ejs', 'Authorization': _generateBasicAuthorization('backdoor', 'Backd00r') }),
         async: false
     };
 
@@ -308,20 +328,6 @@ app.get('/utility/like/:id', function(req, id) {
     } else {
         return json(true);
     }
-});
-
-//deletes a like relationship, effectively decreasing total likes by one
-app.post('/utility/unlike/:id', function(req, id) {
-    var opts = {
-        url: getZociaUrl(req) + "/likes/" + req.auth.principal.id + "/" + id,
-        method: 'DELETE',
-        headers: Headers({ 'x-rt-index': 'ejs', 'Authorization': _generateBasicAuthorization('backdoor', 'Backd00r') }),
-        async: false
-    };
-
-    var exchange = httpclient.request(opts);
-
-    return json(JSON.parse(exchange.content));
 });
 
 

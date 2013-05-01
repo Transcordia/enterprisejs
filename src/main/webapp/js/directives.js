@@ -582,8 +582,7 @@ angular.module('ejs.directives').directive('reloadTwitterBtns', function(){
  * @param [article] {object} The article/resource that is being liked
  *        [liketext] {string} Optional: The text to display when the user has not yet "liked" the article
  *        [unliketext] {string} Optional: The text used display when the user has previously "liked" the article
- * @example <like article=id></like>
- *          <like id
+ * @example <like article=id liketext="LIKE ME" unliketext="DON'T LIKE ME"></like>
  */
 angular.module('ejs.directives').directive('like', ['$http', '$rootScope', function($http, $rootScope){
     return {

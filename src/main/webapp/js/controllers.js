@@ -389,6 +389,7 @@ ArticleCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$ro
 /**
  * Article sorting
  * This is mostly for testing the sorting algorithm and will likely be deleted or commented out in the future when things get more final
+ * todo: remove this controller, it's no longer needed
  */
 function SortTest($rootScope, $scope, $timeout, $http)
 {
