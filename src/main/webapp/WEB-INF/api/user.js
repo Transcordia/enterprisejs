@@ -63,7 +63,6 @@ function checkUser(req, userDetails)
 
     var data = {
         "requestUri": url + "/user/check",
-        //"requestUri": url.substr(0, (url.length - 3)) + "popup.html",
         "postBody": body,
         "returnOauthToken": true
     };
@@ -83,7 +82,7 @@ function checkUser(req, userDetails)
     if(oAuthResults.verifiedEmail === undefined)
     {
         log.error("Verified Email not found: "+JSON.stringify(oAuthResults));
-        return json(false);
+        return redirect(url.substr(0, (url.length - 3)) + "popup.html?false");
     }
 
     oAuthResults.claimed_id = userDetails["openid.claimed_id"];
@@ -105,7 +104,7 @@ function checkUser(req, userDetails)
         var results = JSON.parse(exchange.content);
         //user found logging in user now
         forceLoginWithUsername(results.username);
-        return redirect(url.substr(0, (url.length - 3)) + "popup.html?true");//json(true);
+        return redirect(url.substr(0, (url.length - 3)) + "popup.html?true");
     } else {
         //user NOT found creating user now
         var profile = createUser(req, oAuthResults);
@@ -113,11 +112,11 @@ function checkUser(req, userDetails)
             java.lang.Thread.sleep(2000);
             //todo: things might not work instantly. might need to add a few seconds delay
             forceLoginWithUsername(profile.username);
-            return redirect(url.substr(0, (url.length - 3)) + "popup.html?true");//json(true);
+            return redirect(url.substr(0, (url.length - 3)) + "popup.html?true");
         }
     }
 
-    return redirect(url.substr(0, (url.length - 3)) + "popup.html?false");//json(true);
+    return redirect(url.substr(0, (url.length - 3)) + "popup.html?false");
 }
 
 /*
@@ -136,7 +135,7 @@ function createUser(req, oAuthResults)
         fullName: oAuthResults.fullName
     };
 
-    profile.username = oAuthResults.nickName || (profile.name.given + profile.name.surname);
+    profile.username = oAuthResults.verifiedEmail.replace(/@/gi, '').replace(/\./gi, '');
 
     profile.thumbnail = oAuthResults.photoUrl || 'images/GCEE_image_defaultMale.jpeg';
     profile.accountEmail = {
@@ -199,7 +198,7 @@ app.get('/check', function(req) {
 });
 
 app.get('/logout', function(req) {
-    SecurityContextHolder.getContext().setAuthentication(null);
+    SecurityContextHolder.clearContext();
 
     return json(true);
 })
