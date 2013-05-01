@@ -350,12 +350,16 @@ angular.module('ejs-tablet.directives').directive('gridPage', ['truncate', '$tim
     }
 }]);
 
-angular.module('ejs-tablet.directives').directive('goToFirst', ['$location', function($location){
+angular.module('ejs-tablet.directives').directive('goToFirst', ['$location', '$log', '$window', function($location, $log, $window){
     return{
         restrict: 'A',
         link: function(scope, elm, attrs){
             elm.click(function(){
-                $('.iosSlider').iosSlider('goToSlide', 1);
+                if($location.path().indexOf('article') != -1){
+                    $window.location.href = '#home';
+                }else{
+                    $('.iosSlider').iosSlider('goToSlide', 1);
+                }
             });
         }
     }

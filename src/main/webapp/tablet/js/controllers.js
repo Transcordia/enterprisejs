@@ -16,7 +16,6 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
     var from = 0;
     var size = 6;
     var lastPage = false;
-    var totalArticles = 51;
     var pageNumber = 1;
 
     /**
@@ -99,6 +98,7 @@ AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeP
  */
 function ArticleCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $window, url){
     var id = $routeParams.id;
+
     $http.get(url($window.location.host) + '/articles/' + id)
         .success(function(data, status, headers){
             $scope.article = data.content;
