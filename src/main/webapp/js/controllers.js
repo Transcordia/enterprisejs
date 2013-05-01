@@ -32,8 +32,6 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
         }else{
             $window.location = '/ejs/tablet/';
         }
-
-        size = 6;
     }
 
     /**
@@ -44,11 +42,9 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
 
     //$http.get('api/articles/score');
 
-    $log.info('scope id in controller: ' + $scope.$id);
-
     $http.get('api/articles/?from=' + from + '&size=' + size)
         .success(function(data, status, headers){
-            if(data.content.length == 0){
+            /*if(data.content.length == 0){
                 generateRandomArticles(totalArticles, function(data) {
                     $http.post('api/articles', data)
                         .success(function(data, status, headers){
@@ -61,7 +57,12 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
                 $scope.articles = data.content;
 
                 $scope.loading = false;
-            }
+            }*/
+            $scope.showGears = "fadeout";
+
+            $scope.articles = data.content;
+
+            $scope.loading = false;
         });
 
     $rootScope.doLogin = function(){
@@ -86,27 +87,6 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
     });
 
     $scope.loadMoreArticles = function(){
-        /*if(!lastPage){
-            $http.get('api/articles/?from='+ from +'&size='+ size)
-                .success(function(data){
-                    if(mobile){
-                        if(data.content.length > 0) {
-                            $scope.articles = data.content;
-                        }else{
-                            lastPage = true;
-                            $scope.$broadcast('event:lastPage');
-                        }
-                    }else{
-                        if(data.content.length != 1) {
-                            $scope.articles = data.content;
-                        }else{
-                            lastPage = true;
-                            $scope.$broadcast('event:lastPage');
-                        }
-                    }
-                });
-        }*/
-
         if(!lastPage){
             var jqxhr = $.ajax('api/articles/?from='+ from +'&size='+ size)
                 .done(function(data){
@@ -131,12 +111,6 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
                 .fail(function(){ $log.info('The call failed!')});
         }
     }
-
-    //$scope.loadMore = loadMoreArticles;
-
-    /*$scope.$on('extraArticles', function(event, extras) {
-        $scope.extraTabletArticles = extras;
-    });*/
 }
 AppCtrl.$inject = ["$rootScope","$scope", "$http", "$log", "$location", "$routeParams", "$timeout", "$window"];
 
