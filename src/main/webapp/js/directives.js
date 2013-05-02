@@ -496,12 +496,11 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                     totalWidth += $(this).width();
                 });
 
-                var wrapperOffset = ($(window).width() - $('#wrapper').width()) / 2;
-                $('.ejs-hero .abstract-image-container').css({'width': totalWidth + 'px'});
-
-                $('#article-container').css({'width': totalWidth});
-
-                $('.navbar-inner div').first().css({'width': totalWidth});
+                if(totalWidth > 640){
+                    $('.ejs-hero .abstract-image-container').css({'width': totalWidth + 'px'});
+                    $('#article-container').css({'width': totalWidth});
+                    $('.navbar-inner div').first().css({'width': totalWidth});
+                }
             }
         }
     }
