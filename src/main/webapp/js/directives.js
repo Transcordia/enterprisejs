@@ -155,7 +155,6 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
             }
 
             //the function that runs after all the articles are in place
-            //this is still rather slow, and cause take upwards of 800-1000 ms to run
 
             // could not recreate the conditions that caused > 800 ms of runtime for this callback,
             // but removing the ellipsis plugin decreases the runtime by a factor of 10
@@ -452,7 +451,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                         offset -= $(this).find('.article-abstract-meta p').first().outerHeight();
                         offset -= $(this).find('.article-abstract-meta').outerHeight() + 10;
 
-                        //$(this).find('.description').css('height', '69px').ellipsis();
+                        $('.article.featured .description').css('height', '69px').ellipsis();
                     });
                 }
 
