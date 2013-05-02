@@ -41,11 +41,13 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
     //this will likely happen as a result of switching to Zocia
     //once this happens, we will need to listen to events to catch how many articles successfully get added to the grid
     //example code follows
+    var finished = false;
+
     $scope.$on('event:nextPageStart', function(event, nextStart) {
         from += nextStart;
 
         //$log.info('this event has been fired ' + pageNumber++ + ' times');
-        pageNumber++;
+        /*pageNumber++;
 
         if(pageNumber < 4){
             $http.get(url($window.location.host) + '/articles/?from=' + from + '&size=' + size)
@@ -59,6 +61,23 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
         if(pageNumber == 3){
             $scope.$broadcast('event:pagePreloadComplete');
             $scope.showGears = "fadeout";
+        }*/
+        var page = 1;
+        while(!finished){
+            $http.get(url($window.location.host) + '/articles/?from=' + from + '&size=' + size)
+                .success(function(data, status, headers){
+                    $scope.articles = data.content;
+
+                    $('.iosSlider').iosSlider('update');
+
+                    page++;
+                });
+
+            if(page == 15){
+                finished = true;
+                $scope.showGears = "fadeout";
+                $scope.$broadcast('event:pagePreloadComplete');
+            }
         }
 
         //$log.info('total number of articles placed on the page: ' + from);
