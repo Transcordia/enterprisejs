@@ -34,12 +34,6 @@ angular.module('ejs', ['ejs.filters', 'ejs.services', 'ejs.directives', 'ui', 'p
             controller: EditArticleCtrl
         });
 
-    $routeProvider.when('/sorttest',
-        {
-            controller: SortTest,
-            templateUrl: 'partials/sorttest.html'
-        });
-
     $routeProvider.when('/mobile/:page',
         {
             controller: MobileCtrl
