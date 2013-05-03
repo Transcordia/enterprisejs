@@ -234,7 +234,8 @@ angular.module('ejs-tablet.directives').directive('gridPage', ['truncate', '$tim
                                         <div class="article-abstract-meta">\
                                             <div class="clearfix">\
                                                 <div class="time-posted"><p><i>'+ date +'</i></p></div>\
-                                                <div class="article-views"><p><img src="../img/newViewsIcon.png" /> '+ article.views +'</p></div>\
+                                                <div class="article-views"><p><img src="../img/img_pageView16x11.png" /> '+ article.views +'</p></div>\
+                                                <div class="article-views"><p><img src="../img/img_pageLikes16x11.png" /> '+ article.likes +'</p></div>\
                                             </div>\
                                         </div>\
                                     </div>';
@@ -249,7 +250,8 @@ angular.module('ejs-tablet.directives').directive('gridPage', ['truncate', '$tim
                                         <div class="article-abstract-meta">\
                                             <div class="clearfix">\
                                                 <div class="time-posted"><p><i>'+ date +'</i></p></div>\
-                                                <div class="article-views"><p><img src="../img/newViewsIcon.png" /> ' + article.views + '</p></div>\
+                                                <div class="article-views"><p><img src="../img/img_pageView16x11.png" /> ' + article.views + '</p></div>\
+                                                <div class="article-views"><p><img src="../img/img_pageLikes16x11.png" /> '+ article.likes +'</p></div>\
                                             </div>\
                                         </div>\
                                     </div>';
