@@ -274,6 +274,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
 
                     }
 
+                    thumbnail = "";
                     image = " no-image";
                     imageOrientation = " "
                 }
