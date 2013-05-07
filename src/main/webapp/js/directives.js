@@ -274,6 +274,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
 
                     }
 
+                    thumbnail = "";
                     image = " no-image";
                     imageOrientation = " "
                 }
@@ -467,16 +468,18 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
             //re-renders the layout on window resize, but because some browsers will call this event DURING a resize,
             //we only want to render the page when the number of possible columns has changed
             $(window).resize(function() {
-                $('#article-container').css({'width': 'auto'});
-                var newColumns = Math.floor(container.width()/blockSize.w);
-                if(newColumns !== gridSize.columns && !tablet)
-                {
-                    gridSize.columns = newColumns;
-                    render(scope.articles, animationComplete);
-                }
-
                 if(!phone){
-                    setArticleContainerWidth();
+                    $('#article-container').css({'width': 'auto'});
+                    var newColumns = Math.floor(container.width()/blockSize.w);
+                    if(newColumns !== gridSize.columns && !tablet)
+                    {
+                        gridSize.columns = newColumns;
+                        render(scope.articles, animationComplete);
+                    }
+
+                    if(!phone){
+                        setArticleContainerWidth();
+                    }
                 }
             });
 

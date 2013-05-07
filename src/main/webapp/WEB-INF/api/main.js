@@ -194,7 +194,7 @@ function calculateScore(article)
     var MILLISECONDS_PER_HOUR = 3600000;
     var age = Math.floor((Date.now() - iso8601ToDate(article.dateCreated).getTime())/MILLISECONDS_PER_HOUR);
     var gravity = 2.2;
-    article.rating = (article.views + article.likes) / (Math.pow(age + 2, gravity));
+    article.rating = ((article.views + article.likes) / (Math.pow(age + 2, gravity))) * 100000;
     //article.age = age;
 }
 
