@@ -169,9 +169,7 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                         $(this).parent().hasClass('size11')){
                         var h1Height = $(this).find('.title-description h1').outerHeight();
 
-                        $(this).find('.title-description p.description').css('height', (225 - h1Height) + 'px');
-
-                        $(this).find('.title-description p.description').ellipsis();
+                        $(this).find('.title-description p.description');
                     }
 
                     if($(this).parent().hasClass('portrait size21')){
@@ -205,10 +203,6 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                     if($(this).parent().hasClass('landscape size12')){
                         var img = $(this).find('.abstract-image-holder img').removeAttr('height').css('width', '280px');
                     }
-
-                    //if(!phone){
-                        //$('.abstract-title-holder span h1').ellipsis();
-                    //}
                 });
 
                 if(tablet){
@@ -414,9 +408,9 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 //grid rows is overwritten, which gives us a nice page style and prevents "hanging chads"
                 gridSize.rows = Math.ceil(articles.length/gridSize.columns);
 
-                if(tablet){
+                /*if(tablet){
                     gridSize.rows = 2;
-                }
+                }*/
 
                 //this creates a new reservation grid of the specified height and width
                 var grid = new ReservationGrid(gridSize.columns, gridSize.rows, gridSize.maxBlockWidth, gridSize.maxBlockHeight);
@@ -447,16 +441,15 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
 
                 //if it's the first page, then we set stuff like the hero and the featured articles. we don't have these for every page, so doing them more than once would be pointless
                 if(scope.page === 0) {
-                    if(tablet){
+                    /*if(tablet){
                         $('#article-container').css({'width': '100%'});
-                    }
+                    }*/
 
                     $('.article.featured').each(function(){
-                        var offset = $(this).height() - $(this).find('.article-abstract-image').outerHeight();
-                        offset -= $(this).find('.article-abstract-meta p').first().outerHeight();
-                        offset -= $(this).find('.article-abstract-meta').outerHeight() + 10;
+                        var article = $(this);
+                        article.children('.description').css('height', article.outerHeight() + 'px');
+                        article.children('.article-abstract-meta').css('top', article.outerHeight()-44 + 'px');
 
-                        $('.article.featured .description').css('height', '69px').ellipsis();
                     });
                 }
 
@@ -471,15 +464,13 @@ angular.module('ejs.directives').directive('gridPage', ['truncate', '$timeout', 
                 if(!phone){
                     $('#article-container').css({'width': 'auto'});
                     var newColumns = Math.floor(container.width()/blockSize.w);
-                    if(newColumns !== gridSize.columns && !tablet)
+                    if(newColumns !== gridSize.columns)
                     {
                         gridSize.columns = newColumns;
                         render(scope.articles, animationComplete);
                     }
 
-                    if(!phone){
-                        setArticleContainerWidth();
-                    }
+                    setArticleContainerWidth();
                 }
             });
 

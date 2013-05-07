@@ -157,10 +157,6 @@ angular.module('ejs-tablet.directives').directive('gridPage', ['truncate', '$tim
                     if($(this).parent().hasClass('size21') ||
                         $(this).parent().hasClass('size11')){
                         var h1Height = $(this).find('.title-description h1').outerHeight();
-
-                        $(this).find('.title-description p.description').css('height', (225 - h1Height) + 'px');
-
-                        //$(this).find('.title-description p.description').ellipsis();
                     }
 
                     if($(this).parent().hasClass('portrait size21')){
