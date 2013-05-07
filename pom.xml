@@ -381,13 +381,13 @@
                      hz.aws.enabled - true if deployed to amazon ec2 environment where multicast is
                          not supported.
                 -->
-                <hz.name>hz-${project.groupId}.${project.artifactId}-${environment}</hz.name>
+                <!--<hz.name>hz-${project.groupId}.${project.artifactId}-${environment}</hz.name>
                 <hz.multicast.enabled>false</hz.multicast.enabled>
                 <hz.aws.enabled>false</hz.aws.enabled>
 
-                <aws.s3.access_key>AKIAIO5RYV6PBMMEM5IA</aws.s3.access_key>
-                <aws.s3.secret_key>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</aws.s3.secret_key>
-                <aws.s3.bucket>qa.zocia.upload.files</aws.s3.bucket>
+                <aws.s3.access_key>${pykl.aws.s3.access_key}</aws.s3.access_key>
+                <aws.s3.secret_key>${pykl.aws.s3.secret_key}</aws.s3.secret_key>
+                <aws.s3.bucket>qa.zocia.upload.files</aws.s3.bucket>-->
             </properties>
         </profile>
         <profile>
@@ -413,11 +413,11 @@
 
                 <!-- Amazon Web Services configuration
                 -->
-                <aws.app.access_key>AKIAIOQ7UMUXR6HYL2BA</aws.app.access_key>
-                <aws.app.secret_key>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</aws.app.secret_key>
+                <!--<aws.app.access_key>${pykl.aws.access_key}</aws.app.access_key>
+                <aws.app.secret_key>${pykl.aws.secret_key}</aws.app.secret_key>-->
 
-                <aws.s3.access_key>AKIAIO5RYV6PBMMEM5IA</aws.s3.access_key>
-                <aws.s3.secret_key>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</aws.s3.secret_key>
+                <aws.s3.access_key>${pykl.aws.s3.access_key}</aws.s3.access_key>
+                <aws.s3.secret_key>${pykl.aws.s3.secret_key}</aws.s3.secret_key>
                 <aws.s3.bucket>qa.com.pykl.ejs.deploy</aws.s3.bucket>
 
                 <aws.deploy.access_key>${pykl.aws.access_key}</aws.deploy.access_key>

@@ -45,8 +45,8 @@ function AppCtrl($rootScope, $scope, $http, $log, $location, $routeParams, $time
     $http.get('api/articles/?from=' + from + '&size=' + size)
         .success(function(data, status, headers){
             //Generates random articles, uncomment if needed for something
-            /*
-            if(data.content.length == 0){
+
+            /*if(data.content.length == 0){
                 generateRandomArticles(totalArticles, function(data) {
                     $http.post('api/articles', data)
                         .success(function(data, status, headers){

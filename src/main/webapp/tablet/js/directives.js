@@ -69,7 +69,7 @@ angular.module('ejs-tablet.directives').directive('grid', ["$log", "$http", "$ti
 
                     scope.$on('event:pagePreloadComplete', function(event){
                         element.addClass('fadein');
-                    })
+                    });
                 }
             }
         }
@@ -436,6 +436,10 @@ angular.module('ejs-tablet.directives').directive('gears', function(){
                 'left': '400px'
             });
             largeGearThree.appendTo('.loading-gears');
+
+            scope.$on('event:pagePreloadComplete', function(event){
+                elm.addClass('fadeout');
+            });
         }
     }
 });
