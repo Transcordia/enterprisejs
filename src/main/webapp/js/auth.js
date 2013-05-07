@@ -56,7 +56,7 @@ var pykl = window.pykl || {};
                     roles = data.roles;
                     $rootScope.auth.id = data.principal.id;
                     $rootScope.auth.username = data.principal.username;
-                    $log.info('Received successful auth response:', data);
+                    //$log.info('Received successful auth response:', data);
                     $rootScope.$apply();
                     $timeout(getAuth, 300000);
                 })
@@ -132,7 +132,8 @@ var pykl = window.pykl || {};
         return result;
     }]);
 
-
+    //this might be unneeded, but I believe it's important because it initializes the $auth stuff
+    //without this being included somewhere (currently in the menu section in index.html) the getAuth() call doesn't seem to fire
     function LoginCtrl($rootScope, $scope, $auth, $log) {
     }
 

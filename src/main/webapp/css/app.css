@@ -773,12 +773,20 @@ p{
     /*color: #d3d3d3;*/
 }
 
-.row .sidebar .stats .view-count {
+.row .sidebar .stats span {
     font-family: 'Squada One';
     font-size: 45px;
     padding-left: 30px;
     margin: 10px 0;
-    background: url('../img/newViewsIcon.png') no-repeat 0 22px;
+}
+
+.row .sidebar .stats .view-count {
+    background: url('../img/newViewsIcon.png') no-repeat 0 15px;
+}
+
+.row .sidebar .stats .like-count {
+    margin-left: 15px;
+    background: url('../img/img_like32x32.png') no-repeat 0 9px;
 }
 
 .row .sidebar a.btn {
